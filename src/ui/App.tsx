@@ -20,10 +20,12 @@ import './safeArea.css';
 import {useOnlineStatus} from './useOnlineStatus';
 import {recordStartup} from '../platform/startup';
 import {runtimeKind} from '../platform/runtime';
+import {bindLifecycle} from '../platform/lifecycle';
 import {DEFAULT_BOARD_THEME,loadBoardTheme,saveBoardTheme} from './boardSettings';
 
 export default function App(){
  recordStartup(runtimeKind());
+ useEffect(()=>{let dispose=()=>{};bindLifecycle().then(fn=>{dispose=fn}).catch(()=>{});return()=>dispose()},[]);
  const [game,setGame]=useState(()=>new ChessGame());
  const [selected,setSelected]=useState<Square|null>(null);
  const [level,setLevel]=useState<DifficultyId>('beginner');
