@@ -10,7 +10,7 @@ export function emptyBoard(){return Array<Piece|null>(64).fill(null);}
 export function initialPosition():Position{return fromFEN(START_FEN);}
 export function clonePosition(p:Position):Position{return {...p,board:[...p.board],castling:{...p.castling}};}
 export function fromFEN(fen:string):Position{
- const fields=fen.trim().split(/\\s+/);
+ const fields=fen.trim().split(/\s+/);
  if(fields.length!==6) throw new Error('Invalid FEN: expected 6 fields');
  const [placement,turn,rights,ep,half,full]=fields;
  const rows=placement.split('/');
@@ -29,7 +29,7 @@ export function fromFEN(fen:string):Position{
  if(turn!=='w'&&turn!=='b') throw new Error('Invalid FEN: active color');
  if(!/^(-|K?Q?k?q?)$/.test(rights)) throw new Error('Invalid FEN: castling rights');
  if(!/^(-|[a-h][36])$/.test(ep)) throw new Error('Invalid FEN: en-passant square');
- if(!/^\\d+$/.test(half)||!/^\\d+$/.test(full)||Number(half)<0||Number(full)<1) throw new Error('Invalid FEN: move counters');
+ if(!/^\d+$/.test(half)||!/^\d+$/.test(full)||Number(half)<0||Number(full)<1) throw new Error('Invalid FEN: move counters');
  const wk=board.findIndex(x=>x?.color==='w'&&x.type==='k'), bk=board.findIndex(x=>x?.color==='b'&&x.type==='k');
  if(wk<0||bk<0||board.filter(x=>x?.color==='w'&&x.type==='k').length!==1||board.filter(x=>x?.color==='b'&&x.type==='k').length!==1) throw new Error('Invalid FEN: exactly one King per side required');
  for(let i=0;i<64;i++){if((i>>3)===0||(i>>3)===7){const pc=board[i];if(pc?.type==='p')throw new Error('Invalid FEN: Pawn on first/eighth rank');}}
