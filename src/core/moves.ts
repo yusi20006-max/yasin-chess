@@ -1,0 +1,26 @@
+import {clonePosition,fileOf,rankOf,other,sq} from './board';
+import type {Move,Piece,Position,Color,Square,Promotion} from './types';
+const KNIGHT=[[1,2],[2,1],[2,-1],[1,-2],[-1,-2],[-2,-1],[-2,1],[-1,2]];
+const KING=KNIGHT;
+const DIRS=[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
+const promo:Promotion[]=['q','r','b','n'];
+function inside(f:number,r:number){return f>=0&&f<8&&r>=0&&r<8}
+function attacked(p:Position,s:Square,by:Color):boolean{
+ const f=fileOf(s),r=rankOf(s); const pawnR=r+(by==='w'?-1:1);
+ for(const df of [-1,1]){const x=f+df;if(inside(x,pawnR)){const pc=p.board[sq(x,pawnR)];if(pc?.color===by&&pc.type==='p')return true}}
+ for(const [df,dr] of KNIGHT){const x=f+df,y=r+dr;if(inside(x,y)){const pc=p.board[sq(x,y)];if(pc?.color===by&&pc.type==='n')return true}}
+ for(const [df,dr] of DIRS){let x=f+df,y=r+dr;while(inside(x,y)){const pc=p.board[sq(x,y)];if(pc){if(pc.color===by&&['q','r'].includes(pc.type) && (df===0||dr===0))return true;if(pc.color===by&&['q','b'].includes(pc.type) && (df!==0&&dr!==0))return true;break}x+=df;y+=dr}}
+ for(const [df,dr] of KING){const x=f+df,y=r+dr;if(inside(x,y)){const pc=p.board[sq(x,y)];if(pc?.color===by&&pc.type==='k')return true}}
+ return false;
+}
+export function kingSquare(p:Position,c:Color){return p.board.findIndex(x=>x?.color===c&&x.type==='k');}
+export function inCheck(p:Position,c:Color){const k=kingSquare(p,c);return k>=0&&attacked(p,k,other(c));}
+function pseudo(p:Position):Move[]{const out:Move[]=[];const c=p.turn;for(let s=0;s<64;s++){const pc=p.board[s];if(!pc||pc.color!==c)continue;const f=fileOf(s),r=rankOf(s);
+ if(pc.type==='p'){const dir=c==='w'?1:-1,start=c==='w'?1:6;const oneR=r+dir;if(inside(f,oneR)&&!p.board[sq(f,oneR)]){const to=sq(f,oneR);if(oneR===0||oneR===7)promo.forEach(x=>out.push({from:s,to,promotion:x}));else out.push({from:s,to});if(r===start&&!p.board[sq(f,r+2*dir)])out.push({from:s,to:sq(f,r+2*dir)})}for(const df of [-1,1]){const x=f+df,y=r+dir;if(!inside(x,y))continue;const to=sq(x,y),target=p.board[to];if((target&&target.color!==c)||(p.ep===to)){if(y===0||y===7)promo.forEach(x=>out.push({from:s,to,promotion:x,isEnPassant:!target}));else out.push({from:s,to,isEnPassant:!target})}}}
+ else if(pc.type==='n'||pc.type==='k'){for(const [df,dr] of (pc.type==='n'?KNIGHT:KING)){const x=f+df,y=r+dr;if(inside(x,y)){const to=sq(x,y),t=p.board[to];if(!t||t.color!==c)out.push({from:s,to})}}if(pc.type==='k'&&!inCheck(p,c)){const rank=c==='w'?0:7;const rights=c==='w'?['wK','wQ']:['bK','bQ'];if(p.castling[rights[0] as keyof typeof p.castling]&&!p.board[sq(5,rank)]&&!p.board[sq(6,rank)]&&!attacked(p,sq(5,rank),other(c))&&!attacked(p,sq(6,rank),other(c)))out.push({from:s,to:sq(6,rank),isCastle:true});if(p.castling[rights[1] as keyof typeof p.castling]&&!p.board[sq(1,rank)]&&!p.board[sq(2,rank)]&&!p.board[sq(3,rank)]&&!attacked(p,sq(3,rank),other(c))&&!attacked(p,sq(2,rank),other(c)))out.push({from:s,to:sq(2,rank),isCastle:true})}}
+ else {for(const [df,dr] of (pc.type==='r'?DIRS.slice(0,4):pc.type==='b'?DIRS.slice(4):DIRS)){let x=f+df,y=r+dr;while(inside(x,y)){const to=sq(x,y),t=p.board[to];if(!t)out.push({from:s,to});else{if(t.color!==c)out.push({from:s,to});break}x+=df;y+=dr}}}
+ }return out}
+export function applyMove(p:Position,m:Move):Position{const n=clonePosition(p),pc=n.board[m.from]!;const target=n.board[m.to];n.board[m.from]=null;n.board[m.to]={...pc,type:m.promotion??pc.type};n.ep=null;if(m.isEnPassant){const cap=m.to+(pc.color==='w'?-8:8);n.board[cap]=null}if(pc.type==='p'&&Math.abs(m.to-m.from)===16)n.ep=(m.to+m.from)/2;if(pc.type==='k'){if(pc.color==='w'){n.castling.wK=n.castling.wQ=false}else{n.castling.bK=n.castling.bQ=false}if(m.isCastle){const rank=pc.color==='w'?0:7;if(m.to===sq(6,rank)){n.board[sq(5,rank)]=n.board[sq(7,rank)];n.board[sq(7,rank)]=null}else{n.board[sq(3,rank)]=n.board[sq(0,rank)];n.board[sq(0,rank)]=null}}}if(pc.type==='r'){if(m.from===0)n.castling.wQ=false;if(m.from===7)n.castling.wK=false;if(m.from===56)n.castling.bQ=false;if(m.from===63)n.castling.bK=false}if(target?.type==='r'){if(m.to===0)n.castling.wQ=false;if(m.to===7)n.castling.wK=false;if(m.to===56)n.castling.bQ=false;if(m.to===63)n.castling.bK=false}n.halfmove=(pc.type==='p'||target||m.isEnPassant)?0:n.halfmove+1;if(p.turn==='b')n.fullmove++;n.turn=other(p.turn);return n}
+export function legalMoves(p:Position):Move[]{return pseudo(p).filter(m=>!inCheck(applyMove(p,m),p.turn));}
+export function legalMovesFrom(p:Position,s:Square){return legalMoves(p).filter(m=>m.from===s)}
+export function isInsufficientMaterial(p:Position){const pieces=p.board.filter(Boolean) as Piece[];const nonKings=pieces.filter(x=>x.type!=='k');if(nonKings.length===0)return true;if(nonKings.some(x=>['p','q','r'].includes(x.type)))return false;if(nonKings.length===1)return ['b','n'].includes(nonKings[0].type);if(nonKings.every(x=>x.type==='b')){const bishops=p.board.map((x,i)=>x?.type==='b'?((i&7)+(i>>3))%2:null).filter(x=>x!==null);return bishops.every(x=>x===bishops[0])}return false}
