@@ -22,10 +22,12 @@ import {recordStartup} from '../platform/startup';
 import {runtimeKind} from '../platform/runtime';
 import {bindLifecycle} from '../platform/lifecycle';
 import {bindBackNavigation} from '../platform/backNavigation';
+import {enableEdgeToEdge} from '../platform/edgeToEdge';
 import {DEFAULT_BOARD_THEME,loadBoardTheme,saveBoardTheme} from './boardSettings';
 
 export default function App(){
  recordStartup(runtimeKind());
+ useEffect(()=>{enableEdgeToEdge().catch(()=>{})},[]);
  useEffect(()=>{let dispose=()=>{};bindLifecycle().then(fn=>{dispose=fn}).catch(()=>{});bindBackNavigation(()=>window.dispatchEvent(new Event('yasin:back'))).then(fn=>{const old=dispose;dispose=()=>{fn();old()}}).catch(()=>{});return()=>dispose()},[]);
  const [game,setGame]=useState(()=>new ChessGame());
  const [selected,setSelected]=useState<Square|null>(null);
