@@ -1,0 +1,6 @@
+import {ChessGame} from '../core/game';
+export type PersistedGame={startFEN:string;history:Array<{move:{from:number;to:number;promotion?:string}}>;result?:string;mode?:string;difficulty?:string};
+export type PlayerStatistics={games:number;wins:number;losses:number;draws:number;winRate:number;averageMoves:number;byMode:Record<string,number>;byDifficulty:Record<string,number>};
+function resultOf(g:PersistedGame){if(g.result)return g.result;try{const game=new ChessGame(g.startFEN);for(const h of g.history)game.play(h.move as never);return game.resultToken()}catch{return '*'}}
+export function computePlayerStatistics(games:PersistedGame[]):PlayerStatistics{let wins=0,losses=0,draws=0,moves=0;const byMode:Record<string,number>={},byDifficulty:Record<string,number>={};for(const g of games){const r=resultOf(g);if(r==='1-0')wins++;else if(r==='0-1')losses++;else if(r==='1/2-1/2')draws++;moves+=g.history?.length??0;if(g.mode)byMode[g.mode]=(byMode[g.mode]??0)+1;if(g.difficulty)byDifficulty[g.difficulty]=(byDifficulty[g.difficulty]??0)+1}const gamesCount=wins+losses+draws;return {games:gamesCount,wins,losses,draws,winRate:gamesCount?wins/gamesCount:0,averageMoves:gamesCount?moves/gamesCount:0,byMode,byDifficulty}}
+export function rebuildStatistics(games:PersistedGame[]){return computePlayerStatistics(games)}
