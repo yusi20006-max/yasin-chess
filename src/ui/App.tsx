@@ -25,6 +25,7 @@ import {bindBackNavigation} from '../platform/backNavigation';
 import {enableEdgeToEdge} from '../platform/edgeToEdge';
 import {markSafeAreaSupport} from '../platform/safeArea';
 import {allowResponsiveOrientation} from '../platform/orientation';
+import {syncSystemUi} from '../platform/systemUi';
 import {DEFAULT_BOARD_THEME,loadBoardTheme,saveBoardTheme} from './boardSettings';
 
 export default function App(){
@@ -50,7 +51,7 @@ export default function App(){
  const online=useOnlineStatus();
  useEffect(()=>{const onBack=()=>{setSelected(null);setPromotion(null)};window.addEventListener('yasin:back',onBack);return()=>window.removeEventListener('yasin:back',onBack)},[]);
 
- useEffect(()=>{const root=document.documentElement;const apply=()=>{const mode=themeMode==='system'?(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):themeMode;root.dataset.theme=mode};apply();if(themeMode!=='system')return;const mq=window.matchMedia('(prefers-color-scheme: dark)');mq.addEventListener('change',apply);return()=>mq.removeEventListener('change',apply)},[themeMode]);
+ useEffect(()=>{const root=document.documentElement;const apply=()=>{const mode=themeMode==='system'?(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):themeMode;root.dataset.theme=mode;syncSystemUi(mode).catch(()=>{})};apply();if(themeMode!=='system')return;const mq=window.matchMedia('(prefers-color-scheme: dark)');mq.addEventListener('change',apply);return()=>mq.removeEventListener('change',apply)},[themeMode]);
  const d=useMemo(()=>difficulty(level,{depth:level==='custom'?customDepth:undefined}),[level,customDepth]);
  useEffect(()=>{if(!thinking)return;const id=window.setInterval(()=>setThinkingElapsed(Math.max(0,Date.now()-thinkingStarted)),250);return()=>window.clearInterval(id)},[thinking,thinkingStarted]);
  useEffect(()=>{if(game.position.turn!=='b'||d.depth<=0)return;const snapshot=game;const request=++requestRef.current;setThinking(true);setThinkingStarted(Date.now());setThinkingElapsed(0);const timer=window.setTimeout(()=>{const m=chooseMove(snapshot.position,d.depth);if(request!==requestRef.current)return;if(!m){setThinking(false);return}setGame(current=>{if(current!==snapshot||request!==requestRef.current)return current;const next=snapshot.clone();const san=next.play(m);playSound(next.status().includes('draw')||next.status()==='checkmate'?'game-over':snapshot.position.board[m.to]||m.isEnPassant?'capture':next.status()==='check'?'check':'move');haptic(8);setLast(san);setThinking(false);return next})},80);return()=>{window.clearTimeout(timer);requestRef.current++;setThinking(false)}},[game,d]);
