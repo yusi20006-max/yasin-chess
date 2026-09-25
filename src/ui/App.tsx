@@ -11,7 +11,7 @@ import Piece from './Piece';
 import './styles.css';
 import './theme.css';
 import {loadSettings,saveSettings,type ThemeMode} from '../app/settings';
-import {setLocale,t,type Locale} from '../app/i18n';
+type Locale='en'|'fa'; const messages:Record<string,string>={playing:'Playing',check:'Check',checkmate:'Checkmate',stalemate:'Stalemate',draw:'Draw',undo:'Undo',redo:'Redo',newGame:'New Game',flip:'Flip'}; const t=(key:string)=>messages[key]??key;
 import {playSound} from './sound';
 import {haptic} from './haptics';
 import './portrait.css';
@@ -36,7 +36,7 @@ export default function App(){
  const [thinkingElapsed,setThinkingElapsed]=useState(0);
  const requestRef=useRef(0);
  const online=useOnlineStatus();
- useEffect(()=>{setLocale(locale)},[locale]);
+
  useEffect(()=>{const root=document.documentElement;const apply=()=>{const mode=themeMode==='system'?(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):themeMode;root.dataset.theme=mode};apply();if(themeMode!=='system')return;const mq=window.matchMedia('(prefers-color-scheme: dark)');mq.addEventListener('change',apply);return()=>mq.removeEventListener('change',apply)},[themeMode]);
  const d=useMemo(()=>difficulty(level,{depth:level==='custom'?customDepth:undefined}),[level,customDepth]);
  useEffect(()=>{if(!thinking)return;const id=window.setInterval(()=>setThinkingElapsed(Math.max(0,Date.now()-thinkingStarted)),250);return()=>window.clearInterval(id)},[thinking,thinkingStarted]);
