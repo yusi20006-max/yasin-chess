@@ -20,7 +20,8 @@
     "android:init": "node scripts/android-bootstrap.mjs",
     "android:identity": "node scripts/android-identity.mjs",
     "audit:offline-assets": "npm run build && node scripts/offline-asset-audit.mjs",
-    "test:storage": "npm test -- tests/storage-health.test.ts"
+    "test:storage": "npm test -- tests/storage-health.test.ts",
+    "audit:network": "node scripts/network-isolation-audit.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
