@@ -1,7 +1,7 @@
 import {clonePosition,fileOf,rankOf,other,sq} from './board';
 import type {Move,Piece,Position,Color,Square,Promotion} from './types';
 const KNIGHT=[[1,2],[2,1],[2,-1],[1,-2],[-1,-2],[-2,-1],[-2,1],[-1,2]];
-const KING=KNIGHT;
+const KING=[[1,1],[1,0],[1,-1],[0,1],[0,-1],[-1,1],[-1,0],[-1,-1]];
 const DIRS=[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
 const promo:Promotion[]=['q','r','b','n'];
 function inside(f:number,r:number){return f>=0&&f<8&&r>=0&&r<8}
