@@ -1,2 +1,2 @@
 let enabled=true;export function setHapticsEnabled(value:boolean){enabled=value}export function isHapticsEnabled(){return enabled}
-export function haptic(pattern:number|number[]=10){if(!enabled||typeof navigator==='undefined')return false;const vibrate=navigator.vibrate;if(typeof vibrate!=='function')return false;vibrate.call(navigator,pattern);return true}
+export function haptic(pattern:number|number[]=10){if(!enabled||typeof navigator==='undefined')return false;const vibrate=navigator.vibrate;if(typeof vibrate!=='function')return false;vibrate.call(navigator,pattern as VibratePattern);return true}
