@@ -6,6 +6,7 @@ import type {GameStatus,Move,Position} from './types';
 export class ChessGame{
  position:Position; history:{move:Move;san:string;before:Position;after:Position}[]=[]; future:{move:Move;san:string;before:Position;after:Position}[]=[]; keys:string[]; readonly startFEN:string; private drawAgreement=false;
  constructor(fen?:string){this.startFEN=fen??START_FEN;this.position=fen?fromFEN(fen):initialPosition();this.keys=[positionKey(this.position)]}
+ clone(){const g=new ChessGame(this.startFEN);g.position={...this.position,board:[...this.position.board],castling:{...this.position.castling}};g.history=this.history.map(x=>({...x,before:{...x.before,board:[...x.before.board],castling:{...x.before.castling}},after:{...x.after,board:[...x.after.board],castling:{...x.after.castling}}}));g.future=this.future.map(x=>({...x,before:{...x.before,board:[...x.before.board],castling:{...x.before.castling}},after:{...x.after,board:[...x.after.board],castling:{...x.after.castling}}}));g.keys=[...this.keys];g.drawAgreement=this.drawAgreement;return g}
  moves(){return legalMoves(this.position)}
  play(m:Move){if(!this.moves().some(x=>x.from===m.from&&x.to===m.to&&x.promotion===m.promotion))throw new Error('Illegal move');const san=toSAN(this.position,m),before=this.position,after=applyMove(this.position,m);this.history.push({move:m,san,before,after});this.future=[];this.position=after;this.keys.push(positionKey(after));return san}
  undo(){const h=this.history.pop();if(!h)return false;this.future.push(h);this.position=h.before;this.keys.pop();return true}
