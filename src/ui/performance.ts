@@ -1,0 +1,1 @@
+export function measureInteraction(name:string,fn:()=>void){const start=typeof performance!=='undefined'?performance.now():Date.now();fn();const end=typeof performance!=='undefined'?performance.now():Date.now();return {name,durationMs:end-start}}
