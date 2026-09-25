@@ -13,4 +13,4 @@ export type Position = {
   halfmove: number;
   fullmove: number;
 };
-export type GameStatus = 'playing' | 'check' | 'checkmate' | 'stalemate' | 'draw-repetition' | 'draw-50-move' | 'draw-insufficient' | 'draw-agreement';
+export type GameStatus = 'playing' | 'check' | 'checkmate' | 'stalemate' | 'draw-repetition' | 'claim-50-move' | 'draw-75-move' | 'draw-insufficient' | 'draw-agreement';
