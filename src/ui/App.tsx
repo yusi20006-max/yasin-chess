@@ -24,11 +24,13 @@ import {bindLifecycle} from '../platform/lifecycle';
 import {bindBackNavigation} from '../platform/backNavigation';
 import {enableEdgeToEdge} from '../platform/edgeToEdge';
 import {markSafeAreaSupport} from '../platform/safeArea';
+import {allowResponsiveOrientation} from '../platform/orientation';
 import {DEFAULT_BOARD_THEME,loadBoardTheme,saveBoardTheme} from './boardSettings';
 
 export default function App(){
  recordStartup(runtimeKind());
  markSafeAreaSupport();
+ allowResponsiveOrientation().catch(()=>{});
  useEffect(()=>{enableEdgeToEdge().catch(()=>{})},[]);
  useEffect(()=>{let dispose=()=>{};bindLifecycle().then(fn=>{dispose=fn}).catch(()=>{});bindBackNavigation(()=>window.dispatchEvent(new Event('yasin:back'))).then(fn=>{const old=dispose;dispose=()=>{fn();old()}}).catch(()=>{});return()=>dispose()},[]);
  const [game,setGame]=useState(()=>new ChessGame());
