@@ -1,0 +1,3 @@
+import {applyMove,inCheck,legalMoves} from '../core/moves';import {PIECE_VALUE} from '../core/constants';import type {Position} from '../core/types';
+export function materialScore(p:Position){return p.board.reduce((s,x)=>s+(x?(x.color==='w'?1:-1)*PIECE_VALUE[x.type]:0),0)}
+export function quiescence(p:Position,alpha=-Infinity,beta=Infinity,depth=3):number{const stand=materialScore(p);if(depth<=0)return stand;let a=Math.max(alpha,stand);if(a>=beta)return a;for(const m of legalMoves(p).filter(m=>!!p.board[m.to]||m.isEnPassant||inCheck(p,p.turn))){const score=-quiescence(applyMove(p,m),-beta,-a,depth-1);if(score>=beta)return score;if(score>a)a=score}return a}
