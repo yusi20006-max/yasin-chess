@@ -1,0 +1,2 @@
+import {PIECE_VALUE} from '../core/constants';import type {Position} from '../core/types';
+export function evaluatePosition(p:Position){let score=0;const files=[0,0,0,0,0,0,0,0],ranks=[0,0,0,0,0,0,0,0];for(let i=0;i<64;i++){const x=p.board[i];if(!x)continue;const sign=x.color==='w'?1:-1;score+=sign*PIECE_VALUE[x.type];files[i&7]+=sign;ranks[i>>3]+=sign;if((i&7)>=2&&(i&7)<=5&&(i>>3)>=2&&(i>>3)<=5)score+=sign*4;if(x.type==='n'||x.type==='b')score+=sign*2;if(x.type==='p')score+=sign*((x.color==='w'?(i>>3):7-(i>>3))*2)}score+=files.reduce((s,x)=>s+x*x*.5,0);return score}
