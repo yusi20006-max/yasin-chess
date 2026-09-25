@@ -19,7 +19,8 @@
     "android:debug": "npm run android:build && cd android && ./gradlew assembleDebug",
     "android:init": "node scripts/android-bootstrap.mjs",
     "android:identity": "node scripts/android-identity.mjs",
-    "audit:offline-assets": "npm run build && node scripts/offline-asset-audit.mjs"
+    "audit:offline-assets": "npm run build && node scripts/offline-asset-audit.mjs",
+    "test:storage": "npm test -- tests/storage-health.test.ts"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
