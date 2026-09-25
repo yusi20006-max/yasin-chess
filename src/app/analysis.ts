@@ -1,0 +1,2 @@
+import {ChessGame} from '../core/game';import {GameReplay} from './replay';import type {Position} from '../core/types';
+export class AnalysisSession{readonly replay:GameReplay;constructor(game:ChessGame){this.replay=new GameReplay(game)}get position():Position{return this.replay.position}next(){return this.replay.next()}previous(){return this.replay.previous()}goTo(index:number){return this.replay.goTo(index)}}
