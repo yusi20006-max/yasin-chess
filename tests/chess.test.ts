@@ -7,6 +7,8 @@ it('requires the king on its home square for castling',()=>{const g=new ChessGam
 it('supports en passant',()=>{const g=new ChessGame();g.play(g.moves().find(m=>m.from===12&&m.to===28)!);g.play(g.moves().find(m=>m.from===48&&m.to===40)!);g.play(g.moves().find(m=>m.from===28&&m.to===36)!);g.play(g.moves().find(m=>m.from===51&&m.to===35)!);const ep=g.moves().find(m=>m.isEnPassant);expect(ep).toBeTruthy();});
 it('exports correct PGN checkmate result',()=>{const g=new ChessGame('7k/5Q2/7K/8/8/8/8/8 b - - 0 1');expect(g.pgn()).toBe('1-0');});
 it('exports FEN and Result tags',()=>{const fen='4k3/8/8/8/8/8/4K3/8 w - - 0 1';const g=new ChessGame(fen);const p=g.pgn({Event:'Test'});expect(p).toContain('[SetUp "1"]');expect(p).toContain('[FEN "'+fen+'"]');expect(p).toContain('[Result "*"]');});
+it('distinguishes the 50-move claim from the automatic 75-move draw',()=>{const claim=new ChessGame('4k3/8/8/8/8/8/4K3/8 w - - 100 1');expect(claim.status()).toBe('claim-50-move');const automatic=new ChessGame('4k3/8/8/8/8/8/4K3/8 w - - 150 1');expect(automatic.status()).toBe('draw-75-move');});
+it('supports draw agreement explicitly',()=>{const g=new ChessGame();expect(g.acceptDrawAgreement()).toBe(true);expect(g.status()).toBe('draw-agreement');});
 it('detects checkmate',()=>{const g=new ChessGame('7k/5Q2/7K/8/8/8/8/8 b - - 0 1');expect(g.status()).toBe('checkmate');});
 it('detects stalemate',()=>{const g=new ChessGame('7k/5Q2/6K1/8/8/8/8/8 b - - 0 1');expect(g.status()).toBe('stalemate');});
 it('generates SAN history',()=>{const g=new ChessGame();g.play(g.moves().find(m=>m.from===12&&m.to===28)!);expect(g.pgn()).toBe('1. e4 *');});
