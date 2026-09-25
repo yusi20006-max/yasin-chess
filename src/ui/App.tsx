@@ -8,6 +8,7 @@ import type {Square} from '../core/types';
 import AppShell from './AppShell';
 import GameLayout from './GameLayout';
 import ChessBoard from './ChessBoard';
+import Piece from './Piece';
 import './styles.css';
 import {useOnlineStatus} from './useOnlineStatus';
 
@@ -37,7 +38,7 @@ export default function App(){
  const fresh=()=>{setGame(new ChessGame());setSelected(null);setLast('')};
 
  const highlights=new Set(selected===null?[]:legalMovesFrom(game.position,selected).map(m=>m.to));
- const board=<ChessBoard position={game.position} selected={selected} highlights={highlights} onSquareClick={click} renderPiece={s=>{const pc=game.position.board[s];return pc?glyph[pc.color][pc.type]:null;}}/>;
+ const board=<ChessBoard position={game.position} selected={selected} highlights={highlights} onSquareClick={click} renderPiece={s=>{const pc=game.position.board[s];return pc?<Piece piece={pc}/>:null;}}/>;
  const panel=<><div className="status">وضعیت: <b>{game.status()}</b></div><div className="meta">سطح: {d.label}<br/>Depth: {d.depth} • Elo: {d.elo}</div><h2>حرکت‌ها</h2><ol>{game.history.map((h,i)=><li key={i}>{Math.floor(i/2)+1}{i%2===0?'. ': '... '}{h.san}</li>)}</ol><div className="controls"><button onClick={undo}>Undo</button><button onClick={redo}>Redo</button><button onClick={fresh}>New</button></div><div className="last">آخرین حرکت: {last||'—'}</div><div className="pgn">{game.pgn()}</div></>;
 
  return <AppShell sidebar={<select value={level} onChange={e=>setLevel(e.target.value as DifficultyId)} aria-label="AI difficulty">{DIFFICULTIES.map(x=><option key={x.id} value={x.id}>{x.label} — Elo ~{x.elo}</option>)}</select>}>
