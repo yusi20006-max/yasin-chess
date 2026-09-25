@@ -6,5 +6,7 @@ it('supports en passant',()=>{const g=new ChessGame();g.play(g.moves().find(m=>m
 it('detects checkmate',()=>{const g=new ChessGame('7k/5Q2/7K/8/8/8/8/8 b - - 0 1');expect(g.status()).toBe('checkmate');});
 it('detects stalemate',()=>{const g=new ChessGame('7k/5Q2/6K1/8/8/8/8/8 b - - 0 1');expect(g.status()).toBe('stalemate');});
 it('generates SAN history',()=>{const g=new ChessGame();g.play(g.moves().find(m=>m.from===12&&m.to===28)!);expect(g.pgn()).toBe('1. e4');});
+it('never generates a move that captures the opposing king',()=>{const p=fromFEN('4k3/8/8/8/8/8/4R3/4K3 w - - 0 1');expect(legalMoves(p).some(m=>m.to===60)).toBe(false);});
+it('rejects adjacent kings from legal captures',()=>{const p=fromFEN('8/8/8/8/8/8/4k2K/8 w - - 0 1');expect(legalMoves(p).some(m=>m.to===4)).toBe(false);});
 it('loads FEN',()=>expect(legalMoves(fromFEN('8/8/8/8/8/8/4K3/4k3 w - - 0 1'))).toHaveLength(0));
 });
