@@ -1,0 +1,4 @@
+import {applyMove} from '../core/moves';import type {Move,Position} from '../core/types';import {chooseMove} from './minimax';
+export type MoveQuality='best'|'inaccuracy'|'mistake'|'blunder';
+export function classifyMove(position:Position,move:Move,depth=2):MoveQuality{const best=chooseMove(position,depth);if(!best||same(best,move))return 'best';const after=applyMove(position,move);const reply=chooseMove(after,Math.max(1,depth-1));if(!reply)return 'inaccuracy';const displacement=Math.abs((best.to-best.from)-(reply.to-reply.from));return displacement>4?'blunder':displacement>2?'mistake':'inaccuracy'}
+function same(a:Move,b:Move){return a.from===b.from&&a.to===b.to&&a.promotion===b.promotion}
