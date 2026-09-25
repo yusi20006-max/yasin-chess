@@ -1,7 +1,7 @@
 {
   "name": "yasin-chess",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,7 +10,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "tsc --noEmit",
-    "test:offline": "npm run build && node scripts/offline-smoke.mjs"
+    "test:offline": "npm run build && node scripts/offline-smoke.mjs",
+    "benchmark:mobile": "npm run build && node scripts/mobile-benchmark.mjs",
+    "audit:security": "node scripts/security-audit.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
