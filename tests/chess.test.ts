@@ -15,11 +15,11 @@ it('distinguishes the 50-move claim from the automatic 75-move draw',()=>{const 
 it('supports draw agreement explicitly',()=>{const g=new ChessGame();expect(g.acceptDrawAgreement()).toBe(true);expect(g.status()).toBe('draw-agreement');});
 it('supports promotion',()=>{const g=new ChessGame('4k3/P7/8/8/8/8/8/4K3 w - - 0 1');const m=g.moves().find(x=>x.promotion==='q')!;expect(g.play(m)).toBe('a8=Q+');});
 it('supports undo and redo without losing history',()=>{const g=new ChessGame();const m=g.moves().find(x=>x.from===12&&x.to===28)!;g.play(m);expect(g.history).toHaveLength(1);expect(g.undo()).toBe(true);expect(g.history).toHaveLength(0);expect(g.redo()).toBe(true);expect(g.history).toHaveLength(1);});
-it('detects checkmate',()=>{const g=new ChessGame('7k/5Q2/7K/8/8/8/8/8 b - - 0 1');expect(g.status()).toBe('checkmate');});
+it('detects checkmate',()=>{const g=new ChessGame('7k/6Q1/7K/8/8/8/8/8 b - - 0 1');expect(g.status()).toBe('checkmate');});
 it('detects stalemate',()=>{const g=new ChessGame('7k/5Q2/6K1/8/8/8/8/8 b - - 0 1');expect(g.status()).toBe('stalemate');});
 it('generates SAN history',()=>{const g=new ChessGame();g.play(g.moves().find(m=>m.from===12&&m.to===28)!);expect(g.pgn()).toBe('1. e4 *');});
 it('never generates a move that captures the opposing king',()=>{const p=fromFEN('4k3/8/8/8/8/8/4R3/4K3 w - - 0 1');expect(legalMoves(p).some(m=>m.to===60)).toBe(false);});
-it('rejects adjacent kings from legal captures',()=>{const p=fromFEN('8/8/8/8/8/8/4kK3/8 w - - 0 1');expect(legalMoves(p).some(m=>m.to===4)).toBe(false);});
+it('rejects adjacent kings from legal captures',()=>{const p=fromFEN('8/8/8/8/8/8/4kK2/8 w - - 0 1');expect(legalMoves(p).some(m=>m.to===4)).toBe(false);});
 it('rejects malformed FEN',()=>{expect(()=>fromFEN('8/8/8/8/8/8/4K3/4k3 w - -')).toThrow();});
 it('rejects adjacent kings in FEN',()=>{expect(()=>fromFEN('8/8/8/8/8/8/4Kk2/8 w - - 0 1')).toThrow();});
 it('round-trips valid FEN',()=>{const fen='r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1';expect(toFEN(fromFEN(fen))).toBe(fen);});
