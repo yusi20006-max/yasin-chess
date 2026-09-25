@@ -16,7 +16,8 @@
     "cap:sync": "npm run build && cap sync",
     "cap:open": "cap open android",
     "android:build": "npm run build && cap sync android",
-    "android:debug": "npm run android:build && cd android && ./gradlew assembleDebug"
+    "android:debug": "npm run android:build && cd android && ./gradlew assembleDebug",
+    "android:init": "node scripts/android-bootstrap.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
@@ -31,6 +32,7 @@
   "devDependencies": {
     "@types/react": "latest",
     "@types/react-dom": "latest",
-    "@capacitor/cli": "^8.0.0"
+    "@capacitor/cli": "^8.0.0",
+    "@capacitor/android": "^8.0.0"
   }
 }
