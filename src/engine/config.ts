@@ -1,0 +1,3 @@
+export type EngineConfig={depth:number;timeMs?:number;useTranspositionTable?:boolean;useOpeningBook?:boolean;useQuiescence?:boolean};
+export const DEFAULT_ENGINE_CONFIG:EngineConfig={depth:3,timeMs:1000,useTranspositionTable:true,useOpeningBook:true,useQuiescence:true};
+export function normalizeEngineConfig(input:Partial<EngineConfig>={}):EngineConfig{const depth=Math.min(20,Math.max(1,Math.floor(input.depth??DEFAULT_ENGINE_CONFIG.depth)));const timeMs=input.timeMs===undefined?DEFAULT_ENGINE_CONFIG.timeMs:Math.max(0,Math.floor(input.timeMs));return {...DEFAULT_ENGINE_CONFIG,...input,depth,timeMs}}
