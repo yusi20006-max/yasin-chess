@@ -13,6 +13,8 @@ import './styles.css';
 import './theme.css';
 import {loadSettings,saveSettings,type ThemeMode} from '../app/settings';
 import {setLocale,t,type Locale} from '../i18n';
+import {playSound} from './sound';import {haptic} from './haptics';
+import './portrait.css';import './landscape.css';import './safeArea.css';
 import {useOnlineStatus} from './useOnlineStatus';
 import {DEFAULT_BOARD_THEME,loadBoardTheme,saveBoardTheme} from './boardSettings';
 
@@ -33,7 +35,7 @@ export default function App(){
  const d=useMemo(()=>difficulty(level,{depth:level==='custom'?customDepth:undefined}),[level,customDepth]);
 
  useEffect(()=>{if(!thinking)return;const id=window.setInterval(()=>setThinkingElapsed(Math.max(0,Date.now()-thinkingStarted)),250);return()=>window.clearInterval(id)},[thinking,thinkingStarted]);
- useEffect(()=>{if(game.position.turn!=='b'||d.depth<=0)return;const snapshot=game;const request=++requestRef.current;setThinking(true);setThinkingStarted(Date.now());setThinkingElapsed(0);const timer=window.setTimeout(()=>{const m=chooseMove(snapshot.position,d.depth);if(request!==requestRef.current)return;if(!m){setThinking(false);return}setGame(current=>{if(current!==snapshot||request!==requestRef.current)return current;const next=snapshot.clone();const san=next.play(m);setLast(san);setThinking(false);return next;});},80);return()=>{window.clearTimeout(timer);requestRef.current++;setThinking(false)}},[game,d]);
+ useEffect(()=>{if(game.position.turn!=='b'||d.depth<=0)return;const snapshot=game;const request=++requestRef.current;setThinking(true);setThinkingStarted(Date.now());setThinkingElapsed(0);const timer=window.setTimeout(()=>{const m=chooseMove(snapshot.position,d.depth);if(request!==requestRef.current)return;if(!m){setThinking(false);return}setGame(current=>{if(current!==snapshot||request!==requestRef.current)return current;const next=snapshot.clone();const san=next.play(m);playSound(next.status().includes('draw')||next.status()==='checkmate'?'game-over':m.isEnPassant||next.position.board[m.to]?'capture':'move');haptic(8);setLast(san);setThinking(false);return next;});},80);return()=>{window.clearTimeout(timer);requestRef.current++;setThinking(false)}},[game,d]);
 
  const commitMove=(m:Move)=>{try{const next=game.clone();const san=next.play(m);setLast(san);setSelected(null);setPromotion(null);setGame(next)}catch{setSelected(null);setPromotion(null)}};
  const moveFromTo=(from:Square,to:Square)=>{const opts=legalMovesFrom(game.position,from).filter(m=>m.to===to);if(!opts.length)return;if(opts.length>1){setPromotion({moves:opts});return;}commitMove(opts[0]);};
