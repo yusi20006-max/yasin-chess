@@ -32,7 +32,8 @@
     "vitest": "latest",
     "jsdom": "latest",
     "@capacitor/core": "^8.0.0",
-    "@capacitor/app": "^8.0.0"
+    "@capacitor/app": "^8.0.0",
+    "@capacitor/status-bar": "^8.0.0"
   },
   "devDependencies": {
     "@types/react": "latest",
