@@ -10,6 +10,8 @@ import GameLayout from './GameLayout';
 import ChessBoard from './ChessBoard';
 import Piece from './Piece';
 import './styles.css';
+import './theme.css';
+import {loadSettings,saveSettings,type ThemeMode} from '../app/settings';
 import {useOnlineStatus} from './useOnlineStatus';
 import {DEFAULT_BOARD_THEME,loadBoardTheme,saveBoardTheme} from './boardSettings';
 
@@ -20,9 +22,11 @@ export default function App(){
  const [selected,setSelected]=useState<Square|null>(null);
  const [level,setLevel]=useState<DifficultyId>('beginner');
  const [customDepth,setCustomDepth]=useState(8);
- const [last,setLast]=useState(''); const [promotion,setPromotion]=useState<{moves:Move[]}|null>(null); const [theme,setTheme]=useState(()=>loadBoardTheme()); const [orientation,setOrientation]=useState<'white'|'black'>('white');
+ const [last,setLast]=useState(''); const [promotion,setPromotion]=useState<{moves:Move[]}|null>(null); const [theme,setTheme]=useState(()=>loadBoardTheme());
+ const [themeMode,setThemeMode]=useState<ThemeMode>(()=>loadSettings().theme); const [orientation,setOrientation]=useState<'white'|'black'>('white');
  const [thinking,setThinking]=useState(false); const [thinkingStarted,setThinkingStarted]=useState(0); const [thinkingElapsed,setThinkingElapsed]=useState(0); const requestRef=useRef(0);
  const online=useOnlineStatus();
+ useEffect(()=>{const root=document.documentElement;const apply=()=>{const mode=themeMode==='system'?(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):themeMode;root.dataset.theme=mode};apply();if(themeMode!=='system')return;const mq=window.matchMedia('(prefers-color-scheme: dark)');mq.addEventListener('change',apply);return()=>mq.removeEventListener('change',apply)},[themeMode]);
  const d=useMemo(()=>difficulty(level,{depth:level==='custom'?customDepth:undefined}),[level,customDepth]);
 
  useEffect(()=>{if(!thinking)return;const id=window.setInterval(()=>setThinkingElapsed(Math.max(0,Date.now()-thinkingStarted)),250);return()=>window.clearInterval(id)},[thinking,thinkingStarted]);
@@ -49,7 +53,7 @@ export default function App(){
  const playerPanels=<div className="player-panels"><div className={`player-card ${game.position.turn==='w'?'active':''}`}><b>White</b><span>{game.position.turn==='w'?'Your turn':'Waiting'}</span></div><div className={`player-card ${game.position.turn==='b'?'active':''}`}><b>Black · AI</b><span>{game.position.turn==='b'?'Thinking':'Waiting'}</span></div></div>;
  const status=game.status(); const panel=<><div className={\"thinking\"} role=\"status\" aria-live=\"polite\">{thinking?`AI is thinking · ${(thinkingElapsed/1000).toFixed(1)}s`:\"AI idle\"}</div><div className={`status status-${status}`} role="status">وضعیت: <b>{status==='playing'?'بازی در جریان':status==='check'?'کیش':status==='checkmate'?'کیش‌ومات':status==='stalemate'?'پات':status==='draw-repetition'?'تساوی تکرار':status==='claim-50-move'?'قابل ادعای ۵۰ حرکت':status==='draw-75-move'?'تساوی ۷۵ حرکت':status==='draw-insufficient'?'تساوی مهره ناکافی':'تساوی با توافق'}</b></div><div className="meta">سطح: {d.label}<br/>Depth: {d.depth} • Elo: {d.elo}</div><h2>حرکت‌ها</h2><ol className="move-list">{game.history.map((h,i)=><li key={i} className={i===game.history.length-1?"current-move":""}><span>{Math.floor(i/2)+1}{i%2===0?".":"..."}</span><b>{h.san}</b></li>)}</ol><div className="controls"><button onClick={undo} disabled={!game.history.length}>Undo</button><button onClick={redo} disabled={!game.future.length}>Redo</button><button onClick={fresh}>New Game</button></div><div className="last">آخرین حرکت: {last||'—'}</div><div className="pgn">{game.pgn()}</div></>;
 
- return <AppShell sidebar={<><button className="theme-toggle" type="button" onClick={()=>{const next=theme.light===DEFAULT_BOARD_THEME.light?{light:'#d8e8c8',dark:'#6b8f71',piece:'#111827'}:DEFAULT_BOARD_THEME;setTheme(next);saveBoardTheme(next)}}>Theme</button><select value={level} onChange={e=>setLevel(e.target.value as DifficultyId)} aria-label="AI difficulty">{DIFFICULTIES.map(x=><option key={x.id} value={x.id}>{x.label} — Elo ~{x.elo}</option>)}</select>}>
+ return <AppShell sidebar={<><div className="theme-controls"><select value={themeMode} onChange={e=>{const v=e.target.value as ThemeMode;setThemeMode(v);saveSettings({theme:v})}} aria-label="Application theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select><button className="theme-toggle" type="button" onClick={()=>{const next=theme.light===DEFAULT_BOARD_THEME.light?{light:'#d8e8c8',dark:'#6b8f71',piece:'#111827'}:DEFAULT_BOARD_THEME;setTheme(next);saveBoardTheme(next)}}>Board Theme</button></div><select value={level} onChange={e=>setLevel(e.target.value as DifficultyId)} aria-label="AI difficulty">{DIFFICULTIES.map(x=><option key={x.id} value={x.id}>{x.label} — Elo ~{x.elo}</option>)}</select>}>
   <style>{".chess-board{--board-light:"+theme.light+";--board-dark:"+theme.dark+"}.piece{color:"+theme.piece+"}"}</style>
   {level==='custom'&&<div className="custom-depth"><label>Depth <input type="number" min="1" max="20" value={customDepth} onChange={e=>setCustomDepth(Number(e.target.value))}/></label></div>}
   <div className="view-controls"><button className="view-toggle" type="button" onClick={()=>setOrientation(x=>x==="white"?"black":"white")}>↔ Flip</button><button type="button" onClick={()=>setSelected(null)}>Clear selection</button></div><div className={`runtime-banner ${online?'online':'offline'}`} role="status">{online?'Online':'Offline — بازی محلی ادامه دارد'}</div>
