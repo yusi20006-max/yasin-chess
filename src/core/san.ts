@@ -1,4 +1,5 @@
-import {applyMove,fileOf,squareName} from './board';
+import {fileOf,squareName} from './board';
+import {applyMove} from './moves';
 import {inCheck,legalMoves} from './moves';
 import type {Move,Position} from './types';
 export function toSAN(p:Position,m:Move):string{const pc=p.board[m.from]!;const capture=!!p.board[m.to]||!!m.isEnPassant;let s='';if(m.isCastle)s=m.to>m.from?'O-O':'O-O-O';else{s=pc.type==='p'?(capture?String.fromCharCode(97+fileOf(m.from)):''):pc.type.toUpperCase();if(pc.type!=='p'){const peers=legalMoves(p).filter(x=>x.to===m.to&&x.from!==m.from&&p.board[x.from]?.type===pc.type);if(peers.length){const sameFile=peers.some(x=>fileOf(x.from)===fileOf(m.from));const sameRank=peers.some(x=>(x.from>>3)===(m.from>>3));s+=!sameFile?String.fromCharCode(97+fileOf(m.from)):!sameRank?squareName(m.from)[1]:squareName(m.from)}}if(capture)s+='x';s+=squareName(m.to);if(m.promotion)s+='='+m.promotion.toUpperCase();}const n=applyMove(p,m);if(inCheck(n,n.turn))s+=legalMoves(n).length?'+' : '#';return s;}
