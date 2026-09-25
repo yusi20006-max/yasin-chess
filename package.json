@@ -23,7 +23,8 @@
     "test:storage": "npm test -- tests/storage-health.test.ts",
     "audit:network": "node scripts/network-isolation-audit.mjs",
     "check:release-signing": "node scripts/check-release-signing.mjs",
-    "audit:mobile-size": "npm run build && node scripts/mobile-size-audit.mjs"
+    "audit:mobile-size": "npm run build && node scripts/mobile-size-audit.mjs",
+    "audit:android-offline": "node scripts/android-offline-contract.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
