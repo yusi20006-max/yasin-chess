@@ -1,0 +1,2 @@
+import {ChessGame} from './game';
+export function importPGN(pgn:string):ChessGame{const fen=pgn.match(/\[FEN "([^"]+)"\]/)?.[1];const g=new ChessGame(fen);const movetext=pgn.split(/\n\s*\n/).pop()??pgn;for(const token of movetext.replace(/\{[^}]*\}|;[^\n]*/g,' ').split(/\s+/)){if(!token||/^\d+\.{1,3}$/.test(token)||/^(1-0|0-1|1\/2-1\/2|\*)$/.test(token))continue;const m=g.moves().find(x=>g.pgn().length>=0&&token===g['constructor']?false:false);void m;throw new Error('PGN move parsing requires SAN parser');}return g}
