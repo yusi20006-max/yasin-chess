@@ -51,7 +51,7 @@ export default function App(){
   <style>{".chess-board{--board-light:"+theme.light+";--board-dark:"+theme.dark+"}.piece{color:"+theme.piece+"}"}</style>
   {level==='custom'&&<div className="custom-depth"><label>Depth <input type="number" min="1" max="20" value={customDepth} onChange={e=>setCustomDepth(Number(e.target.value))}/></label></div>}
   <button className="view-toggle" type="button" onClick={()=>setOrientation(x=>x==="white"?"black":"white")}>↔ Flip</button><div className={`runtime-banner ${online?'online':'offline'}`} role="status">{online?'Online':'Offline — بازی محلی ادامه دارد'}</div>
-  <GameLayout board={<>{playerPanels}{board}</>} panel={panel}/>
+  <GameLayout board={<>{playerPanels}{board}</>} panel={panel}/>{game.status()!=='playing'&&game.status()!=='check'&&<div className="game-over" role="dialog"><strong>Game Over</strong><span>{game.status()}</span><button type="button" onClick={fresh}>Rematch</button></div>}
  {promotion&&<div className="promotion-backdrop" role="dialog" aria-modal="true" aria-label="Choose promotion"><div className="promotion-dialog"><h2>Choose promotion</h2>{(['q','r','b','n'] as Promotion[]).map(type=>{const move=promotion.moves.find(m=>m.promotion===type);return <button key={type} type="button" className="promotion-choice" onClick={()=>move&&commitMove(move)}><Piece piece={{color:game.position.turn,type}}/></button>})}</div></div>}
  </AppShell>;
 }
