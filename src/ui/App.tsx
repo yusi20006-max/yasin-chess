@@ -8,6 +8,7 @@ import type {Square} from '../core/types';
 import AppShell from './AppShell';
 import GameLayout from './GameLayout';
 import './styles.css';
+import {useOnlineStatus} from './useOnlineStatus';
 
 const glyph={w:{k:'♔',q:'♕',r:'♖',b:'♗',n:'♘',p:'♙'},b:{k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'}};
 
@@ -17,6 +18,7 @@ export default function App(){
  const [level,setLevel]=useState<DifficultyId>('beginner');
  const [customDepth,setCustomDepth]=useState(8);
  const [last,setLast]=useState('');
+ const online=useOnlineStatus();
  const d=useMemo(()=>difficulty(level,{depth:level==='custom'?customDepth:undefined}),[level,customDepth]);
 
  useEffect(()=>{if(game.position.turn!=='b'||d.id==='custom'||d.depth<=0)return;const snapshot=game;const timer=window.setTimeout(()=>{const m=chooseMove(snapshot.position,d.depth);if(!m)return;setGame(current=>{if(current!==snapshot)return current;const next=snapshot.clone();const san=next.play(m);setLast(san);return next;});},80);return()=>window.clearTimeout(timer)},[game,d]);
@@ -38,6 +40,7 @@ export default function App(){
 
  return <AppShell sidebar={<select value={level} onChange={e=>setLevel(e.target.value as DifficultyId)} aria-label="AI difficulty">{DIFFICULTIES.map(x=><option key={x.id} value={x.id}>{x.label} — Elo ~{x.elo}</option>)}</select>}>
   {level==='custom'&&<div className="custom-depth"><label>Depth <input type="number" min="1" max="20" value={customDepth} onChange={e=>setCustomDepth(Number(e.target.value))}/></label></div>}
+  <div className={`runtime-banner ${online?'online':'offline'}`} role="status">{online?'Online':'Offline — بازی محلی ادامه دارد'}</div>
   <GameLayout board={board} panel={panel}/>
  </AppShell>;
 }
