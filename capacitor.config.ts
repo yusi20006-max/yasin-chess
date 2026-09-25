@@ -5,9 +5,8 @@ const config: CapacitorConfig = {
   appName: 'Yasin Chess',
   webDir: 'dist',
   bundledWebRuntime: false,
-  server: {
-    cleartext: false,
-  },
+  server: { cleartext: false },
+  android: { allowMixedContent: false },
 };
 
 export default config;

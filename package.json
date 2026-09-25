@@ -17,7 +17,8 @@
     "cap:open": "cap open android",
     "android:build": "npm run build && cap sync android",
     "android:debug": "npm run android:build && cd android && ./gradlew assembleDebug",
-    "android:init": "node scripts/android-bootstrap.mjs"
+    "android:init": "node scripts/android-bootstrap.mjs",
+    "android:identity": "node scripts/android-identity.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
