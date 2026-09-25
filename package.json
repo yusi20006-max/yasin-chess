@@ -12,7 +12,11 @@
     "lint": "tsc --noEmit",
     "test:offline": "npm run build && node scripts/offline-smoke.mjs",
     "benchmark:mobile": "npm run build && node scripts/mobile-benchmark.mjs",
-    "audit:security": "node scripts/security-audit.mjs"
+    "audit:security": "node scripts/security-audit.mjs",
+    "cap:sync": "npm run build && cap sync",
+    "cap:open": "cap open android",
+    "android:build": "npm run build && cap sync android",
+    "android:debug": "npm run android:build && cd android && ./gradlew assembleDebug"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
@@ -21,10 +25,12 @@
     "react": "latest",
     "react-dom": "latest",
     "vitest": "latest",
-    "jsdom": "latest"
+    "jsdom": "latest",
+    "@capacitor/core": "^8.0.0"
   },
   "devDependencies": {
     "@types/react": "latest",
-    "@types/react-dom": "latest"
+    "@types/react-dom": "latest",
+    "@capacitor/cli": "^8.0.0"
   }
 }
