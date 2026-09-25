@@ -1,4 +1,4 @@
-import {describe,expect,it} from 'vitest';import {ChessGame} from '../src/core/game';import {fromFEN} from '../src/core/board';import {legalMoves} from '../src/core/moves';
+import {describe,expect,it} from 'vitest';import {ChessGame} from '../src/core/game';import {fromFEN,toFEN} from '../src/core/board';import {legalMoves} from '../src/core/moves';
 describe('Yasin Chess core',()=>{
 it('starts with 20 legal moves',()=>expect(new ChessGame().moves()).toHaveLength(20));
 it('supports castling',()=>{const g=new ChessGame('r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1');expect(g.moves().filter(m=>m.isCastle)).toHaveLength(2);});
@@ -12,5 +12,5 @@ it('never generates a move that captures the opposing king',()=>{const p=fromFEN
 it('rejects adjacent kings from legal captures',()=>{const p=fromFEN('8/8/8/8/8/8/4k2K/8 w - - 0 1');expect(legalMoves(p).some(m=>m.to===4)).toBe(false);});
 it('rejects malformed FEN',()=>{expect(()=>fromFEN('8/8/8/8/8/8/4K3/4k3 w - -')).toThrow();});
 it('rejects adjacent kings in FEN',()=>{expect(()=>fromFEN('8/8/8/8/8/8/4K2k/8 w - - 0 1')).toThrow();});
-it('round-trips valid FEN',()=>{const fen='r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1';expect(require('../src/core/board')).toBeDefined();expect(require('../src/core/board').toFEN(fromFEN(fen))).toBe(fen);});
+it('round-trips valid FEN',()=>{const fen='r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1';expect(toFEN(fromFEN(fen))).toBe(fen);});
 });
