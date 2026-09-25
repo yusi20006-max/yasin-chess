@@ -5,6 +5,8 @@ it('supports castling',()=>{const g=new ChessGame('r3k2r/8/8/8/8/8/8/R3K2R w KQk
 it('requires the correct rooks for castling',()=>{const g=new ChessGame('4k3/8/8/8/8/8/8/4K3 w KQ - 0 1');expect(g.moves().filter(m=>m.isCastle)).toHaveLength(0);});
 it('requires the king on its home square for castling',()=>{const g=new ChessGame('4k3/8/8/8/8/8/R6R/8 w KQ - 0 1');expect(g.moves().filter(m=>m.isCastle)).toHaveLength(0);});
 it('supports en passant',()=>{const g=new ChessGame();g.play(g.moves().find(m=>m.from===12&&m.to===28)!);g.play(g.moves().find(m=>m.from===48&&m.to===40)!);g.play(g.moves().find(m=>m.from===28&&m.to===36)!);g.play(g.moves().find(m=>m.from===51&&m.to===35)!);const ep=g.moves().find(m=>m.isEnPassant);expect(ep).toBeTruthy();});
+it('rejects en-passant that exposes the King',()=>{const g=new ChessGame('4r2k/8/8/3pP3/8/8/8/4K3 w - d6 0 1');expect(g.moves().some(m=>m.isEnPassant)).toBe(false);});
+it('rejects stale en-passant targets',()=>{const g=new ChessGame('4k3/8/8/3pP3/8/8/8/4K3 w - d6 0 1');expect(g.moves().some(m=>m.isEnPassant)).toBe(false);});
 it('exports correct PGN checkmate result',()=>{const g=new ChessGame('7k/5Q2/7K/8/8/8/8/8 b - - 0 1');expect(g.pgn()).toBe('1-0');});
 it('exports FEN and Result tags',()=>{const fen='4k3/8/8/8/8/8/4K3/8 w - - 0 1';const g=new ChessGame(fen);const p=g.pgn({Event:'Test'});expect(p).toContain('[SetUp "1"]');expect(p).toContain('[FEN "'+fen+'"]');expect(p).toContain('[Result "*"]');});
 it('distinguishes the 50-move claim from the automatic 75-move draw',()=>{const claim=new ChessGame('4k3/8/8/8/8/7R/4K3/8 w - - 100 1');expect(claim.status()).toBe('claim-50-move');const automatic=new ChessGame('4k3/8/8/8/8/8/4K3/7R w - - 150 1');expect(automatic.status()).toBe('draw-75-move');});
