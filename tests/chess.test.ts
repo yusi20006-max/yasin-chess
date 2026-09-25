@@ -13,6 +13,8 @@ it('exports correct PGN checkmate result',()=>{const g=new ChessGame('7k/5Q2/7K/
 it('exports FEN and Result tags',()=>{const fen='4k3/8/8/8/8/8/4K3/8 w - - 0 1';const g=new ChessGame(fen);const p=g.pgn({Event:'Test'});expect(p).toContain('[SetUp "1"]');expect(p).toContain('[FEN "'+fen+'"]');expect(p).toContain('[Result "*"]');});
 it('distinguishes the 50-move claim from the automatic 75-move draw',()=>{const claim=new ChessGame('4k3/8/8/8/8/7R/4K3/8 w - - 100 1');expect(claim.status()).toBe('claim-50-move');const automatic=new ChessGame('4k3/8/8/8/8/8/4K3/7R w - - 150 1');expect(automatic.status()).toBe('draw-75-move');});
 it('supports draw agreement explicitly',()=>{const g=new ChessGame();expect(g.acceptDrawAgreement()).toBe(true);expect(g.status()).toBe('draw-agreement');});
+it('supports promotion',()=>{const g=new ChessGame('4k3/P7/8/8/8/8/8/4K3 w - - 0 1');const m=g.moves().find(x=>x.promotion==='q')!;expect(g.play(m)).toBe('a8=Q+');});
+it('supports undo and redo without losing history',()=>{const g=new ChessGame();const m=g.moves().find(x=>x.from===12&&x.to===28)!;g.play(m);expect(g.history).toHaveLength(1);expect(g.undo()).toBe(true);expect(g.history).toHaveLength(0);expect(g.redo()).toBe(true);expect(g.history).toHaveLength(1);});
 it('detects checkmate',()=>{const g=new ChessGame('7k/5Q2/7K/8/8/8/8/8 b - - 0 1');expect(g.status()).toBe('checkmate');});
 it('detects stalemate',()=>{const g=new ChessGame('7k/5Q2/6K1/8/8/8/8/8 b - - 0 1');expect(g.status()).toBe('stalemate');});
 it('generates SAN history',()=>{const g=new ChessGame();g.play(g.moves().find(m=>m.from===12&&m.to===28)!);expect(g.pgn()).toBe('1. e4 *');});
