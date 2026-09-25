@@ -1,0 +1,2 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';
+const manifest=JSON.parse(fs.readFileSync('public/manifest.webmanifest','utf8'));assert(manifest.start_url);assert(fs.existsSync('dist/index.html'));assert(fs.existsSync('dist/manifest.webmanifest'));assert(fs.existsSync('dist/assets'));console.log('OFFLINE_SMOKE_OK: cached production shell and manifest present');
