@@ -21,7 +21,8 @@
     "android:identity": "node scripts/android-identity.mjs",
     "audit:offline-assets": "npm run build && node scripts/offline-asset-audit.mjs",
     "test:storage": "npm test -- tests/storage-health.test.ts",
-    "audit:network": "node scripts/network-isolation-audit.mjs"
+    "audit:network": "node scripts/network-isolation-audit.mjs",
+    "check:release-signing": "node scripts/check-release-signing.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
