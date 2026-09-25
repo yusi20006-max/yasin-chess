@@ -1,0 +1,4 @@
+import type {ChessGame} from '../core/game';import {classifyMove} from '../engine/blunder';
+export type AnalysisReport={moves:number;best:number;inaccuracies:number;mistakes:number;blunders:number;generatedAt:number};
+export function buildAnalysisReport(game:ChessGame,depth=2):AnalysisReport{let best=0,inaccuracies=0,mistakes=0,blunders=0;for(const h of game.history){const q=classifyMove(h.before,h.move,depth);if(q==='best')best++;else if(q==='inaccuracy')inaccuracies++;else if(q==='mistake')mistakes++;else blunders++}return {moves:game.history.length,best,inaccuracies,mistakes,blunders,generatedAt:Date.now()}}
+export function exportAnalysisReport(report:AnalysisReport){return JSON.stringify(report,null,2)}
