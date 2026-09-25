@@ -1,0 +1,2 @@
+import type {Position} from '../core/types';import {evaluatePosition} from '../engine/evaluation';
+export default function EvaluationDisplay({position}:{position:Position}){const score=evaluatePosition(position);const label=score>0?'White advantage':score<0?'Black advantage':'Equal';return <div className="evaluation" role="status" aria-label={`Approximate evaluation ${score}`}>Eval <b>{score>0?'+':''}{score}</b> · {label} · approximate</div>}
