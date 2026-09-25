@@ -18,9 +18,12 @@ import './portrait.css';
 import './landscape.css';
 import './safeArea.css';
 import {useOnlineStatus} from './useOnlineStatus';
+import {recordStartup} from '../platform/startup';
+import {runtimeKind} from '../platform/runtime';
 import {DEFAULT_BOARD_THEME,loadBoardTheme,saveBoardTheme} from './boardSettings';
 
 export default function App(){
+ recordStartup(runtimeKind());
  const [game,setGame]=useState(()=>new ChessGame());
  const [selected,setSelected]=useState<Square|null>(null);
  const [level,setLevel]=useState<DifficultyId>('beginner');
