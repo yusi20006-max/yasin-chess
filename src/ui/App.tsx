@@ -4,7 +4,7 @@ import {legalMovesFrom} from '../core/moves';
 import {difficulty,DIFFICULTIES,type DifficultyId} from '../engine/difficulty';
 import {chooseMove} from '../engine/minimax';
 import {squareName} from '../core/board';
-import type {Square} from '../core/types';
+import type {Promotion,Square,Move} from '../core/types';
 import AppShell from './AppShell';
 import GameLayout from './GameLayout';
 import ChessBoard from './ChessBoard';
@@ -20,18 +20,19 @@ export default function App(){
  const [selected,setSelected]=useState<Square|null>(null);
  const [level,setLevel]=useState<DifficultyId>('beginner');
  const [customDepth,setCustomDepth]=useState(8);
- const [last,setLast]=useState(''); const [theme,setTheme]=useState(()=>loadBoardTheme()); const [orientation,setOrientation]=useState<'white'|'black'>('white');
+ const [last,setLast]=useState(''); const [promotion,setPromotion]=useState<{moves:Move[]}|null>(null); const [theme,setTheme]=useState(()=>loadBoardTheme()); const [orientation,setOrientation]=useState<'white'|'black'>('white');
  const online=useOnlineStatus();
  const d=useMemo(()=>difficulty(level,{depth:level==='custom'?customDepth:undefined}),[level,customDepth]);
 
  useEffect(()=>{if(game.position.turn!=='b'||d.id==='custom'||d.depth<=0)return;const snapshot=game;const timer=window.setTimeout(()=>{const m=chooseMove(snapshot.position,d.depth);if(!m)return;setGame(current=>{if(current!==snapshot)return current;const next=snapshot.clone();const san=next.play(m);setLast(san);return next;});},80);return()=>window.clearTimeout(timer)},[game,d]);
 
- const moveFromTo=(from:Square,to:Square)=>{const opts=legalMovesFrom(game.position,from).filter(m=>m.to===to);if(!opts.length)return;try{const next=game.clone();const san=next.play(opts.find(m=>m.promotion==='q')??opts[0]);setLast(san);setSelected(null);setGame(next)}catch{setSelected(null)}};
+ const commitMove=(m:Move)=>{try{const next=game.clone();const san=next.play(m);setLast(san);setSelected(null);setPromotion(null);setGame(next)}catch{setSelected(null);setPromotion(null)}};
+ const moveFromTo=(from:Square,to:Square)=>{const opts=legalMovesFrom(game.position,from).filter(m=>m.to===to);if(!opts.length)return;if(opts.length>1){setPromotion({moves:opts});return;}commitMove(opts[0]);};
  const click=(s:Square)=>{
   const pc=game.position.board[s];
   if(selected!==null){
    const opts=legalMovesFrom(game.position,selected).filter(m=>m.to===s);
-   if(opts.length){try{const next=game.clone();const san=next.play(opts.find(m=>m.promotion==='q')??opts[0]);setLast(san);setSelected(null);setGame(next)}catch{setSelected(null)}return}
+   if(opts.length){if(opts.length>1){setPromotion({moves:opts});return}commitMove(opts[0]);return}
   }
   if(pc?.color===game.position.turn)setSelected(s);
  };
@@ -51,5 +52,6 @@ export default function App(){
   {level==='custom'&&<div className="custom-depth"><label>Depth <input type="number" min="1" max="20" value={customDepth} onChange={e=>setCustomDepth(Number(e.target.value))}/></label></div>}
   <button className="view-toggle" type="button" onClick={()=>setOrientation(x=>x==="white"?"black":"white")}>↔ Flip</button><div className={`runtime-banner ${online?'online':'offline'}`} role="status">{online?'Online':'Offline — بازی محلی ادامه دارد'}</div>
   <GameLayout board={<>{playerPanels}{board}</>} panel={panel}/>
+ {promotion&&<div className="promotion-backdrop" role="dialog" aria-modal="true" aria-label="Choose promotion"><div className="promotion-dialog"><h2>Choose promotion</h2>{(['q','r','b','n'] as Promotion[]).map(type=>{const move=promotion.moves.find(m=>m.promotion===type);return <button key={type} type="button" className="promotion-choice" onClick={()=>move&&commitMove(move)}><Piece piece={{color:game.position.turn,type}}/></button>})}</div></div>}
  </AppShell>;
 }
