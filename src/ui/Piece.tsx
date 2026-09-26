@@ -1,3 +1,8 @@
 import type {Piece as PieceType} from '../core/types';
-const paths:{[k:string]:string}={wk:'M7 2v4m-2-2h4M5 8h6l-1 9H4L3 8h2zm-3 9h10v2H2z',wq:'M3 7l1 10h8l1-10-2 3-2-4-2 4-2-3zM4 19h8',wr:'M3 6h10v3H3zM4 9h8v8H4zM3 17h10v2H3z',wb:'M8 3c-3 3-5 5 0 8-5 3-3 6 0 6s5-3 0-6c5-3 3-5 0-8zM4 19h8',wn:'M4 18c0-5 2-7 6-10 2 4 2 7-1 10zM3 20h10',wp:'M8 3a3 3 0 110 6 5 5 0 00-3 8h6a5 5 0 00-3-8 3 3 0 000-6z',bk:'M7 2v4m-2-2h4M5 8h6l-1 9H4L3 8h2zm-3 9h10v2H2z',bq:'M3 7l1 10h8l1-10-2 3-2-4-2 4-2-3zM4 19h8',br:'M3 6h10v3H3zM4 9h8v8H4zM3 17h10v2H3z',bb:'M8 3c-3 3-5 5 0 8-5 3-3 6 0 6s5-3 0-6c5-3 3-5 0-8zM4 19h8',bn:'M4 18c0-5 2-7 6-10 2 4 2 7-1 10zM3 20h10',bp:'M8 3a3 3 0 110 6 5 5 0 00-3 8h6a5 5 0 00-3-8 3 3 0 000-6z'};
-export default function Piece({piece}:{piece:PieceType}){return <svg className="piece" viewBox="0 0 16 22" aria-hidden="true"><path d={paths[piece.color+piece.type]}/></svg>}
+
+const glyphs:Record<string,string>={wk:'♔',wq:'♕',wr:'♖',wb:'♗',wn:'♘',wp:'♙',bk:'♚',bq:'♛',br:'♜',bb:'♝',bn:'♞',bp:'♟'};
+
+export default function Piece({piece}:{piece:PieceType}){
+  const key=piece.color+piece.type;
+  return <span className={`piece piece-${piece.color}`} role="img" aria-label={`${piece.color==='w'?'white':'black'} ${piece.type}`}>{glyphs[key]}</span>;
+}
