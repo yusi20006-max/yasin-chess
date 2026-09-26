@@ -17,7 +17,7 @@ import {haptic} from './haptics';
 import './portrait.css';
 import './landscape.css';
 import './safeArea.css';
-import {clearActiveGame,loadActiveGame,saveActiveGame} from '../storage/activeGame';
+import {resumeActiveGame} from '../storage/activeGame';
 import {recordStartup} from '../platform/startup';
 import {runtimeKind} from '../platform/runtime';
 import {bindLifecycle} from '../platform/lifecycle';
@@ -36,8 +36,7 @@ export default function App(){
  useEffect(()=>{let dispose=()=>{};bindLifecycle().then(fn=>{dispose=fn}).catch(()=>{});bindBackNavigation(()=>window.dispatchEvent(new Event('yasin:back'))).then(fn=>{const old=dispose;dispose=()=>{fn();old()}}).catch(()=>{});return()=>dispose()},[]);
  const [game,setGame]=useState(()=>new ChessGame());
  const [hydrated,setHydrated]=useState(false);
- useEffect(()=>{let alive=true;loadActiveGame().then(saved=>{if(!alive)return;if(saved)setGame(saved);setHydrated(true)}).catch(()=>{if(alive)setHydrated(true)});return()=>{alive=false}},[]);
- useEffect(()=>{if(!hydrated)return;saveActiveGame(game).catch(()=>{})},[game,hydrated]);
+ useEffect(()=>{let alive=true;resumeActiveGame().then(saved=>{if(!alive)return;if(saved)setGame(saved);setHydrated(true)}).catch(()=>{if(alive)setHydrated(true)});return()=>{alive=false}},[]);
  const [selected,setSelected]=useState<Square|null>(null);
  const [level,setLevel]=useState<DifficultyId>('beginner');
  const [customDepth,setCustomDepth]=useState(8);
@@ -62,7 +61,7 @@ export default function App(){
  const click=(s:Square)=>{const pc=game.position.board[s];if(selected!==null){const opts=legalMovesFrom(game.position,selected).filter(m=>m.to===s);if(opts.length){if(opts.length>1){setPromotion({moves:opts});return}commitMove(opts[0]);return}}if(pc?.color===game.position.turn)setSelected(s)};
  const undo=()=>{requestRef.current++;setThinking(false);const next=game.clone();if(next.undo())setGame(next);setSelected(null)};
  const redo=()=>{const next=game.clone();if(next.redo())setGame(next);setSelected(null)};
- const fresh=()=>{requestRef.current++;setThinking(false);setGame(new ChessGame());setSelected(null);setLast('');clearActiveGame().catch(()=>{})};
+ const fresh=()=>{requestRef.current++;setThinking(false);setGame(new ChessGame());setSelected(null);setLast('')};
  const lastMove=game.history.length?game.history[game.history.length-1].move:undefined;
  const status=game.status();
  const checkSquare=status==='check'||status==='checkmate'?game.position.board.findIndex(p=>p?.type==='k'&&p.color===game.position.turn):null;
