@@ -1,3 +1,4 @@
+import {chooseMove} from './minimax';
 import type {Move,Position} from '../core/types';
 
 type Pending={resolve:(move:Move|undefined)=>void;reject:(error:unknown)=>void;worker:Worker};
@@ -5,7 +6,7 @@ let sequence=0;
 
 export function requestAiMove(position:Position,depth:number,signal?:AbortSignal):Promise<Move|undefined>{
   if(typeof Worker==='undefined'){
-    return Promise.resolve().then(()=>{if(signal?.aborted)return undefined;return undefined});
+    return Promise.resolve().then(()=>{if(signal?.aborted)return undefined;return chooseMove(position,depth)});
   }
   const id=++sequence;
   const worker=new Worker(new URL('./ai.worker.ts',import.meta.url),{type:'module'});
