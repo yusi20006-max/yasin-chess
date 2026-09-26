@@ -18,7 +18,6 @@ import './portrait.css';
 import './landscape.css';
 import './safeArea.css';
 import {clearActiveGame,loadActiveGame,saveActiveGame} from '../storage/activeGame';
-import {useOnlineStatus} from './useOnlineStatus';
 import {recordStartup} from '../platform/startup';
 import {runtimeKind} from '../platform/runtime';
 import {bindLifecycle} from '../platform/lifecycle';
@@ -52,7 +51,6 @@ export default function App(){
  const [thinkingStarted,setThinkingStarted]=useState(0);
  const [thinkingElapsed,setThinkingElapsed]=useState(0);
  const requestRef=useRef(0);
- const online=useOnlineStatus();
  useEffect(()=>{const onBack=()=>{setSelected(null);setPromotion(null)};window.addEventListener('yasin:back',onBack);return()=>window.removeEventListener('yasin:back',onBack)},[]);
 
  useEffect(()=>{const root=document.documentElement;const apply=()=>{const mode=themeMode==='system'?(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):themeMode;root.dataset.theme=mode;syncSystemUi(mode).catch(()=>{})};apply();if(themeMode!=='system')return;const mq=window.matchMedia('(prefers-color-scheme: dark)');mq.addEventListener('change',apply);return()=>mq.removeEventListener('change',apply)},[themeMode]);
@@ -76,7 +74,7 @@ export default function App(){
   <style>{`.chess-board{--board-light:${theme.light};--board-dark:${theme.dark}}.piece{color:${theme.piece}}`}</style>
   {level==='custom'&&<div className="custom-depth"><label>Depth <input type="number" min="1" max="20" value={customDepth} onChange={e=>setCustomDepth(Number(e.target.value))}/></label></div>}
   <div className="view-controls"><button className="view-toggle" type="button" onClick={()=>setOrientation(x=>x==='white'?'black':'white')}>↔ {t('flip')}</button><button type="button" onClick={()=>setSelected(null)}>Clear selection</button></div>
-  <div className={`runtime-banner ${online?'online':'offline'}`} role="status">{online?'Online':'Offline — بازی محلی ادامه دارد'}</div>
+  <div className="runtime-banner offline" role="status">Local AI · بازی محلی · بدون نیاز به شبکه</div>
   <GameLayout board={<>{playerPanels}{board}</>} panel={panel}/>
   {status!=='playing'&&status!=='check'&&<div className="game-over" role="dialog"><strong>Game Over</strong><span>{status}</span><button type="button" onClick={fresh}>Rematch</button></div>}
   {promotion&&<div className="promotion-backdrop" role="dialog" aria-modal="true" aria-label="Choose promotion"><div className="promotion-dialog"><h2>Choose promotion</h2>{(['q','r','b','n'] as Promotion[]).map(type=>{const move=promotion.moves.find(m=>m.promotion===type);return <button key={type} type="button" className="promotion-choice" onClick={()=>move&&commitMove(move)}><Piece piece={{color:game.position.turn,type}}/></button>})}</div></div>}
