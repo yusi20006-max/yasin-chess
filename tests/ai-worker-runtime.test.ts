@@ -1,6 +1,7 @@
 import {afterEach,describe,expect,it,vi} from 'vitest';
 import {ChessGame} from '../src/core/game';
 import {requestAiMove} from '../src/engine/aiWorker';
+import {legalMoves} from '../src/core/moves';
 
 describe('AI worker runtime resilience',()=>{
   afterEach(()=>{
@@ -20,7 +21,7 @@ describe('AI worker runtime resilience',()=>{
     vi.stubGlobal('Worker',StalledWorker);
 
     const game=new ChessGame();
-    const whiteMove=game.legalMoves()[0];
+    const whiteMove=legalMoves(game.position)[0];
     game.play(whiteMove);
 
     const pending=requestAiMove(game.position,2);
