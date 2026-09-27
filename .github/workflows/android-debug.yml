@@ -39,6 +39,8 @@ jobs:
           java-version: '21'
       - name: Install JavaScript dependencies
         run: npm install
+      - name: Build PWA assets for Capacitor bootstrap
+        run: npm run build
       - name: Generate Android project
         run: npm run android:init
       - name: Apply Android identity
