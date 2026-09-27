@@ -3,6 +3,7 @@ import {ChessGame} from '../core/game';
 import {legalMovesFrom} from '../core/moves';
 import {difficulty,DIFFICULTIES,type DifficultyId} from '../engine/difficulty';
 import {requestAiMove} from '../engine/aiWorker';
+import {chooseMove} from '../engine/minimax';
 import type {Promotion,Square,Move} from '../core/types';
 import AppShell from './AppShell';
 import GameLayout from './GameLayout';
@@ -63,6 +64,24 @@ export default function App(){
  const undo=()=>{requestRef.current++;setThinking(false);const next=game.clone();if(next.undo())setGame(next);setSelected(null)};
  const redo=()=>{const next=game.clone();if(next.redo())setGame(next);setSelected(null)};
  const fresh=()=>{requestRef.current++;setThinking(false);setGame(new ChessGame());setSelected(null);setLast('')};
+ const forceMove=()=>{
+  if(!hydrated||thinking||game.position.turn!=='b'||d.depth<=0)return;
+  requestRef.current++;
+  setThinking(false);
+  try{
+   const move=chooseMove(game.position,Math.min(d.depth,2));
+   if(!move)return;
+   const captured=Boolean(game.position.board[move.to])||Boolean(move.isEnPassant);
+   const next=game.clone();
+   const san=next.play(move);
+   playSound(next.status()==='checkmate'?'game-over':next.status()==='check'?'check':captured?'capture':'move');
+   haptic(8);
+   setLast(san);
+   setSelected(null);
+   setPromotion(null);
+   setGame(next);
+  }catch{setSelected(null);setPromotion(null)}
+ };
  const lastMove=game.history.length?game.history[game.history.length-1].move:undefined;
  const status=game.status();
  const checkSquare=status==='check'||status==='checkmate'?game.position.board.findIndex(p=>p?.type==='k'&&p.color===game.position.turn):null;
@@ -73,7 +92,7 @@ export default function App(){
  return <AppShell sidebar={<><div className="theme-controls"><select value={themeMode} onChange={e=>{const v=e.target.value as ThemeMode;setThemeMode(v);saveSettings({theme:v})}} aria-label="Application theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select><button className="theme-toggle" type="button" onClick={()=>{const next=theme.light===DEFAULT_BOARD_THEME.light?{light:'#d8e8c8',dark:'#6b8f71',piece:'#111827'}:DEFAULT_BOARD_THEME;setTheme(next);saveBoardTheme(next)}}>Board Theme</button></div><select value={level} onChange={e=>setLevel(e.target.value as DifficultyId)} aria-label="AI difficulty">{DIFFICULTIES.map(x=><option key={x.id} value={x.id}>{x.label} — Elo ~{x.elo}</option>)}</select></>}>
   <style>{`.chess-board{--board-light:${theme.light};--board-dark:${theme.dark}}.piece{color:${theme.piece}}`}</style>
   {level==='custom'&&<div className="custom-depth"><label>Depth <input type="number" min="1" max="20" value={customDepth} onChange={e=>setCustomDepth(Number(e.target.value))}/></label></div>}
-  <div className="view-controls"><button className="view-toggle" type="button" onClick={()=>setOrientation(x=>x==='white'?'black':'white')}>↔ {t('flip')}</button><button type="button" onClick={()=>setSelected(null)}>Clear selection</button></div>
+  <div className="view-controls"><button className="view-toggle" type="button" onClick={()=>setOrientation(x=>x==='white'?'black':'white')}>↔ {t('flip')}</button><button type="button" onClick={()=>setSelected(null)}>Clear selection</button><button type="button" onClick={forceMove} disabled={!hydrated||thinking||game.position.turn!=='b'}>Force Move</button></div>
   <div className="runtime-banner offline" role="status">Local AI · بازی محلی · بدون نیاز به شبکه</div>
   <GameLayout board={<>{playerPanels}{board}</>} panel={panel}/>
   {status!=='playing'&&status!=='check'&&<div className="game-over" role="dialog"><strong>Game Over</strong><span>{status}</span><button type="button" onClick={fresh}>Rematch</button></div>}
