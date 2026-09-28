@@ -13,7 +13,7 @@ describe('FEN round-trip audit',()=>{
 
   it('rejects malformed and impossible FEN without partial state',()=>{
     expect(()=>fromFEN('8/8/8/8/8/8/8/8 w - - 0 1')).toThrow(/King/);
-    expect(()=>fromFEN('8/8/8/8/8/8/8/K6k w - - 0 1')).toThrow(/adjacent/);
-    expect(()=>fromFEN('8/8/8/8/8/8/P7/K6k w - - 0 1')).toThrow();
+    expect(()=>fromFEN('7k/6K1/8/8/8/8/8/8 w - - 0 1')).toThrow(/adjacent/);
+    expect(()=>fromFEN('7k/6K1/8/8/8/8/P7/8 w - - 0 1')).toThrow();
   });
 });
