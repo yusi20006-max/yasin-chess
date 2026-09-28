@@ -1,24 +1,14 @@
 # Android Release Signing
 
-Release signing is intentionally external to source control.
+Release signing must use CI or local environment secrets. Never commit a keystore or plaintext signing password.
 
-## Required CI secrets
+Required CI/local inputs:
 
 - `ANDROID_KEYSTORE_BASE64`
-- `ANDROID_KEYSTORE_PASSWORD`
 - `ANDROID_KEY_ALIAS`
+- `ANDROID_KEYSTORE_PASSWORD`
 - `ANDROID_KEY_PASSWORD`
 
-The keystore is decoded into the ephemeral CI workspace and never committed.
+For a release build, decode the keystore into a temporary workspace and configure Gradle signing from environment/secret-backed properties. Debug builds remain independently reproducible without release credentials.
 
-## Debug builds
-
-Debug APKs use the Android/Gradle debug signing configuration and are safe for local smoke tests.
-
-## Release builds
-
-Release workflows must fail closed when the signing secrets are absent. The release artifact must never silently fall back to debug signing.
-
-## Local release
-
-Set the four environment variables, decode the keystore to a local ignored path, and invoke the Gradle release task. Never add the keystore or passwords to Git.
+A release pipeline should publish artifact metadata and a SHA-256 digest. Private signing material must never appear in logs or repository files.
