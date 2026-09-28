@@ -7,9 +7,8 @@ describe('PGN/SAN audit',()=>{
   it('generates SAN for ordinary moves and captures',()=>{
     const g=new ChessGame();
     expect(g.play({from:12,to:28})).toBe('e4');
-    expect(g.play({from:52,to:36})).toBe('e5');
-    expect(g.play({from:6,to:21})).toBe('Nf3');
-    expect(g.play({from:36,to:28})).toBe('dxe4');
+    expect(g.play({from:51,to:35})).toBe('d5');
+    expect(g.play({from:28,to:35})).toBe('exd5');
   });
 
   it('uses standard castling SAN',()=>{
