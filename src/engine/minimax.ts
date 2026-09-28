@@ -46,11 +46,27 @@ function checkpoint(ctx:Context){
   ctx.onNode?.();
   if(ctx.signal?.aborted||performance.now()>=ctx.deadline)throw new SearchStopped();
 }
+const QUIESCENCE_MAX_DEPTH=3;
+function quiescence(p:Position,alpha:number,beta:number,ctx:Context,depth:number):number{
+ checkpoint(ctx);
+ const stand=evaluateForSide(p);
+ if(depth<=0)return stand;
+ if(stand>=beta)return stand;
+ if(stand>alpha)alpha=stand;
+ const ms=legalMoves(p);
+ const tactical=ms.filter(m=>Boolean(p.board[m.to])||Boolean(m.promotion)||inCheck(applyMove(p,m),applyMove(p,m).turn));
+ for(const m of tactical){
+  const score=-quiescence(applyMove(p,m),-beta,-alpha,ctx,depth-1);
+  if(score>=beta)return score;
+  if(score>alpha)alpha=score;
+ }
+ return alpha;
+}
 function negamax(p:Position,depth:number,alpha:number,beta:number,ctx:Context):number{
   checkpoint(ctx);
   const ms=legalMoves(p);
   if(!ms.length)return inCheck(p,p.turn)?-999999:0;
-  if(depth===0)return evaluateForSide(p);
+  if(depth===0)return quiescence(p,alpha,beta,ctx,QUIESCENCE_MAX_DEPTH);
   let best=-Infinity;
   for(const m of ms){
     const score=-negamax(applyMove(p,m),depth-1,-beta,-alpha,ctx);
