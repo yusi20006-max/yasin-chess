@@ -1,6 +1,6 @@
 import {ChessGame} from '../core/game';
 import {getGame,putGame,deleteGame} from './db';
-import {isRecoverableGame} from './recovery';
+import {selectRecoverySnapshot} from './recovery';
 import {CURRENT_SCHEMA_VERSION,migrate} from './migrations';
 
 export const ACTIVE_ID='active';
@@ -23,8 +23,10 @@ function snapshot(game:ChessGame,id=ACTIVE_ID):PersistedGameSnapshot{
 
 export async function resumeActiveGame(){
   try{
-    const raw=await getGame<PersistedGameSnapshot>(ACTIVE_ID);
-    if(!raw||!isRecoverableGame(raw))return undefined;
+    const primary=await getGame<PersistedGameSnapshot>(ACTIVE_ID);
+    const backup=await getGame<PersistedGameSnapshot>(ACTIVE_BACKUP_ID);
+    const raw=selectRecoverySnapshot(primary,backup);
+    if(!raw)return undefined;
     const value=migrate(raw,raw.schemaVersion);
     const g=new ChessGame(value.startFEN);
     g.position=value.position;
@@ -36,6 +38,8 @@ export async function resumeActiveGame(){
 }
 
 export async function saveActiveGame(game:ChessGame){
+  const previous=await getGame<PersistedGameSnapshot>(ACTIVE_ID);
+  if(previous&&selectRecoverySnapshot(previous,undefined))await putGame({...previous,id:ACTIVE_BACKUP_ID});
   await putGame(snapshot(game));
 }
 
