@@ -1,4 +1,5 @@
-const CACHE_NAME='yasin-chess-v3-static';
+const VERSION=new URL(self.location.href).searchParams.get('version')||'dev';
+const CACHE_NAME=`yasin-chess-${VERSION}-static`;
 const APP_SHELL=['/','/index.html','/manifest.webmanifest'];
 
 self.addEventListener('install',event=>{
