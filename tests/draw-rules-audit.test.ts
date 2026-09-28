@@ -28,7 +28,7 @@ describe('draw rules audit',()=>{
   });
 
   it('keeps insufficient-material detection independent of move counters',()=>{
-    const g=new ChessGame('8/8/8/8/8/8/R6k/K7 w - - 0 1');
+    const g=new ChessGame('7k/8/8/8/8/8/2B5/2K5 w - - 0 1');
     expect(g.status()).toBe('draw-insufficient');
     expect(g.resultToken()).toBe('1/2-1/2');
   });
