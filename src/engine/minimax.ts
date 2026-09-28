@@ -35,8 +35,7 @@ function evaluateWhite(p:Position){
   }
   return score;
 }
-function evaluateForSide(p:Position){
-  const ms=legalMoves(p);
+function evaluateForSide(p:Position,ms:Move[]){
   if(!ms.length)return inCheck(p,p.turn)?-999999:0;
   if(isInsufficientMaterial(p))return 0;
   const whiteScore=evaluateWhite(p);
