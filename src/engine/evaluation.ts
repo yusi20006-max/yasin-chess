@@ -28,7 +28,7 @@ export function evaluatePosition(p:Position,currentLegalMoves?:number){
  let score=0;
  for(let s=0;s<64;s++){const x=p.board[s];if(!x)continue;const sign=x.color==='w'?1:-1;score+=sign*PIECE_VALUE[x.type];if(x.type!=='k'){const row=x.color==='w'?rankOf(s):7-rankOf(s);score+=sign*PST[x.type][row][fileOf(s)]}}
  score+=2*(mobility(p,'w')-mobility(p,'b'));
- const centers=[sq(3,3),sq(4,3),sq(3,4),sq(4,4)];score+=6*(centers.reduce((n,s)=>n+(Array.from({length:64},(_,i)=>p.board[i]?.color==='w'&&attacks(p,i).includes(s)?1:0)).reduce((a,b)=>a+b,0),0)-centers.reduce((n,s)=>n+(Array.from({length:64},(_,i)=>p.board[i]?.color==='b'&&attacks(p,i).includes(s)?1:0)).reduce((a,b)=>a+b,0),0));
+ score+=6*(centerControl(p,'w')-centerControl(p,'b'));
  score+=pawns(p,'w')-pawns(p,'b');
  score+=(p.board.filter(x=>x?.color==='w'&&x.type==='b').length>=2?30:0)-(p.board.filter(x=>x?.color==='b'&&x.type==='b').length>=2?30:0);
  score+=kingSafety(p,'w')-kingSafety(p,'b');
