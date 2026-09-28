@@ -18,7 +18,7 @@ describe('AI search time budget',()=>{
   it('honors AbortSignal before search starts',()=>{
     const controller=new AbortController();
     controller.abort();
-    expect(chooseMove(new ChessGame().position,8,{timeBudgetMs:1000,signal:controller.signal})).toBeUndefined();
+    expect(chooseMove(new ChessGame('r2q1rk1/ppp1bppp/2np1n2/8/2B1P3/2NP1N2/PPP2PPP/R1BQ1RK1 w - - 0 1').position,8,{timeBudgetMs:1000,signal:controller.signal})).toBeUndefined();
   });
   it('keeps legacy chooseMove signature behavior available',()=>{
     expect(chooseMove(new ChessGame().position,1)).toBeDefined();
