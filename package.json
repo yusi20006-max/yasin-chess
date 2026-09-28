@@ -25,7 +25,8 @@
     "check:release-signing": "node scripts/check-release-signing.mjs",
     "audit:mobile-size": "npm run build && node scripts/mobile-size-audit.mjs",
     "audit:android-offline": "node scripts/android-offline-contract.mjs",
-    "audit:android-identity": "node scripts/android-identity-contract.mjs"
+    "audit:android-identity": "node scripts/android-identity-contract.mjs",
+    "audit:android-signing": "node scripts/android-signing-contract.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
