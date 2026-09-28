@@ -29,6 +29,7 @@ import {allowResponsiveOrientation} from '../platform/orientation';
 import {syncSystemUi} from '../platform/systemUi';
 import {DEFAULT_BOARD_THEME,loadBoardTheme,saveBoardTheme} from './boardSettings';
 import {traceAiTurn} from '../app/aiTurnDiagnostic';
+import {undoTurnPair,redoTurnPair} from '../app/undoTurn';
 
 export default function App(){
  recordStartup(runtimeKind());
@@ -62,8 +63,8 @@ export default function App(){
  const moveFromTo=(from:Square,to:Square)=>{if(!hydrated||thinking||!isHumanTurn('human-vs-ai',game.position.turn))return;const piece=game.position.board[from];if(piece?.color!=='w')return;const opts=legalMovesFrom(game.position,from).filter(m=>m.to===to);if(!opts.length)return;if(opts.length>1){setPromotion({moves:opts});return}commitMove(opts[0])};
  const click=(s:Square)=>{if(!hydrated||thinking||!isHumanTurn('human-vs-ai',game.position.turn))return;const pc=game.position.board[s];if(selected!==null){const opts=legalMovesFrom(game.position,selected).filter(m=>m.to===s);if(opts.length){if(opts.length>1){setPromotion({moves:opts});return}commitMove(opts[0]);return}}if(pc?.color===game.position.turn)setSelected(s)};
  const forceMove=()=>{traceAiTurn('force-enter',{turn:game.position.turn});if(!hydrated||game.position.turn!=='b'||status!=='playing'||thinking){traceAiTurn('force-guard-fail',{turn:game.position.turn});return}requestRef.current++;setThinking(false);const snapshot=game;const request=++requestRef.current;traceAiTurn('effect-request',{request,turn:snapshot.position.turn});setThinking(true);setThinkingStarted(Date.now());setThinkingElapsed(0);Promise.resolve().then(()=>{traceAiTurn('choose-start',{request});return chooseMove(snapshot.position,d.depth)}).then(m=>{traceAiTurn('choose-return',{request,move:m});if(request!==requestRef.current){traceAiTurn('request-guard-fail',{request});return}traceAiTurn('request-guard-pass',{request});if(!m){setThinking(false);return}setGame(current=>{if(current!==snapshot||request!==requestRef.current){traceAiTurn('game-guard-fail',{request,sameGame:current===snapshot});return current}traceAiTurn('game-guard-pass',{request,sameGame:true});const next=snapshot.clone();const san=next.play(m);setLast(san);setThinking(false);traceAiTurn('move-applied',{request,move:m});return next})}).catch(error=>{traceAiTurn('choose-error',{request,error:String(error)});if(request===requestRef.current)setThinking(false)})};
- const undo=()=>{requestRef.current++;setThinking(false);const next=game.clone();if(next.undo())setGame(next);setSelected(null)};
- const redo=()=>{const next=game.clone();if(next.redo())setGame(next);setSelected(null)};
+ const undo=()=>{requestRef.current++;setThinking(false);const next=game.clone();if(undoTurnPair(next,'human-vs-ai'))setGame(next);setSelected(null)};
+ const redo=()=>{requestRef.current++;setThinking(false);const next=game.clone();if(redoTurnPair(next,'human-vs-ai'))setGame(next);setSelected(null)};
  const fresh=()=>{requestRef.current++;setThinking(false);setGame(new ChessGame());setSelected(null);setLast('')};
  const lastMove=game.history.length?game.history[game.history.length-1].move:undefined;
  const status=game.status();
