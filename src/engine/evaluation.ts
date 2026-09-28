@@ -21,6 +21,7 @@ function attacks(p:Position,s:number):number[]{
 }
 function mobility(p:Position,c:Color){let n=0;for(let s=0;s<64;s++)if(p.board[s]?.color===c)for(const to of attacks(p,s))if(!p.board[to]||p.board[to]?.color!==c)n++;return n}
 function pawns(p:Position,c:Color){const own:number[]=[];const enemy:number[]=[];for(let s=0;s<64;s++)if(p.board[s]?.type==='p')(p.board[s]!.color===c?own:enemy).push(s);const files=Array(8).fill(0)as number[];for(const s of own)files[fileOf(s)]++;let score=0;for(let f=0;f<8;f++){if(files[f]>1)score-=12*(files[f]-1);if(files[f]===1&&(f===0?files[1]===0:f===7?files[6]===0:files[f-1]===0&&files[f+1]===0))score-=10}for(const s of own){const f=fileOf(s),r=rankOf(s);if(!enemy.some(e=>Math.abs(fileOf(e)-f)<=1&&(c==='w'?rankOf(e)>r:rankOf(e)<r)))score+=20+(c==='w'?r:7-r)*8}return score}
+function centerControl(p:Position,c:Color){let n=0;for(const center of [sq(3,3),sq(4,3),sq(3,4),sq(4,4)])for(let s=0;s<64;s++)if(p.board[s]?.color===c&&attacks(p,s).includes(center))n++;return n}
 function kingSafety(p:Position,c:Color){const k=p.board.findIndex(x=>x?.color===c&&x.type==='k');if(k<0)return-1000;const f=fileOf(k),r=rankOf(k);let score=0;for(const df of[-1,0,1]){const x=f+df;if(x<0||x>7)continue;const y=c==='w'?r+1:r-1;score+=y>=0&&y<8&&p.board[sq(x,y)]?.color===c&&p.board[sq(x,y)]?.type==='p'?8:-8}for(let s=0;s<64;s++)if(p.board[s]?.color===other(c)&&attacks(p,s).some(to=>Math.max(Math.abs(fileOf(to)-f),Math.abs(rankOf(to)-r))<=1))score-=10;return score}
 
 export function evaluatePosition(p:Position,currentLegalMoves?:number){
