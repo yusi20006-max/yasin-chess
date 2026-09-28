@@ -68,7 +68,7 @@ describe('AI difficulty depth resolution (regression: depth must never be undefi
 
   it('App.tsx passes a finite depth to the AI controller call sites',()=>{
     const src=appSource();
-    const calls=[...src.matchAll(/requestAiTurn\\(\\{position:snapshot\\.position,depth:d\\.depth,signal:controller\\.signal\\}\\)/g)];
+    const calls=[...src.matchAll(/requestAiTurn\(\{position:snapshot\.position,depth:d\.depth,signal:controller\.signal\}\)/g)];
     expect(calls.length).toBeGreaterThan(0);
     expect(src).toContain('d.depth<=0');
     expect(src).toContain("requestAiTurn({position:snapshot.position,depth:d.depth,signal:controller.signal})");
