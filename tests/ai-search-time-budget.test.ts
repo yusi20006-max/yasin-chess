@@ -4,7 +4,7 @@ import {chooseMove,searchBestMove} from '../src/engine/minimax';
 
 describe('AI search time budget',()=>{
   it('returns a legal move with a very small budget',()=>{
-    const game=new ChessGame();
+    const game=new ChessGame('4k3/8/8/8/8/8/8/R3K3 w - - 0 1');
     const controller=new AbortController();
     const result=searchBestMove(game.position,1000,{timeBudgetMs:1000,onNode:()=>controller.abort(),signal:controller.signal});
     expect(result.move).toBeDefined();
