@@ -69,6 +69,7 @@ function orderedMoves(p:Position,ms:Move[]){
 }
 
 export function searchBestMove(p:Position,depth:number,options:SearchOptions={}):SearchResult{
+  if(options.signal?.aborted)return {depth:0,nodes:0,timedOut:true};
   const opening=bookMove(p);
   if(opening)return {move:opening,depth:0,nodes:0,timedOut:false};
   const ms=legalMoves(p);
