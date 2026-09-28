@@ -40,7 +40,7 @@ function evaluateForSide(p:Position){
   const whiteScore=evaluateWhite(p);
   return p.turn==='w'?whiteScore:-whiteScore;
 }
-type Context={deadline:number;signal?:AbortSignal;nodes:number};
+type Context={deadline:number;signal?:AbortSignal;nodes:number;onNode?:()=>void};
 function checkpoint(ctx:Context){
   ctx.nodes++;
   ctx.onNode?.();
@@ -75,7 +75,7 @@ export function searchBestMove(p:Position,depth:number,options:SearchOptions={})
   const ms=legalMoves(p);
   if(!ms.length)return {depth:0,nodes:0,timedOut:false};
   const budget=Math.max(1,Number.isFinite(options.timeBudgetMs??1500)?(options.timeBudgetMs??1500):1500);
-  const ctx:Context={deadline:performance.now()+budget,signal:options.signal,nodes:0};
+  const ctx:Context={deadline:performance.now()+budget,signal:options.signal,nodes:0,onNode:options.onNode};
   let best=ms[0];
   let completedDepth=0;
   let timedOut=false;
