@@ -66,11 +66,11 @@ describe('AI difficulty depth resolution (regression: depth must never be undefi
     expect(src).toContain("level==='custom'?{depth:customDepth}:{}");
   });
 
-  it('App.tsx passes a finite depth at every chooseMove call site',()=>{
+  it('App.tsx passes a finite depth to the AI controller call sites',()=>{
     const src=appSource();
-    const calls=[...src.matchAll(/chooseMove\([^,]+,\s*([^)]+)\)/g)].map(m=>m[1]);
+    const calls=[...src.matchAll(/requestAiTurn\(\{position:snapshot\.position,depth:d\.depth\}\)/g)];
     expect(calls.length).toBeGreaterThan(0);
-    for(const arg of calls)expect(arg.trim()).toBe('d.depth');
     expect(src).toContain('d.depth<=0');
+    expect(src).toContain("requestAiTurn({position:snapshot.position,depth:d.depth})");
   });
 });
