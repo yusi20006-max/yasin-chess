@@ -1,2 +1,5 @@
-import {chooseMove} from './minimax';import type {Move,Position} from '../core/types';
-export function iterativeDeepening(p:Position,maxDepth:number,onDepth?:(depth:number,move:Move|undefined)=>void){let best:Move|undefined;for(let d=1;d<=Math.max(1,maxDepth);d++){best=chooseMove(p,d);onDepth?.(d,best)}return best}
+import type {Move,Position} from '../core/types';
+import {searchBestMove,type SearchOptions,type SearchResult} from './minimax';
+export type EngineSearch={search:(position:Position,depth:number,options?:SearchOptions)=>SearchResult};
+export const minimaxSearch:EngineSearch={search:searchBestMove};
+export function searchMove(engine:EngineSearch,position:Position,depth:number,options?:SearchOptions):Move|undefined{return engine.search(position,depth,options).move}
