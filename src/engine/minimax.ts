@@ -2,6 +2,7 @@ import {applyMove,inCheck,isInsufficientMaterial,legalMoves} from '../core/moves
 import {PIECE_VALUE} from '../core/constants';
 import type {Move,Position} from '../core/types';
 import {bookMove} from './openingBook';
+import {evaluatePosition} from './evaluation';
 import {TranspositionTable} from './transposition';
 
 export type SearchOptions={
@@ -34,8 +35,7 @@ function evaluateWhite(p:Position){
   }
   return score;
 }
-function evaluateForSide(p:Position){
-  const ms=legalMoves(p);
+function evaluateForSide(p:Position,ms:Move[]){
   if(!ms.length)return inCheck(p,p.turn)?-999999:0;
   if(isInsufficientMaterial(p))return 0;
   const whiteScore=evaluateWhite(p);
@@ -50,7 +50,7 @@ function checkpoint(ctx:Context){
 const QUIESCENCE_MAX_DEPTH=3;
 function quiescence(p:Position,alpha:number,beta:number,ctx:Context,depth:number):number{
  checkpoint(ctx);
- const stand=evaluateForSide(p);
+ const stand=evaluateForSide(p,legalMoves(p));
  if(depth<=0)return stand;
  if(stand>=beta)return stand;
  if(stand>alpha)alpha=stand;
