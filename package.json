@@ -26,7 +26,8 @@
     "audit:mobile-size": "npm run build && node scripts/mobile-size-audit.mjs",
     "audit:android-offline": "node scripts/android-offline-contract.mjs",
     "audit:android-identity": "node scripts/android-identity-contract.mjs",
-    "audit:android-signing": "node scripts/android-signing-contract.mjs"
+    "audit:android-signing": "node scripts/android-signing-contract.mjs",
+    "audit:android-final": "node scripts/android-final-audit.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
