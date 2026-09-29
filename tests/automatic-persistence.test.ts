@@ -8,7 +8,7 @@ describe('automatic active-game persistence contract',()=>{
     await clearActiveGame();
     const game=new ChessGame();
     await saveActiveGame(game);
-    const move=game.legalMoves()[0];
+    const move=legalMoves(game.position)[0];
     game.play(move);
     await saveActiveGame(game);
     const restored=await resumeActiveGame();
