@@ -30,7 +30,7 @@ export function setEditorPiece(state:EditorState,square:number,piece:Piece|null)
   const board=[...state.board];board[square]=piece;
   const castling={...state.castling};
   if(square===sq(4,0)||square===sq(7,0)||square===sq(0,0)){castling.wK=square===sq(7,0)?castling.wK:false;castling.wQ=square===sq(0,0)?castling.wQ:false;}
-  if(square===sq(4,7)||square===sq(7,7)||square===sq(0,7)){castling.bK=square===sq(63)?castling.bK:false;castling.bQ=square===sq(56)?castling.bQ:false;}
+  if(square===sq(4,7)||square===sq(7,7)||square===sq(0,7)){castling.bK=square===sq(7,7)?castling.bK:false;castling.bQ=square===sq(0,7)?castling.bQ:false;}
   return {...state,board,castling};
 }
 
