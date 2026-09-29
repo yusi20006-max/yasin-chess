@@ -21,3 +21,4 @@ describe('import/export validation',()=>{
   expect(validatePGN('1. e4 (1... e5 *').valid).toBe(false);
  });
 });
+
