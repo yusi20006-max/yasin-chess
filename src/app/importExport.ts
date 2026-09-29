@@ -38,10 +38,16 @@ export function validatePGN(input:string):ValidationResult{
   const resultTokens=new Set(['1-0','0-1','1/2-1/2','*']);
   let hasMove=false,hasResult=false;
   for(const token of tokens){
-    if(/^\d+\.(?:\.\.)?$/.test(token)||/^\d+\.\.\.$/.test(token))continue;
+    if(/^[0-9]+\.(?:\.\.)?$/.test(token)||/^[0-9]+\.\.\.$/.test(token))continue;
     if(resultTokens.has(token)){hasResult=true;continue}
-    if(/^\$\d+$/.test(token))continue;
-    if(!/^(?:O-O|O-O-O|0-0|0-0-0|[KQRBN]?[a-h]?[1-8]?x?[a-h][1-8](?:=[QRBN])?[+#]?|[a-h](?:x[a-h][1-8])?(?:=[QRBN])?[+#]?)$/.test(token))return {valid:false,error:'PGN token is malformed: '+token};
+    if(/^\$[0-9]+$/.test(token))continue;
+    const movePatterns=[
+      /^O-O(?:-O)?$/,
+      /^0-0(?:-0)?$/,
+      /^[KQRBN]?[a-h]?[1-8]?x?[a-h][1-8](?:=[QRBN])?[+#]?$/,
+      /^[a-h](?:x[a-h][1-8])?(?:=[QRBN])?[+#]?$/
+    ];
+    if(!movePatterns.some(pattern=>pattern.test(token)))return {valid:false,error:'PGN token is malformed: '+token};
     hasMove=true;
   }
   if(!hasMove)return {valid:false,error:'PGN contains no moves'};
