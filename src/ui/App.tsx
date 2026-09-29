@@ -62,7 +62,6 @@ export default function App(){
  const [showFenLoader,setShowFenLoader]=useState(false);
  const [fenInput,setFenInput]=useState('');
  const [fenError,setFenError]=useState('');
- const [showFenLoader,setShowFenLoader]=useState(false);
  const [timeControl,setTimeControl]=useState<TimeControl>(()=>loadSettings().timeControl);
  const [clockMs,setClockMs]=useState({w:loadSettings().timeControl.minutes*60000,b:loadSettings().timeControl.minutes*60000});
  const clockLast=useRef(Date.now());
