@@ -16,36 +16,32 @@ export function parseValidatedFEN(input:string):Position{
 
 export function validatePGN(input:string):ValidationResult{
   if(typeof input!=='string'||!input.trim())return {valid:false,error:'PGN is empty'};
-  const text=input.replace(/^\uFEFF/,'').trim();
+  const text=input.replace(/^\\uFEFF/,'').trim();
   let commentDepth=0;
   for(const ch of text){if(ch==='{')commentDepth++;else if(ch==='}')commentDepth--;}
   if(commentDepth!==0)return {valid:false,error:'PGN has an unclosed comment'};
-  const withoutComments=text.replace(/\{[^}]*\}/gs,'').replace(/;[^\r
-]*/g,'');
+  const withoutComments=text.replace(/\\{[^}]*\\}/gs,'').replace(/;[^\\r\\n]*/g,'');
   let variationDepth=0;
   for(const ch of withoutComments){
     if(ch==='(')variationDepth++;
     else if(ch===')'){variationDepth--;if(variationDepth<0)return {valid:false,error:'PGN has an unmatched variation close'};}
   }
   if(variationDepth!==0)return {valid:false,error:'PGN has an unclosed variation'};
-  const tags=[...text.matchAll(/^\s*\[([A-Za-z][A-Za-z0-9_]*)\s+"((?:[^"\\]|\\.)*)"\]\s*$/gm)];
-  const tagBlock=text.match(/^(?:\s*\[[^\r
-]+\]\s*)+/);
+  const tags=[...text.matchAll(/^\\s*\\[([A-Za-z][A-Za-z0-9_]*)\\s+"((?:[^"\\\\]|\\\\.)*)"\\]\\s*$/gm)];
+  const tagBlock=text.match(/^(?:\\s*\\[[^\\r\\n]+\\]\\s*)+/);
   if(tagBlock){
-    const lines=tagBlock[0].split(/\r?
-/).filter(Boolean);
-    for(const line of lines)if(!/^\[[A-Za-z][A-Za-z0-9_]*\s+"(?:[^"\\]|\\.)*"\]$/.test(line.trim()))return {valid:false,error:'PGN tag header is malformed'};
+    const lines=tagBlock[0].split(/\\r?\\n/).filter(Boolean);
+    for(const line of lines)if(!/^\\[[A-Za-z][A-Za-z0-9_]*\\s+"(?:[^"\\\\]|\\\\.)*"\\]$/.test(line.trim()))return {valid:false,error:'PGN tag header is malformed'};
   }
-  const body=text.slice(tagBlock?.[0].length??0).replace(/\{[^}]*\}/gs,'').replace(/;[^\r
-]*/g,'').replace(/\([^)]*\)/g,' ');
-  const tokens=body.split(/\s+/).filter(Boolean);
+  const body=text.slice(tagBlock?.[0].length??0).replace(/\\{[^}]*\\}/gs,'').replace(/;[^\\r\\n]*/g,'').replace(/\\([^)]*\\)/g,' ');
+  const tokens=body.split(/\\s+/).filter(Boolean);
   const resultTokens=new Set(['1-0','0-1','1/2-1/2','*']);
   let hasMove=false,hasResult=false;
   for(const token of tokens){
-    if(/^\d+\.(?:\.\.)?$/.test(token)||/^\d+\.\.\.$/.test(token))continue;
+    if(/^\\d+\\.(?:\\.\\.)?$/.test(token)||/^\\d+\\.\\.\\.$/.test(token))continue;
     if(resultTokens.has(token)){hasResult=true;continue}
-    if(/^\$\d+$/.test(token))continue;
-    if(!/^(?:O-O|O-O-O|0-0|0-0-0|[KQRBN]?[a-h]?[1-8]?x?[a-h][1-8](?:=[QRBN])?[+#]?|[a-h](?:x[a-h][1-8])?(?:=[QRBN])?[+#]?)$/.test(token))return {valid:false,error:`PGN token is malformed: ${token}`};
+    if(/^\\$\\d+$/.test(token))continue;
+    if(!/^(?:O-O|O-O-O|0-0|0-0-0|[KQRBN]?[a-h]?[1-8]?x?[a-h][1-8](?:=[QRBN])?[+#]?|[a-h](?:x[a-h][1-8])?(?:=[QRBN])?[+#]?)$/.test(token))return {valid:false,error:\`PGN token is malformed: \${token}\`};
     hasMove=true;
   }
   if(!hasMove)return {valid:false,error:'PGN contains no moves'};
