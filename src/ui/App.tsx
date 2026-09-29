@@ -17,7 +17,7 @@ import {haptic} from './haptics';
 import './portrait.css';
 import './landscape.css';
 import './safeArea.css';
-import {resumeActiveGame} from '../storage/activeGame';
+import {resumeActiveGame,saveActiveGame} from '../storage/activeGame';
 import {isHumanTurn,type GameMode} from '../app/modes';
 import {recordStartup} from '../platform/startup';
 import {runtimeKind} from '../platform/runtime';
@@ -44,7 +44,7 @@ export default function App(){
  useEffect(()=>{let dispose=()=>{};bindLifecycle().then(fn=>{dispose=fn}).catch(()=>{});bindBackNavigation(()=>window.dispatchEvent(new Event('yasin:back'))).then(fn=>{const old=dispose;dispose=()=>{fn();old()}}).catch(()=>{});return()=>dispose()},[]);
  const [game,setGame]=useState(()=>new ChessGame());
  const [hydrated,setHydrated]=useState(false);
- useEffect(()=>{let alive=true;resumeActiveGame().then(saved=>{if(!alive)return;if(saved)setGame(saved);setHydrated(true)}).catch(()=>{if(alive)setHydrated(true)});return()=>{alive=false}},[]);
+ useEffect(()=>{let alive=true;resumeActiveGame().then(saved=>{if(!alive)return;if(saved)setGame(saved);setHydrated(true)}).catch(()=>{if(alive)setHydrated(true)});return()=>{alive=false}},[]);\n useEffect(()=>{if(!hydrated)return;const id=window.setTimeout(()=>{saveActiveGame(game).catch(()=>{})},0);return()=>window.clearTimeout(id)},[game,hydrated]);
  const [selected,setSelected]=useState<Square|null>(null);
  const [level,setLevel]=useState<DifficultyId>('beginner');
  const [gameMode,setGameMode]=useState<GameMode>('human-vs-ai');
