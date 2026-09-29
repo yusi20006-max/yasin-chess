@@ -1,6 +1,7 @@
 import 'fake-indexeddb/auto';
 import {describe,expect,it} from 'vitest';
 import {ChessGame} from '../src/core/game';
+import {legalMoves} from '../src/core/moves';
 import {resumeActiveGame,saveActiveGame,clearActiveGame} from '../src/storage/activeGame';
 
 describe('automatic active-game persistence contract',()=>{
