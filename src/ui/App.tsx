@@ -44,7 +44,8 @@ export default function App(){
  useEffect(()=>{let dispose=()=>{};bindLifecycle().then(fn=>{dispose=fn}).catch(()=>{});bindBackNavigation(()=>window.dispatchEvent(new Event('yasin:back'))).then(fn=>{const old=dispose;dispose=()=>{fn();old()}}).catch(()=>{});return()=>dispose()},[]);
  const [game,setGame]=useState(()=>new ChessGame());
  const [hydrated,setHydrated]=useState(false);
- useEffect(()=>{let alive=true;resumeActiveGame().then(saved=>{if(!alive)return;if(saved)setGame(saved);setHydrated(true)}).catch(()=>{if(alive)setHydrated(true)});return()=>{alive=false}},[]);\n useEffect(()=>{if(!hydrated)return;const id=window.setTimeout(()=>{saveActiveGame(game).catch(()=>{})},0);return()=>window.clearTimeout(id)},[game,hydrated]);
+ useEffect(()=>{let alive=true;resumeActiveGame().then(saved=>{if(!alive)return;if(saved)setGame(saved);setHydrated(true)}).catch(()=>{if(alive)setHydrated(true)});return()=>{alive=false}},[]);
+ useEffect(()=>{if(!hydrated)return;const id=window.setTimeout(()=>{saveActiveGame(game).catch(()=>{})},0);return()=>window.clearTimeout(id)},[game,hydrated]);
  const [selected,setSelected]=useState<Square|null>(null);
  const [level,setLevel]=useState<DifficultyId>('beginner');
  const [gameMode,setGameMode]=useState<GameMode>('human-vs-ai');
