@@ -42,7 +42,6 @@ export function validatePGN(input:string):ValidationResult{
     if(resultTokens.has(token)){hasResult=true;continue}
     if(/^\$\d+$/.test(token))continue;
     if(!/^(?:O-O|O-O-O|0-0|0-0-0|[KQRBN]?[a-h]?[1-8]?x?[a-h][1-8](?:=[QRBN])?[+#]?|[a-h](?:x[a-h][1-8])?(?:=[QRBN])?[+#]?)$/.test(token))return {valid:false,error:'PGN token is malformed: '+token};
-    if(!moveLike)return {valid:false,error:'PGN token is malformed: '+token};
     hasMove=true;
   }
   if(!hasMove)return {valid:false,error:'PGN contains no moves'};
