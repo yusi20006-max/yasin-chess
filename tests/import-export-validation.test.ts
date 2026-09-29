@@ -14,6 +14,7 @@ describe('import/export validation',()=>{
  it('rejects malformed PGN safely',()=>{
   expect(validatePGN('[Event "x"]\n\n1. e4 BAD *').valid).toBe(false);
   expect(validatePGN('1. e4 e5 *').valid).toBe(true);
+  expect(validatePGN('[Result "1-0"]\n\n1. e4 e5 *').valid).toBe(false);
  });
  it('rejects unclosed PGN comments/variations',()=>{
   expect(validatePGN('1. e4 {comment *').valid).toBe(false);
