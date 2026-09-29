@@ -97,6 +97,8 @@ export default function App(){
   <div className="runtime-banner offline" role="status">{t('offline')}</div>
   <GameLayout board={<>{playerPanels}{board}</>} panel={panel}/>
   {status!=='playing'&&status!=='check'&&<div className="game-over" role="dialog"><strong>{t('gameOver')}</strong><span>{status}</span><button type="button" onClick={fresh}>{t('rematch')}</button></div>}
-  {showPositionEditor&&<PositionEditor initial={game.position} onApply={applyEditedPosition} onClose={()=>setShowPositionEditor(false)}/>}\n  {showFenLoader&&<FenLoader initial={toFEN(game.position)} onLoad={applyLoadedPosition} onClose={()=>setShowFenLoader(false)}/>}\n  {promotion&&<div className="promotion-backdrop" role="dialog" aria-modal="true" aria-label={t('choosePromotion')}><div className="promotion-dialog"><h2>{t('choosePromotion')}</h2>{(['q','r','b','n'] as Promotion[]).map(type=>{const move=promotion.moves.find(m=>m.promotion===type);return <button key={type} type="button" className="promotion-choice" onClick={()=>move&&commitMove(move)}><Piece piece={{color:game.position.turn,type}}/></button>})}</div></div>}
+  {showPositionEditor&&<PositionEditor initial={game.position} onApply={applyEditedPosition} onClose={()=>setShowPositionEditor(false)}/>}
+  {showFenLoader&&<FenLoader initial={toFEN(game.position)} onLoad={applyLoadedPosition} onClose={()=>setShowFenLoader(false)}/>}
+  {promotion&&<div className="promotion-backdrop" role="dialog" aria-modal="true" aria-label={t('choosePromotion')}><div className="promotion-dialog"><h2>{t('choosePromotion')}</h2>{(['q','r','b','n'] as Promotion[]).map(type=>{const move=promotion.moves.find(m=>m.promotion===type);return <button key={type} type="button" className="promotion-choice" onClick={()=>move&&commitMove(move)}><Piece piece={{color:game.position.turn,type}}/></button>})}</div></div>}
  </AppShell>;
 }
