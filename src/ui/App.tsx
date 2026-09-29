@@ -55,6 +55,7 @@ export default function App(){
  const [thinkingElapsed,setThinkingElapsed]=useState(0);
  const [clockMs,setClockMs]=useState({w:300000,b:300000});
  const clockLast=useRef(Date.now());
+ const status=game.status();
  useEffect(()=>{applyLocale(locale);saveSettings({language:locale})},[locale]);
  const requestRef=useRef(0);
  useEffect(()=>{const onBack=()=>{setSelected(null);setPromotion(null)};window.addEventListener('yasin:back',onBack);return()=>window.removeEventListener('yasin:back',onBack)},[]);
@@ -72,7 +73,6 @@ export default function App(){
  const redo=()=>{requestRef.current++;setThinking(false);const next=game.clone();if(redoTurnPair(next,'human-vs-ai'))setGame(next);setSelected(null)};
  const fresh=()=>{requestRef.current++;setThinking(false);setClockMs({w:300000,b:300000});setGame(new ChessGame());setSelected(null);setLast('')};
  const lastMove=game.history.length?game.history[game.history.length-1].move:undefined;
- const status=game.status();
  const checkSquare=status==='check'||status==='checkmate'?game.position.board.findIndex(p=>p?.type==='k'&&p.color===game.position.turn):null;
  const highlights=new Set(selected===null?[]:legalMovesFrom(game.position,selected).map(m=>m.to));
  const board=<ChessBoard position={game.position} selected={selected} highlights={highlights} onSquareClick={click} onSquareDrag={moveFromTo} onEscape={()=>{setSelected(null);setPromotion(null)}} orientation={orientation} lastMove={lastMove} checkSquare={checkSquare} renderPiece={s=>{const pc=game.position.board[s];return pc?<Piece piece={pc}/>:null}}/>;
