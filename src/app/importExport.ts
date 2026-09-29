@@ -17,7 +17,7 @@ export function parseValidatedFEN(input:string):Position{
 export function validatePGN(input:string):ValidationResult{
   if(typeof input!=='string'||!input.trim())return {valid:false,error:'PGN is empty'};
   const text=input.replace(/^\uFEFF/,'').trim();
-  const withoutComments=text.replace(/\{[^}]*\}/gs,'').replace(/;[^\r\n]*/g,'');
+  let commentDepth=0;\n  for(const ch of text){if(ch==='{')commentDepth++;else if(ch==='}')commentDepth--;}\n  if(commentDepth!==0)return {valid:false,error:'PGN has an unclosed comment'};\n  const withoutComments=text.replace(/\{[^}]*\}/gs,'').replace(/;[^\r\n]*/g,'');
   let variationDepth=0;
   for(const ch of withoutComments){
     if(ch==='(')variationDepth++;
