@@ -30,6 +30,8 @@ import {syncSystemUi} from '../platform/systemUi';
 import {DEFAULT_BOARD_THEME,loadBoardTheme,saveBoardTheme} from './boardSettings';
 import {traceAiTurn} from '../app/aiTurnDiagnostic';
 import {undoTurnPair,redoTurnPair} from '../app/undoTurn';
+import {toFEN} from '../core/board';
+import PositionEditor from './PositionEditor';
 
 export default function App(){
  recordStartup(runtimeKind());
@@ -54,6 +56,7 @@ export default function App(){
  const [thinking,setThinking]=useState(false);
  const [thinkingStarted,setThinkingStarted]=useState(0);
  const [thinkingElapsed,setThinkingElapsed]=useState(0);
+ const [showPositionEditor,setShowPositionEditor]=useState(false);
  const [timeControl,setTimeControl]=useState<TimeControl>(()=>loadSettings().timeControl);
  const [clockMs,setClockMs]=useState({w:loadSettings().timeControl.minutes*60000,b:loadSettings().timeControl.minutes*60000});
  const clockLast=useRef(Date.now());
@@ -75,6 +78,7 @@ export default function App(){
  const undo=()=>{requestRef.current++;setThinking(false);const next=game.clone();if(undoTurnPair(next,gameMode))setGame(next);setSelected(null)};
  const redo=()=>{requestRef.current++;setThinking(false);const next=game.clone();if(redoTurnPair(next,gameMode))setGame(next);setSelected(null)};
  const fresh=()=>{requestRef.current++;setThinking(false);const baseMs=timeControl.minutes*60000;setClockMs({w:baseMs,b:baseMs});clockTurn.current='w';clockLast.current=Date.now();setGame(new ChessGame());setSelected(null);setLast('')};
+ const applyEditedPosition=(position:Parameters<typeof toFEN>[0])=>{requestRef.current++;setThinking(false);const next=new ChessGame(toFEN(position));setGame(next);setSelected(null);setPromotion(null);setLast('');const baseMs=timeControl.minutes*60000;setClockMs({w:baseMs,b:baseMs});clockTurn.current=next.position.turn;clockLast.current=Date.now()};
  const changeTimeControl=(id:string)=>{const next=TIME_CONTROL_PRESETS.find(x=>x.id===id)??TIME_CONTROL_PRESETS[2];setTimeControl(next);saveSettings({timeControl:next});const baseMs=next.minutes*60000;setClockMs({w:baseMs,b:baseMs});clockTurn.current=game.position.turn;clockLast.current=Date.now()};
  const lastMove=game.history.length?game.history[game.history.length-1].move:undefined;
  const checkSquare=status==='check'||status==='checkmate'?game.position.board.findIndex(p=>p?.type==='k'&&p.color===game.position.turn):null;
@@ -86,10 +90,10 @@ export default function App(){
  return <AppShell sidebar={<><div className="theme-controls"><select value={themeMode} onChange={e=>{const v=e.target.value as ThemeMode;setThemeMode(v);saveSettings({theme:v})}} aria-label={t('theme')}><option value="system">{t('system')}</option><option value="light">{t('light')}</option><option value="dark">{t('dark')}</option></select><select value={locale} onChange={e=>setAppLocale(e.target.value as Locale)} aria-label={t('language')}><option value="fa">{t('languageFa')}</option><option value="en">{t('languageEn')}</option></select><button className="theme-toggle" type="button" onClick={()=>{const next=theme.light===DEFAULT_BOARD_THEME.light?{light:'#d8e8c8',dark:'#6b8f71',piece:'#111827'}:DEFAULT_BOARD_THEME;setTheme(next);saveBoardTheme(next)}}>{t('boardTheme')}</button></div><select value={gameMode} onChange={e=>{requestRef.current++;setThinking(false);setGameMode(e.target.value as GameMode);setSelected(null)}} aria-label="Game mode"><option value="human-vs-ai">Human vs AI</option><option value="human-vs-human">Human vs Human</option><option value="ai-vs-ai">AI vs AI</option></select><select value={level} onChange={e=>setLevel(e.target.value as DifficultyId)} aria-label={t('difficulty')}>{DIFFICULTIES.map(x=><option key={x.id} value={x.id}>{x.label} — Elo ~{x.elo}</option>)}</select><select value={timeControl.id} onChange={e=>changeTimeControl(e.target.value)} aria-label="Time control">{TIME_CONTROL_PRESETS.map(x=><option key={x.id} value={x.id}>{x.label}</option>)}</select></>}>
   <style>{`.chess-board{--board-light:${theme.light};--board-dark:${theme.dark}}.piece{color:${theme.piece}}`}</style>
   {level==='custom'&&<div className="custom-depth"><label>{t('depth')} <input type="number" min="1" max="20" value={customDepth} onChange={e=>setCustomDepth(Number(e.target.value))}/></label></div>}
-  <div className="view-controls"><button className="view-toggle" type="button" onClick={()=>setOrientation(x=>x==='white'?'black':'white')}>↔ {t('flip')}</button><button type="button" onClick={()=>setSelected(null)}>{t('clear')}</button></div>
+  <div className="view-controls"><button className="view-toggle" type="button" onClick={()=>setOrientation(x=>x==='white'?'black':'white')}>↔ {t('flip')}</button><button type="button" onClick={()=>setShowPositionEditor(true)}>Position Editor</button><button type="button" onClick={()=>setSelected(null)}>{t('clear')}</button></div>
   <div className="runtime-banner offline" role="status">{t('offline')}</div>
   <GameLayout board={<>{playerPanels}{board}</>} panel={panel}/>
   {status!=='playing'&&status!=='check'&&<div className="game-over" role="dialog"><strong>{t('gameOver')}</strong><span>{status}</span><button type="button" onClick={fresh}>{t('rematch')}</button></div>}
-  {promotion&&<div className="promotion-backdrop" role="dialog" aria-modal="true" aria-label={t('choosePromotion')}><div className="promotion-dialog"><h2>{t('choosePromotion')}</h2>{(['q','r','b','n'] as Promotion[]).map(type=>{const move=promotion.moves.find(m=>m.promotion===type);return <button key={type} type="button" className="promotion-choice" onClick={()=>move&&commitMove(move)}><Piece piece={{color:game.position.turn,type}}/></button>})}</div></div>}
+  {showPositionEditor&&<PositionEditor initial={game.position} onApply={applyEditedPosition} onClose={()=>setShowPositionEditor(false)}/>}\n  {promotion&&<div className="promotion-backdrop" role="dialog" aria-modal="true" aria-label={t('choosePromotion')}><div className="promotion-dialog"><h2>{t('choosePromotion')}</h2>{(['q','r','b','n'] as Promotion[]).map(type=>{const move=promotion.moves.find(m=>m.promotion===type);return <button key={type} type="button" className="promotion-choice" onClick={()=>move&&commitMove(move)}><Piece piece={{color:game.position.turn,type}}/></button>})}</div></div>}
  </AppShell>;
 }
