@@ -14,7 +14,7 @@ function openDB():Promise<IDBDatabase>{
    const store=tx?.objectStore(STORE);
    if(!store)return;
    const cursor=store.openCursor();
-   cursor.onsuccess=()=>{const current=cursor.result;if(!current)return;try{const value=current.value;if(value&&typeof value==='object'&&'id' in value)current.update(migrate(value,value.schemaVersion??event.oldVersion));cursor.result?.continue()}catch(error){tx?.abort();reject(error)}};
+   cursor.onsuccess=()=>{const current=cursor.result;if(!current)return;try{const value=current.value;if(value&&typeof value==='object'&&'id' in value)current.update(migrate(value,value.schemaVersion??(event as IDBVersionChangeEvent).oldVersion));current.continue()}catch(error){tx?.abort();reject(error)}};
   };
   r.onsuccess=()=>resolve(r.result);
   r.onerror=()=>reject(r.error);
