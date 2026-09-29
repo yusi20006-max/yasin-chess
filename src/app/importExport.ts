@@ -52,3 +52,50 @@ export function validatePGN(input:string):ValidationResult{
 }
 
 export function positionToFEN(position:Position):string{return toFEN(position);}
+
+export type ParsedPGN={game:import('../core/game').ChessGame;headers:Record<string,string>;result:string};
+
+function stripPGNCommentsAndVariations(input:string):string{
+  let out='',comment=false,variation=0;
+  for(let i=0;i<input.length;i++){
+    const ch=input[i];
+    if(comment){if(ch==='}')comment=false;continue}
+    if(ch==='{'){comment=true;continue}
+    if(ch===';'){while(i<input.length&&input[i]!=='\n')i++;continue}
+    if(ch==='('){variation++;continue}
+    if(ch===')'){if(variation>0)variation--;continue}
+    if(variation===0)out+=ch;
+  }
+  return out;
+}
+
+export function parsePGN(input:string):ParsedPGN{
+  const validation=validatePGN(input);
+  if(!validation.valid)throw new Error(validation.error);
+  const text=input.replace(/^\uFEFF/,'').trim();
+  const headers:Record<string,string>={};
+  for(const match of text.matchAll(/^\s*\[([A-Za-z][A-Za-z0-9_]*)\s+"((?:[^"\\]|\\.)*)"\]\s*$/gm)){
+    headers[match[1]]=match[2].replace(/\\"/g,'"').replace(/\\\\/g,'\\');
+  }
+  const startFEN=headers.SetUp==='1'&&headers.FEN?headers.FEN:undefined;
+  if(startFEN&&!validateFEN(startFEN).valid)throw new Error('PGN FEN header is invalid');
+  const {ChessGame}=require('../core/game') as typeof import('../core/game');
+  const {legalMoves}=require('../core/moves');
+  const {toSAN}=require('../core/san');
+  const game=new ChessGame(startFEN);
+  const body=stripPGNCommentsAndVariations(text.replace(/^(?:\s*\[[^\r\n]+\]\s*)+/,''));
+  const tokens=body.split(/\s+/).filter(Boolean);
+  let result='*';
+  for(const raw of tokens){
+    const token=raw.replace(/\$\d+$/,'');
+    if(/^\d+\.(?:\.\.)?$/.test(token)||/^\d+\.\.\.$/.test(token))continue;
+    if(['1-0','0-1','1/2-1/2','*'].includes(token)){result=token;continue}
+    const normalized=token.replace(/^0-0-0/,'O-O-O').replace(/^0-0/,'O-O');
+    const move=legalMoves(game.position).find(candidate=>toSAN(game.position,candidate)===normalized);
+    if(!move)throw new Error('Illegal or unsupported PGN move: '+raw);
+    game.play(move);
+  }
+  const headerResult=headers.Result;
+  if(headerResult&&headerResult!==result)throw new Error('PGN Result tag does not match movetext result');
+  return {game,headers,result};
+}
