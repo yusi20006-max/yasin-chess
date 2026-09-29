@@ -1,5 +1,8 @@
 import {fromFEN,toFEN} from '../core/board';
 import type {Position} from '../core/types';
+import {ChessGame} from '../core/game';
+import {legalMoves} from '../core/moves';
+import {toSAN} from '../core/san';
 
 export type ValidationResult={valid:true}|{valid:false;error:string};
 
@@ -53,7 +56,7 @@ export function validatePGN(input:string):ValidationResult{
 
 export function positionToFEN(position:Position):string{return toFEN(position);}
 
-export type ParsedPGN={game:import('../core/game').ChessGame;headers:Record<string,string>;result:string};
+export type ParsedPGN={game:ChessGame;headers:Record<string,string>;result:string};
 
 function stripPGNCommentsAndVariations(input:string):string{
   let out='',comment=false,variation=0;
@@ -79,9 +82,6 @@ export function parsePGN(input:string):ParsedPGN{
   }
   const startFEN=headers.SetUp==='1'&&headers.FEN?headers.FEN:undefined;
   if(startFEN&&!validateFEN(startFEN).valid)throw new Error('PGN FEN header is invalid');
-  const {ChessGame}=require('../core/game') as typeof import('../core/game');
-  const {legalMoves}=require('../core/moves');
-  const {toSAN}=require('../core/san');
   const game=new ChessGame(startFEN);
   const body=stripPGNCommentsAndVariations(text.replace(/^(?:\s*\[[^\r\n]+\]\s*)+/,''));
   const tokens=body.split(/\s+/).filter(Boolean);
