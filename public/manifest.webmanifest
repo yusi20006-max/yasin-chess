@@ -1,15 +1,30 @@
 {
-  "name":"Yasin Chess",
-  "short_name":"Yasin Chess",
-  "start_url":"/",
-  "scope":"/",
-  "display":"standalone",
-  "background_color":"#0b1020",
-  "theme_color":"#111827",
-  "lang":"fa",
-  "dir":"rtl",
-  "description":"Offline-first chess platform",
-  "icons":[
-    {"src":"/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  "name": "Yasin Chess",
+  "short_name": "Yasin Chess",
+  "id": "/",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#0b1020",
+  "theme_color": "#111827",
+  "lang": "fa",
+  "dir": "rtl",
+  "description": "Offline-first professional chess platform with FIDE rules and local AI",
+  "categories": ["games", "entertainment"],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
   ]
 }
