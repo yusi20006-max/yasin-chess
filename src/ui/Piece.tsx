@@ -1,8 +1,21 @@
 import type {Piece as PieceType} from '../core/types';
+import {pieceGlyph, pieceAriaLabel, type PieceSetId} from './pieceSet';
 
-const glyphs:Record<string,string>={wk:'♔',wq:'♕',wr:'♖',wb:'♗',wn:'♘',wp:'♙',bk:'♚',bq:'♛',br:'♜',bb:'♝',bn:'♞',bp:'♟'};
+type PieceProps = {
+  piece: PieceType;
+  set?: PieceSetId;
+  animated?: boolean;
+};
 
-export default function Piece({piece}:{piece:PieceType}){
-  const key=piece.color+piece.type;
-  return <span className={`piece piece-${piece.color}`} role="img" aria-label={`${piece.color==='w'?'white':'black'} ${piece.type}`}>{glyphs[key]}</span>;
+export default function Piece({piece, set = 'unicode', animated = true}: PieceProps) {
+  return (
+    <span
+      className={`piece piece-${piece.color}${animated ? ' piece-animated' : ''}`}
+      role="img"
+      aria-label={pieceAriaLabel(piece)}
+      data-piece={piece.color + piece.type}
+    >
+      {pieceGlyph(piece, set)}
+    </span>
+  );
 }

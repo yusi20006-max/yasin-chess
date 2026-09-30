@@ -1,11 +1,117 @@
-import {memo,type ReactNode} from 'react';
-import type {Position,Square} from '../core/types';
-import {squareName} from '../core/board';
-type Props={position:Position;selected:Square|null;highlights:Set<Square>;onSquareClick:(square:Square)=>void;onSquareDrag?:(from:Square,to:Square)=>void;onEscape?:()=>void;renderPiece:(square:Square)=>ReactNode;orientation?:'white'|'black';lastMove?:{from:Square;to:Square};checkSquare?:Square|null};
-function ChessBoard({position,selected,highlights,onSquareClick,onSquareDrag,onEscape,renderPiece,orientation='white',lastMove,checkSquare}:Props){
- const ranks=orientation==='white'?[7,6,5,4,3,2,1,0]:[0,1,2,3,4,5,6,7];
- const files=orientation==='white'?[0,1,2,3,4,5,6,7]:[7,6,5,4,3,2,1,0];
- return <div className="chess-board" role="grid" aria-label="Chess board" aria-roledescription="chess board">{ranks.flatMap(rank=>files.map(file=>{const s=rank*8+file;return <button type="button" draggable={Boolean(position.board[s])} onDragStart={e=>e.dataTransfer.setData('text/plain',String(s))} onDragOver={e=>{if(highlights.has(s))e.preventDefault()}} onDrop={e=>{e.preventDefault();const from=Number(e.dataTransfer.getData('text/plain'));if(Number.isInteger(from))onSquareDrag?.(from,s)}} role="gridcell" aria-selected={selected===s} aria-current={lastMove?.from===s||lastMove?.to===s?'true':undefined} aria-label={`${squareName(s)}${position.board[s]?` ${position.board[s]?.color==='w'?'white':'black'} ${position.board[s]?.type}`:''}${selected===s?' selected':''}${highlights.has(s)?' legal move':''}${checkSquare===s?' in check':''}`} onKeyDown={e=>{if(e.key==='Escape')onEscape?.()}} key={s} className={`square ${(rank+file)%2?'dark':'light'} ${selected===s?'selected':''} ${highlights.has(s)?'hint':''} ${lastMove?.from===s||lastMove?.to===s?'last-move':''} ${checkSquare===s?'in-check':''}`} onClick={()=>onSquareClick(s)}>{renderPiece(s)}</button>}))}</div>;
+import {memo, type ReactNode} from 'react';
+import type {Position, Square} from '../core/types';
+import {squareName, fileOf, rankOf} from '../core/board';
+import {boardRanks, boardFiles, fileLabel, rankLabel, shouldShowFileLabel, shouldShowRankLabel} from './boardCoordinates';
+
+type Props = {
+  position: Position;
+  selected: Square | null;
+  highlights: Set<Square>;
+  onSquareClick: (square: Square) => void;
+  onSquareDrag?: (from: Square, to: Square) => void;
+  onEscape?: () => void;
+  renderPiece: (square: Square) => ReactNode;
+  orientation?: 'white' | 'black';
+  lastMove?: {from: Square; to: Square};
+  checkSquare?: Square | null;
+  showCoordinates?: boolean;
+};
+
+function ChessBoard({
+  position,
+  selected,
+  highlights,
+  onSquareClick,
+  onSquareDrag,
+  onEscape,
+  renderPiece,
+  orientation = 'white',
+  lastMove,
+  checkSquare,
+  showCoordinates = true,
+}: Props) {
+  const ranks = boardRanks(orientation);
+  const files = boardFiles(orientation);
+
+  return (
+    <div
+      className={`chess-board${showCoordinates ? ' with-coords' : ''}`}
+      role="grid"
+      aria-label="Chess board"
+      aria-roledescription="chess board"
+      data-orientation={orientation}
+      data-component="chess-board"
+    >
+      {ranks.flatMap((rank) =>
+        files.map((file) => {
+          const s = rank * 8 + file;
+          const isLight = (rank + file) % 2 === 0;
+          const classes = [
+            'square',
+            isLight ? 'light' : 'dark',
+            selected === s ? 'selected' : '',
+            highlights.has(s) ? 'hint' : '',
+            lastMove?.from === s || lastMove?.to === s ? 'last-move' : '',
+            checkSquare === s ? 'in-check' : '',
+          ]
+            .filter(Boolean)
+            .join(' ');
+
+          return (
+            <button
+              type="button"
+              key={s}
+              className={classes}
+              role="gridcell"
+              draggable={Boolean(position.board[s])}
+              onDragStart={(e) => e.dataTransfer.setData('text/plain', String(s))}
+              onDragOver={(e) => {
+                if (highlights.has(s)) e.preventDefault();
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                const from = Number(e.dataTransfer.getData('text/plain'));
+                if (Number.isInteger(from)) onSquareDrag?.(from, s);
+              }}
+              aria-selected={selected === s}
+              aria-current={lastMove?.from === s || lastMove?.to === s ? 'true' : undefined}
+              aria-label={`${squareName(s)}${
+                position.board[s]
+                  ? ` ${position.board[s]?.color === 'w' ? 'white' : 'black'} ${position.board[s]?.type}`
+                  : ''
+              }${selected === s ? ' selected' : ''}${highlights.has(s) ? ' legal move' : ''}${
+                checkSquare === s ? ' in check' : ''
+              }`}
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') onEscape?.();
+              }}
+              onClick={() => onSquareClick(s)}
+              data-square={squareName(s)}
+            >
+              {showCoordinates && shouldShowFileLabel(s, orientation) && (
+                <span className="coord coord-file" aria-hidden="true">{fileLabel(fileOf(s))}</span>
+              )}
+              {showCoordinates && shouldShowRankLabel(s, orientation) && (
+                <span className="coord coord-rank" aria-hidden="true">{rankLabel(rankOf(s))}</span>
+              )}
+              {renderPiece(s)}
+            </button>
+          );
+        }),
+      )}
+    </div>
+  );
 }
 
-export default memo(ChessBoard,(a,b)=>a.position===b.position&&a.selected===b.selected&&a.highlights===b.highlights&&a.orientation===b.orientation&&a.lastMove===b.lastMove&&a.checkSquare===b.checkSquare&&a.renderPiece===b.renderPiece);
+export default memo(
+  ChessBoard,
+  (a, b) =>
+    a.position === b.position &&
+    a.selected === b.selected &&
+    a.highlights === b.highlights &&
+    a.orientation === b.orientation &&
+    a.lastMove === b.lastMove &&
+    a.checkSquare === b.checkSquare &&
+    a.renderPiece === b.renderPiece &&
+    a.showCoordinates === b.showCoordinates,
+);

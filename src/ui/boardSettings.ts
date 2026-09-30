@@ -1,5 +1,48 @@
-export type BoardTheme={light:string;dark:string;piece:string};
-const KEY='yasin-chess.board-theme';
-export const DEFAULT_BOARD_THEME:BoardTheme={light:'#f0d9b5',dark:'#b58863',piece:'#111827'};
-export function loadBoardTheme():BoardTheme{try{const raw=localStorage.getItem(KEY);return raw?{...DEFAULT_BOARD_THEME,...JSON.parse(raw)}:DEFAULT_BOARD_THEME}catch{return DEFAULT_BOARD_THEME}}
-export function saveBoardTheme(theme:BoardTheme):void{localStorage.setItem(KEY,JSON.stringify(theme))}
+export type BoardTheme = {light: string; dark: string; piece: string};
+
+const KEY = 'yasin-chess.board-theme';
+const SETTINGS_KEY = 'yasin-chess.board-settings';
+
+export const DEFAULT_BOARD_THEME: BoardTheme = {
+  light: '#f0d9b5',
+  dark: '#b58863',
+  piece: '#111827',
+};
+
+export type BoardUiSettings = {
+  showCoordinates: boolean;
+  animations: boolean;
+  pieceSet: 'unicode' | 'classic';
+};
+
+export const DEFAULT_BOARD_UI: BoardUiSettings = {
+  showCoordinates: true,
+  animations: true,
+  pieceSet: 'unicode',
+};
+
+export function loadBoardTheme(): BoardTheme {
+  try {
+    const raw = localStorage.getItem(KEY);
+    return raw ? {...DEFAULT_BOARD_THEME, ...JSON.parse(raw)} : DEFAULT_BOARD_THEME;
+  } catch {
+    return DEFAULT_BOARD_THEME;
+  }
+}
+
+export function saveBoardTheme(theme: BoardTheme): void {
+  localStorage.setItem(KEY, JSON.stringify(theme));
+}
+
+export function loadBoardUiSettings(): BoardUiSettings {
+  try {
+    const raw = localStorage.getItem(SETTINGS_KEY);
+    return raw ? {...DEFAULT_BOARD_UI, ...JSON.parse(raw)} : DEFAULT_BOARD_UI;
+  } catch {
+    return DEFAULT_BOARD_UI;
+  }
+}
+
+export function saveBoardUiSettings(settings: BoardUiSettings): void {
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+}
