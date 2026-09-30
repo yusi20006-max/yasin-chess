@@ -1,11 +1,14 @@
 # Yasin Chess
 
-Professional, modular chess application for Persian/English users. Phase 1 contains a FIDE-oriented rules core, SAN/PGN history, FEN support, undo/redo, legal-move highlighting, difficulty profiles, and a local Minimax/Alpha-Beta engine. The architecture is ready for Stockfish WASM, PWA, online play, clocks, puzzles, analysis, themes, achievements, and persistence.
+Professional, modular chess application for Persian/English users.
+
+**Current status (2026-09-30):** Phase 0 (core rule hardening) and Phase 1 foundation are **complete**. The product line is at **v0.3.0** with substantial Phase 2+ work already landed (PWA, offline, persistence, Android, clocks, analysis scaffolding, themes, etc.). Remaining open work is tracked in the Phase 2+ issues and open PRs.
 
 ## Stack
 - React + TypeScript + Vite
 - Pure TypeScript chess rules engine (no UI dependency)
 - Vitest tests
+- Capacitor (Android)
 - Engine abstraction prepared for Stockfish integration
 
 ## Difficulty
@@ -23,12 +26,14 @@ npm run dev
 ```
 
 ## Roadmap
-1. Phase 1 — core + difficulty (current)
-2. Phase 2 — Stockfish WASM adapter + evaluation bar
-3. Phase 3 — complete responsive UI, clocks, themes, sounds, FEN/PGN import/export
-4. Phase 4 — analysis mode, puzzles, coaching and mistake explanations
-5. Phase 5 — local Elo, persistence, replay and achievements
-6. Phase 6 — PWA/offline
-7. Phase 7 — online multiplayer, matchmaking and server-side validation/rating
+0. **Phase 0 — Core hardening** ✅ DONE (castling, FEN integrity, draw rules, EP, PGN results, engine perspective baseline). See `docs/PHASE0-CORE-HARDENING-RECONCILIATION.md`.
+1. **Phase 1 — Core + difficulty** ✅ DONE (FIDE-oriented rules, SAN/PGN/FEN, undo/redo, legal moves, Minimax/Alpha-Beta).
+2. **Phase 2 — Offline-first + Professional UI** (in progress — many sub-issues open; see #31 and related).
+3. Phase 3+ — Analysis, puzzles, coaching, online multiplayer, etc. (scaffolding already present).
 
 For Master/Expert, the Minimax engine is intentionally not marketed as true 2800 strength; the difficulty profile is a target configuration. Stockfish integration is the production path.
+
+## Key docs
+- `docs/PHASE0-CORE-HARDENING-RECONCILIATION.md`
+- `docs/PHASE2-FINAL-AUDIT-RECONCILIATION.md`
+- Android / PWA / security / release checklists under `docs/`
