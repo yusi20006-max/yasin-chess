@@ -1,7 +1,9 @@
+import type {ReactNode} from 'react';
+
 type ViewControlsProps = {
   onFlip: () => void;
   flipLabel: string;
-  extra?: React.ReactNode;
+  extra?: ReactNode;
 };
 
 export default function ViewControls({onFlip, flipLabel, extra}: ViewControlsProps) {
