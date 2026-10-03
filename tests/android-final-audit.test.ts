@@ -16,7 +16,7 @@ describe('Android final release contract',()=>{
  it('keeps offline/security boundaries intact',()=>{
   expect(cap).toContain('cleartext: false');
   expect(html).toContain("connect-src 'self'");
-  expect(sw).toContain("request.mode==='navigate'");
+  expect(sw).toMatch(/request\.mode\s*===\s*'navigate'/);
  });
  it('keeps release tooling available',()=>{
   expect(pkg.scripts['android:debug']).toBeTruthy();
