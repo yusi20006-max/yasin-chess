@@ -8,7 +8,7 @@ const checks=[
  ['document direction is wired',read('src/app/i18n.ts').includes('document.documentElement.dir')],
  ['board exposes selection semantics',read('src/ui/ChessBoard.tsx').includes('aria-selected')],
  ['board exposes current-move semantics',read('src/ui/ChessBoard.tsx').includes('aria-current')],
- ['keyboard escape contract exists',read('src/ui/ChessBoard.tsx').includes("e.key==='Escape'")],
+ ['keyboard escape contract exists',/e\.key\s*===\s*['"]Escape['"]/.test(read('src/ui/ChessBoard.tsx'))],
  ['screen-reader guidance exists',read('src/ui/GameLayout.tsx').includes('chess-game-help')],
  ['UX regression suite exists',existsSync('tests/ux-state-regression.test.ts')],
  ['Android final audit remains present',existsSync('scripts/android-final-audit.mjs')],
