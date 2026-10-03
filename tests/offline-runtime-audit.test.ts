@@ -18,9 +18,9 @@ describe('offline runtime audit',()=>{
  });
 
  it('has a navigation fallback and same-origin offline cache strategy',()=>{
-  expect(sw).toContain("request.mode==='navigate'");
+  expect(sw).toMatch(/request\.mode\s*===\s*'navigate'/);
   expect(sw).toContain("caches.match('/index.html')");
-  expect(sw).toContain("new URL(request.url).origin!==self.location.origin");
+  expect(sw).toMatch(/new URL\(request\.url\)\.origin\s*!==\s*self\.location\.origin/);
  });
 
  it('keeps offline runtime free from external network dependencies',()=>{
