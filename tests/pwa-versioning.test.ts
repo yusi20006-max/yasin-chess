@@ -11,7 +11,7 @@ describe('PWA update/versioning contract',()=>{
   expect(SERVICE_WORKER_URL).toContain('version='+APP_VERSION);
  });
  it('disables browser HTTP cache for service worker updates',()=>{
-  expect(reg).toContain("updateViaCache:'none'");
+  expect(reg).toMatch(/updateViaCache\s*:\s*'none'/);
   expect(reg).toContain('registration.update()');
  });
  it('derives cache identity from the registration version',()=>{
@@ -19,7 +19,7 @@ describe('PWA update/versioning contract',()=>{
   expect(sw).toContain('yasin-chess-${VERSION}-static');
  });
  it('supports an explicit update handoff message',()=>{
-  expect(reg).toContain("type:'SKIP_WAITING'");
-  expect(sw).toContain("type==='SKIP_WAITING'");
+  expect(reg).toMatch(/type\s*:\s*'SKIP_WAITING'/);
+  expect(sw).toMatch(/type\s*===\s*'SKIP_WAITING'/);
  });
 });
