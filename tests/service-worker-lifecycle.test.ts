@@ -11,15 +11,15 @@ describe('service worker lifecycle contract',()=>{
  });
  it('owns and removes only its own cache family',()=>{
   expect(sw).toContain("key.startsWith('yasin-chess-')");
-  expect(sw).toContain("key!==CACHE_NAME");
+  expect(sw).toMatch(/key\s*!==\s*CACHE_NAME/);
  });
  it('handles navigation and cached asset fallback offline',()=>{
-  expect(sw).toContain("request.mode==='navigate'");
+  expect(sw).toMatch(/request\.mode\s*===\s*'navigate'/);
   expect(sw).toContain("caches.match('/index.html')");
   expect(sw).toContain("caches.match(request)");
  });
  it('ignores non-GET and cross-origin requests',()=>{
-  expect(sw).toContain("request.method!=='GET'");
-  expect(sw).toContain("new URL(request.url).origin!==self.location.origin");
+  expect(sw).toMatch(/request\.method\s*!==\s*'GET'/);
+  expect(sw).toMatch(/new URL\(request\.url\)\.origin\s*!==\s*self\.location\.origin/);
  });
 });
