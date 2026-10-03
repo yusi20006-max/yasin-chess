@@ -21,6 +21,7 @@ jobs:
           distribution: temurin
           java-version: '21'
       - run: npm install
+      - run: npm run build
       - run: npm run android:init
       - run: npm run android:identity
       - name: Build release APK
