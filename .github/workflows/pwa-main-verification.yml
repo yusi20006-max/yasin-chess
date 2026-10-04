@@ -1,0 +1,38 @@
+name: PWA Main Verification
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-pwa:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm install
+      - name: Build production PWA
+        run: npm run build
+      - name: Verify dist
+        run: |
+          test -s dist/index.html
+          find dist -maxdepth 2 -type f -print | sort
+      - name: Package PWA
+        run: |
+          tar -czf yasin-chess-main-pwa-dist.tar.gz dist
+          sha256sum yasin-chess-main-pwa-dist.tar.gz > yasin-chess-main-pwa-dist.sha256
+      - name: Upload PWA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: yasin-chess-main-pwa-dist
+          path: |
+            yasin-chess-main-pwa-dist.tar.gz
+            yasin-chess-main-pwa-dist.sha256
+          retention-days: 2
