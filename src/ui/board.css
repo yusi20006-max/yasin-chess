@@ -26,11 +26,14 @@
 
 .square .coord {
   position: absolute;
-  font-size: clamp(9px, 2vw, 12px);
-  font-weight: 600;
-  opacity: 0.7;
+  z-index: 1;
+  font-size: clamp(8px, 1.8vw, 12px);
+  font-weight: 700;
+  opacity: 0.72;
   pointer-events: none;
   line-height: 1;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  text-transform: lowercase;
 }
 
 .coord-file {
@@ -64,13 +67,24 @@
 .in-check { box-shadow: inset 0 0 0 5px #ef4444cc; }
 
 .piece {
-  width: 78%;
-  height: 78%;
+  width: 82%;
+  height: 82%;
   display: grid;
   place-items: center;
-  font-size: clamp(34px, 8vw, 76px);
+  position: relative;
+  z-index: 2;
+  font-size: 0;
   line-height: 1;
   user-select: none;
+  pointer-events: none;
+}
+
+.piece-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  shape-rendering: geometricPrecision;
 }
 
 .piece-animated {
@@ -79,12 +93,10 @@
 
 .piece-w {
   color: #fff;
-  text-shadow: 0 1px 1px #000, 0 0 2px #000;
 }
 
 .piece-b {
   color: #111827;
-  text-shadow: 0 1px 0 #fff8;
 }
 
 @media (prefers-reduced-motion: reduce) {
