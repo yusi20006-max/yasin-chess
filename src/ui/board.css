@@ -13,6 +13,8 @@
   box-shadow: 0 20px 50px #0008;
   touch-action: manipulation;
   user-select: none;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 .square {
@@ -34,6 +36,8 @@
   line-height: 1;
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   text-transform: lowercase;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 .coord-file {
