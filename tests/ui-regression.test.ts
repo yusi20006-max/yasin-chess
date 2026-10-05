@@ -26,9 +26,9 @@ describe('UI regression contracts',()=>{
   });
   it('defines a compact mobile game HUD and primary action bar',()=>{
     const css=fs.readFileSync(path.join(process.cwd(),'src/ui/styles.css'),'utf8');
-    const app=fs.readFileSync(path.join(process.cwd(),'src/ui/App.tsx'),'utf8');
+    const layout=fs.readFileSync(path.join(process.cwd(),'src/ui/GameLayout.tsx'),'utf8');
     expect(app).toMatch(/className="player-panels"/);
-    expect(app).toMatch(/className="game-panel"/);
+    expect(layout).toMatch(/className="game-panel"/);
     expect(app).toMatch(/className="controls"/);
     expect(css).toMatch(/\.game-panel\{display:grid/);
     expect(css).toMatch(/\.game-panel \.controls\{order:3/);
