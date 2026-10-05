@@ -24,6 +24,15 @@ describe('UI regression contracts',()=>{
     expect(boardCss).toMatch(/\.piece\s*\{[\s\S]*z-index:\s*2/);
     expect(boardCss).toMatch(/\.piece-svg\s*\{/);
   });
+  it('defines a restrained Midnight glass visual system',()=>{
+    const theme=fs.readFileSync(path.join(process.cwd(),'src/ui/theme.css'),'utf8');
+    expect(theme).toMatch(/:root\[data-theme="dark"\]/);
+    expect(theme).toMatch(/--midnight-blue:/);
+    expect(theme).toMatch(/--midnight-violet:/);
+    expect(theme).toMatch(/backdrop-filter:blur\(/);
+    expect(theme).toMatch(/radial-gradient\(/);
+    expect(theme).toMatch(/:root\[data-theme="light"\]/);
+  });
   it('uses a board-first mobile shell with a dedicated options drawer',()=>{
     const shell=fs.readFileSync(path.join(process.cwd(),'src/ui/AppShell.tsx'),'utf8');
     const app=fs.readFileSync(path.join(process.cwd(),'src/ui/App.tsx'),'utf8');
