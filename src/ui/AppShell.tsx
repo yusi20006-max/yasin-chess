@@ -63,7 +63,7 @@ export default function AppShell({children, sidebar, locale = 'fa', banner}: App
             <div className="settings-drawer-content">{sidebar}</div>
           </aside>
         </>
-      )
+      )}
       {banner}
       <main className="app-main">{children}</main>
     </div>
