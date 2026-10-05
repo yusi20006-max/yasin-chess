@@ -99,13 +99,34 @@ export default function App(){
  const formatClock=(ms:number)=>`${Math.floor(ms/60000)}:${String(Math.floor(ms/1000)%60).padStart(2,'0')}`;
  const playerPanels=<div className="player-panels"><div className={`player-card ${game.position.turn==='w'?'active':''}`}><b>{gameMode==='ai-vs-ai'?'AI 1':t('white')}</b><strong className="player-clock" aria-label={`White ${formatClock(clockMs.w)}`}>{formatClock(clockMs.w)}</strong><span>{game.position.turn==='w'?t('yourTurn'):t('waiting')}</span></div><div className={`player-card ${game.position.turn==='b'?'active':''}`}><b>{gameMode==='ai-vs-ai'?'AI 2':gameMode==='human-vs-human'?t('blackAi'):t('blackAi')}</b><strong className="player-clock" aria-label={`Black ${formatClock(clockMs.b)}`}>{formatClock(clockMs.b)}</strong><span>{game.position.turn==='b'?t('thinking'):t('waiting')}</span></div></div>;
  const panel=<><div className="thinking" role="status" aria-live="polite">{thinking?`${t('thinking')} · ${(thinkingElapsed/1000).toFixed(1)}s`:`${t('idle')}`}</div><div className={`status status-${status}`} role="status">وضعیت: <b>{status==='playing'?t('playing'):status==='check'?t('check'):status==='checkmate'?t('checkmate'):status==='stalemate'?t('stalemate'):t('draw')}</b></div><div className="meta">سطح: {d.label}<br/>Depth: {d.depth} • Elo: {d.elo}</div><h2>{t('moves')}</h2><ol className="move-list">{game.history.map((h,i)=><li key={i} className={i===game.history.length-1?'current-move':''}><span>{Math.floor(i/2)+1}{i%2===0?'.':'...'}</span><b>{h.san}</b></li>)}</ol><div className="controls"><button onClick={undo} disabled={!game.history.length}>{t('undo')}</button><button onClick={forceMove} disabled={!hydrated||thinking||gameMode!=='human-vs-ai'||game.position.turn!=='b'||status!=='playing'}>{t('force')}</button><button onClick={redo} disabled={!game.future.length}>{t('redo')}</button><button onClick={fresh}>{t('newGame')}</button></div><div className="last">{t('lastMove')}: {last||'—'}</div><div className="pgn">{game.pgn()}</div></>;
- return <AppShell sidebar={<><div className="theme-controls"><select value={themeMode} onChange={e=>{const v=e.target.value as ThemeMode;setThemeMode(v);saveSettings({theme:v})}} aria-label={t('theme')}><option value="system">{t('system')}</option><option value="light">{t('light')}</option><option value="dark">{t('dark')}</option></select><select value={locale} onChange={e=>setAppLocale(e.target.value as Locale)} aria-label={t('language')}><option value="fa">{t('languageFa')}</option><option value="en">{t('languageEn')}</option></select><button className="theme-toggle" type="button" onClick={()=>{const next=theme.light===DEFAULT_BOARD_THEME.light?{light:'#d8e8c8',dark:'#6b8f71',piece:'#111827'}:DEFAULT_BOARD_THEME;setTheme(next);saveBoardTheme(next)}}>{t('boardTheme')}</button></div><select value={gameMode} onChange={e=>{requestRef.current++;setThinking(false);setGameMode(e.target.value as GameMode);setSelected(null)}} aria-label="Game mode"><option value="human-vs-ai">Human vs AI</option><option value="human-vs-human">Human vs Human</option><option value="ai-vs-ai">AI vs AI</option></select><select value={level} onChange={e=>setLevel(e.target.value as DifficultyId)} aria-label={t('difficulty')}>{DIFFICULTIES.map(x=><option key={x.id} value={x.id}>{x.label} — Elo ~{x.elo}</option>)}</select><select value={timeControl.id} onChange={e=>changeTimeControl(e.target.value)} aria-label="Time control">{TIME_CONTROL_PRESETS.map(x=><option key={x.id} value={x.id}>{x.label}</option>)}</select>
-      <div className="menu-section" data-section="board-view">
-        <h2>{locale==='fa'?'بازی و صفحه':'Game & board'}</h2>
-                  </div></>}>>
+ return <AppShell sidebar={<><div className="menu-section" data-section="game-settings">
+    <h2>{locale==='fa'?'بازی':'Game'}</h2>
+    <label className="menu-field"><span>{locale==='fa'?'حالت بازی':'Game mode'}</span><select value={gameMode} onChange={e=>{requestRef.current++;setThinking(false);setGameMode(e.target.value as GameMode);setSelected(null)}} aria-label="Game mode"><option value="human-vs-ai">Human vs AI</option><option value="human-vs-human">Human vs Human</option><option value="ai-vs-ai">AI vs AI</option></select></label>
+    <label className="menu-field"><span>{t('difficulty')}</span><select value={level} onChange={e=>setLevel(e.target.value as DifficultyId)} aria-label={t('difficulty')}>{DIFFICULTIES.map(x=><option key={x.id} value={x.id}>{x.label} — Elo ~{x.elo}</option>)}</select></label>
+    {level==='custom'&&<label className="menu-field"><span>{t('depth')}</span><input type="number" min="1" max="20" value={customDepth} onChange={e=>setCustomDepth(Number(e.target.value))}/></label>}
+    <label className="menu-field"><span>{locale==='fa'?'زمان بازی':'Time control'}</span><select value={timeControl.id} onChange={e=>changeTimeControl(e.target.value)} aria-label="Time control">{TIME_CONTROL_PRESETS.map(x=><option key={x.id} value={x.id}>{x.label}</option>)}</select></label>
+  </div>
+  <div className="menu-section" data-section="board-view">
+    <h2>{locale==='fa'?'صفحه و فایل':'Board & files'}</h2>
+    <div className="drawer-actions">
+      <button className="view-toggle" type="button" onClick={()=>setOrientation(x=>x==='white'?'black':'white')}>↔ {t('flip')}</button>
+      <button type="button" onClick={()=>setShowPositionEditor(true)}>Position Editor</button>
+      <button type="button" onClick={()=>{setFenInput(toFEN(game.position));setFenError('');setShowFenLoader(true)}}>Load FEN</button>
+      <button type="button" onClick={()=>setShowPGNImport(true)}>Import PGN</button>
+      <button type="button" onClick={exportPGN}>Export PGN</button>
+      <button type="button" onClick={()=>setSelected(null)}>{t('clear')}</button>
+    </div>
+  </div>
+  <div className="menu-section" data-section="appearance">
+    <h2>{locale==='fa'?'ظاهر':'Appearance'}</h2>
+    <div className="theme-controls">
+      <select value={themeMode} onChange={e=>{const v=e.target.value as ThemeMode;setThemeMode(v);saveSettings({theme:v})}} aria-label={t('theme')}><option value="system">{t('system')}</option><option value="light">{t('light')}</option><option value="dark">{t('dark')}</option></select>
+      <select value={locale} onChange={e=>setAppLocale(e.target.value as Locale)} aria-label={t('language')}><option value="fa">{t('languageFa')}</option><option value="en">{t('languageEn')}</option></select>
+      <button className="theme-toggle" type="button" onClick={()=>{const next=theme.light===DEFAULT_BOARD_THEME.light?{light:'#d8e8c8',dark:'#6b8f71',piece:'#111827'}:DEFAULT_BOARD_THEME;setTheme(next);saveBoardTheme(next)}}>{t('boardTheme')}</button>
+    </div>
+  </div>
+</>}>>>
   <style>{`.chess-board{--board-light:${theme.light};--board-dark:${theme.dark}}.piece{color:${theme.piece}}`}</style>
-  {level==='custom'&&<div className="custom-depth"><label>{t('depth')} <input type="number" min="1" max="20" value={customDepth} onChange={e=>setCustomDepth(Number(e.target.value))}/></label></div>}
-  <div className="view-controls"><button className="view-toggle" type="button" onClick={()=>setOrientation(x=>x==='white'?'black':'white')}>↔ {t('flip')}</button><button type="button" onClick={()=>setShowPositionEditor(true)}>Position Editor</button><button type="button" onClick={()=>{setFenInput(toFEN(game.position));setFenError('');setShowFenLoader(true)}}>Load FEN</button><button type="button" onClick={()=>setShowPGNImport(true)}>Import PGN</button><button type="button" onClick={exportPGN}>Export PGN</button><button type="button" onClick={()=>setShowFenLoader(true)}>Load FEN</button><button type="button" onClick={()=>setSelected(null)}>{t('clear')}</button></div>
   <div className="runtime-banner offline" role="status">{t('offline')}</div>
   <GameLayout board={<>{playerPanels}{board}</>} panel={panel}/>
   {status!=='playing'&&status!=='check'&&<div className="game-over" role="dialog"><strong>{t('gameOver')}</strong><span>{status}</span><button type="button" onClick={fresh}>{t('rematch')}</button></div>}
