@@ -22,8 +22,8 @@ describe('Android UI contract', () => {
     expect(shell).toContain('menu-trigger');
     expect(shell).toContain('settings-drawer');
     expect(shell).toContain('settings-sheet');
-    expect(css).toContain('max-width:100%');
-    expect(css).toContain('overflow-x:hidden');
+    expect(css).toMatch(/max-width:\s*100%/);
+    expect(css).toMatch(/overflow-x:\s*hidden/);
     expect(theme).toContain('--midnight-blue');
     expect(theme).toContain('--midnight-violet');
     expect(theme).toContain('radial-gradient');
