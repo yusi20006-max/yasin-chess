@@ -117,13 +117,12 @@ export default function App(){
       <button type="button" onClick={()=>setSelected(null)}>{t('clear')}</button>
     </div>
   </div>
-v>
 </>} settings={<><div className="theme-controls">
       <select value={themeMode} onChange={e=>{const v=e.target.value as ThemeMode;setThemeMode(v);saveSettings({theme:v})}} aria-label={t('theme')}><option value="system">{t('system')}</option><option value="light">{t('light')}</option><option value="dark">{t('dark')}</option></select>
       <select value={locale} onChange={e=>setAppLocale(e.target.value as Locale)} aria-label={t('language')}><option value="fa">{t('languageFa')}</option><option value="en">{t('languageEn')}</option></select>
       <button className="theme-toggle" type="button" onClick={()=>{const next=theme.light===DEFAULT_BOARD_THEME.light?{light:'#d8e8c8',dark:'#6b8f71',piece:'#111827'}:DEFAULT_BOARD_THEME;setTheme(next);saveBoardTheme(next)}}>{t('boardTheme')}</button>
     </div>
-  </di</>}>
+  </div></>}>
   <style>{`.chess-board{--board-light:${theme.light};--board-dark:${theme.dark}}.piece{color:${theme.piece}}`}</style>
   <div className="runtime-banner offline" role="status">{t('offline')}</div>
   <GameLayout board={<>{playerPanels}{board}</>} panel={panel}/>
