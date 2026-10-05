@@ -24,6 +24,17 @@ describe('UI regression contracts',()=>{
     expect(boardCss).toMatch(/\.piece\s*\{[\s\S]*z-index:\s*2/);
     expect(boardCss).toMatch(/\.piece-svg\s*\{/);
   });
+  it('defines a dedicated mobile appearance settings bottom sheet',()=>{
+    const shell=fs.readFileSync(path.join(process.cwd(),'src/ui/AppShell.tsx'),'utf8');
+    const app=fs.readFileSync(path.join(process.cwd(),'src/ui/App.tsx'),'utf8');
+    const css=fs.readFileSync(path.join(process.cwd(),'src/ui/styles.css'),'utf8');
+    expect(shell).toMatch(/settings\?: ReactNode/);
+    expect(shell).toMatch(/settings-sheet/);
+    expect(shell).toMatch(/appearance-trigger/);
+    expect(app).toMatch(/settings={<>/);
+    expect(css).toMatch(/\.settings-sheet\{/);
+    expect(css).toMatch(/\.settings-sheet-backdrop\{/);
+  });
   it('defines a compact mobile game HUD and primary action bar',()=>{
     const css=fs.readFileSync(path.join(process.cwd(),'src/ui/styles.css'),'utf8');
     const layout=fs.readFileSync(path.join(process.cwd(),'src/ui/GameLayout.tsx'),'utf8');
@@ -55,7 +66,8 @@ describe('UI regression contracts',()=>{
     expect(app).toMatch(/sidebar={<>/);
     expect(app).toMatch(/data-section="game-settings"/);
     expect(app).toMatch(/data-section="board-view"/);
-    expect(app).toMatch(/data-section="appearance"/);
+    expect(shell).toMatch(/appearance-trigger/);
+    expect(app).toMatch(/settings={<>/);
     expect(app).not.toMatch(/<div className="view-controls">/);
     expect(css).toMatch(/\.settings-drawer\{/);
     expect(css).toMatch(/\.menu-trigger\{/);

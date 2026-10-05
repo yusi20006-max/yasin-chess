@@ -6,6 +6,7 @@ type AppShellProps = {
   children: ReactNode;
   /** Header actions / settings (theme, language, mode selectors). */
   sidebar?: ReactNode;
+  settings?: ReactNode;
   locale?: Locale;
   /** Optional status strip under the header (offline banner, etc.). */
   banner?: ReactNode;
@@ -16,8 +17,9 @@ type AppShellProps = {
  * Owns chrome only: brand, locale direction, main region.
  * Must not own domain persistence or chess rules.
  */
-export default function AppShell({children, sidebar, locale = 'fa', banner}: AppShellProps) {
+export default function AppShell({children, sidebar, settings, locale = 'fa', banner}: AppShellProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   useEffect(() => {
     document.documentElement.lang = locale;
     document.documentElement.dir = locale === 'fa' ? 'rtl' : 'ltr';
@@ -60,8 +62,24 @@ export default function AppShell({children, sidebar, locale = 'fa', banner}: App
               </div>
               <button type="button" className="menu-close" onClick={() => setMenuOpen(false)} aria-label={locale === 'fa' ? 'بستن' : 'Close'}>×</button>
             </div>
-            <div className="settings-drawer-content">{sidebar}</div>
+            <div className="settings-drawer-content">
+              {settings && <button type="button" className="appearance-trigger" onClick={() => setSettingsOpen(true)}>{locale === 'fa' ? '🎨 ظاهر و زبان' : '🎨 Appearance & language'}</button>}
+              {sidebar}
+            </div>
           </aside>
+        </>
+      )}
+      {settingsOpen && (
+        <>
+          <button className="settings-sheet-backdrop" type="button" aria-label={locale === 'fa' ? 'بستن تنظیمات ظاهر' : 'Close appearance settings'} onClick={() => setSettingsOpen(false)} />
+          <section className="settings-sheet" role="dialog" aria-modal="true" aria-labelledby="appearance-sheet-title">
+            <div className="settings-sheet-handle" aria-hidden="true" />
+            <div className="settings-sheet-header">
+              <h2 id="appearance-sheet-title">{locale === 'fa' ? 'ظاهر و زبان' : 'Appearance & language'}</h2>
+              <button type="button" className="menu-close" onClick={() => setSettingsOpen(false)} aria-label={locale === 'fa' ? 'بستن' : 'Close'}>×</button>
+            </div>
+            <div className="settings-sheet-content">{settings}</div>
+          </section>
         </>
       )}
       {banner}
