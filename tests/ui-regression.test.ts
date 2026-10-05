@@ -66,7 +66,8 @@ describe('UI regression contracts',()=>{
     expect(app).toMatch(/sidebar={<>/);
     expect(app).toMatch(/data-section="game-settings"/);
     expect(app).toMatch(/data-section="board-view"/);
-    expect(app).toMatch(/data-section="appearance"/);
+    expect(shell).toMatch(/appearance-trigger/);
+    expect(app).toMatch(/settings={<>/);
     expect(app).not.toMatch(/<div className="view-controls">/);
     expect(css).toMatch(/\.settings-drawer\{/);
     expect(css).toMatch(/\.menu-trigger\{/);
