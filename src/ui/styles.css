@@ -69,3 +69,17 @@
   .player-card span{font-size:.68rem}
   .player-clock{font-size:1.08rem}
 }
+
+.appearance-trigger{width:100%;min-height:44px;padding:10px 12px;border:1px solid var(--border,#263244);border-radius:11px;background:var(--surface-2,#172033);color:var(--text,#e5e7eb);font-weight:700;cursor:pointer}
+.settings-sheet-backdrop{position:fixed;inset:0;border:0;background:#0009;z-index:50}
+.settings-sheet{position:fixed;z-index:51;inset-inline:0;bottom:0;width:100%;max-height:min(78vh,620px);overflow:auto;background:var(--surface-2,#111827);border:1px solid var(--border,#263244);border-bottom:0;border-radius:20px 20px 0 0;box-shadow:0 -24px 70px #000a;padding:10px 16px calc(16px + env(safe-area-inset-bottom,0px));animation:sheet-in .2s ease-out}
+.settings-sheet-handle{width:42px;height:4px;border-radius:99px;background:var(--muted,#64748b);margin:2px auto 10px;opacity:.65}
+.settings-sheet-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--border,#263244)}
+.settings-sheet-header h2{margin:0;font-size:1rem}
+.settings-sheet-content{display:grid;gap:10px;padding-top:12px}
+.settings-sheet-content .theme-controls{display:grid;gap:8px}
+.settings-sheet-content select,.settings-sheet-content button{width:100%;min-height:44px}
+@keyframes sheet-in{from{transform:translateY(100%);opacity:.7}to{transform:translateY(0);opacity:1}}
+@media(min-width:851px){.settings-sheet{inset-inline:auto 50%;transform:translateX(50%);width:min(480px,92vw);bottom:24px;border-bottom:1px solid var(--border,#263244);border-radius:18px;animation:sheet-fade-in .2s ease-out}.settings-sheet-backdrop{background:#0006}}
+@keyframes sheet-fade-in{from{transform:translate(50%,20px);opacity:0}to{transform:translate(50%,0);opacity:1}}
+@media(prefers-reduced-motion:reduce){.settings-sheet{animation:none}}
