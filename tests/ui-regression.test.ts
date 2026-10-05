@@ -24,6 +24,17 @@ describe('UI regression contracts',()=>{
     expect(boardCss).toMatch(/\.piece\s*\{[\s\S]*z-index:\s*2/);
     expect(boardCss).toMatch(/\.piece-svg\s*\{/);
   });
+  it('defines a compact mobile game HUD and primary action bar',()=>{
+    const css=fs.readFileSync(path.join(process.cwd(),'src/ui/styles.css'),'utf8');
+    const layout=fs.readFileSync(path.join(process.cwd(),'src/ui/GameLayout.tsx'),'utf8');
+    const app=fs.readFileSync(path.join(process.cwd(),'src/ui/App.tsx'),'utf8');
+    expect(app).toMatch(/className="player-panels"/);
+    expect(layout).toMatch(/className="game-panel"/);
+    expect(app).toMatch(/className="controls"/);
+    expect(css).toMatch(/\.game-panel\{display:grid/);
+    expect(css).toMatch(/\.game-panel \.controls\{order:3/);
+    expect(css).toMatch(/grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/);
+  });
   it('defines a restrained Midnight glass visual system',()=>{
     const theme=fs.readFileSync(path.join(process.cwd(),'src/ui/theme.css'),'utf8');
     expect(theme).toMatch(/:root\[data-theme="dark"\]/);
