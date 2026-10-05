@@ -18,12 +18,13 @@ describe('Android UI contract', () => {
     const css = readFileSync('src/ui/styles.css','utf8');
     const theme = readFileSync('src/ui/theme.css','utf8');
     const board = readFileSync('src/ui/board.css','utf8');
+    const portrait = readFileSync('src/ui/portrait.css','utf8');
     expect(app).toContain('GameLayout');
     expect(shell).toContain('menu-trigger');
     expect(shell).toContain('settings-drawer');
     expect(shell).toContain('settings-sheet');
-    expect(css).toMatch(/max-width:\s*100%/);
-    expect(css).toMatch(/overflow-x:\s*hidden/);
+    expect(portrait).toMatch(/max-width:\s*100%/);
+    expect(portrait).toMatch(/overflow-x:\s*hidden/);
     expect(theme).toContain('--midnight-blue');
     expect(theme).toContain('--midnight-violet');
     expect(theme).toContain('radial-gradient');
