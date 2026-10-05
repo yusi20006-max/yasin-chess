@@ -24,6 +24,22 @@ describe('UI regression contracts',()=>{
     expect(boardCss).toMatch(/\.piece\s*\{[\s\S]*z-index:\s*2/);
     expect(boardCss).toMatch(/\.piece-svg\s*\{/);
   });
+  it('uses a board-first mobile shell with a dedicated options drawer',()=>{
+    const shell=fs.readFileSync(path.join(process.cwd(),'src/ui/AppShell.tsx'),'utf8');
+    const app=fs.readFileSync(path.join(process.cwd(),'src/ui/App.tsx'),'utf8');
+    const css=fs.readFileSync(path.join(process.cwd(),'src/ui/styles.css'),'utf8');
+    expect(shell).toMatch(/className="menu-trigger"/);
+    expect(shell).toMatch(/settings-drawer/);
+    expect(shell).toMatch(/menu-backdrop/);
+    expect(shell).toMatch(/aria-controls="yasin-settings-menu"/);
+    expect(app).toMatch(/sidebar={<>/);
+    expect(app).toMatch(/data-section="game-settings"/);
+    expect(app).toMatch(/data-section="board-view"/);
+    expect(app).toMatch(/data-section="appearance"/);
+    expect(app).not.toMatch(/<div className="view-controls">/);
+    expect(css).toMatch(/\.settings-drawer\{/);
+    expect(css).toMatch(/\.menu-trigger\{/);
+  });
   it('settings survive reload boundary',()=>{
     localStorage.clear();
     saveSettings({theme:'dark',language:'en'});
