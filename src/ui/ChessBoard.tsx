@@ -1,7 +1,8 @@
 import {memo, type ReactNode} from 'react';
 import type {Position, Square} from '../core/types';
-import {squareName, fileOf, rankOf} from '../core/board';
-import {boardRanks, boardFiles, fileLabel, rankLabel, shouldShowFileLabel, shouldShowRankLabel} from './boardCoordinates';
+import {squareName} from '../core/board';
+import {boardRanks, boardFiles, fileLabel, rankLabel} from './boardCoordinates';
+import './board.css';
 
 type Props = {
   position: Position;
@@ -35,69 +36,89 @@ function ChessBoard({
 
   return (
     <div
-      className={`chess-board${showCoordinates ? ' with-coords' : ''}`}
-      role="grid"
-      aria-label="Chess board"
-      aria-roledescription="chess board"
+      className={`board-wrapper${showCoordinates ? ' with-coords' : ''}`}
       data-orientation={orientation}
-      data-component="chess-board"
+      data-component="board-wrapper"
     >
-      {ranks.flatMap((rank) =>
-        files.map((file) => {
-          const s = rank * 8 + file;
-          const isLight = (rank + file) % 2 === 0;
-          const classes = [
-            'square',
-            isLight ? 'light' : 'dark',
-            selected === s ? 'selected' : '',
-            highlights.has(s) ? 'hint' : '',
-            lastMove?.from === s || lastMove?.to === s ? 'last-move' : '',
-            checkSquare === s ? 'in-check' : '',
-          ]
-            .filter(Boolean)
-            .join(' ');
+      {showCoordinates && (
+        <div className="rank-coords" aria-hidden="true">
+          {ranks.map((rank) => (
+            <span key={`rank-${rank}`} className="coord coord-rank">
+              {rankLabel(rank)}
+            </span>
+          ))}
+        </div>
+      )}
 
-          return (
-            <button
-              type="button"
-              key={s}
-              className={classes}
-              role="gridcell"
-              draggable={Boolean(position.board[s])}
-              onDragStart={(e) => e.dataTransfer.setData('text/plain', String(s))}
-              onDragOver={(e) => {
-                if (highlights.has(s)) e.preventDefault();
-              }}
-              onDrop={(e) => {
-                e.preventDefault();
-                const from = Number(e.dataTransfer.getData('text/plain'));
-                if (Number.isInteger(from)) onSquareDrag?.(from, s);
-              }}
-              aria-selected={selected === s}
-              aria-current={lastMove?.from === s || lastMove?.to === s ? 'true' : undefined}
-              aria-label={`${squareName(s)}${
-                position.board[s]
-                  ? ` ${position.board[s]?.color === 'w' ? 'white' : 'black'} ${position.board[s]?.type}`
-                  : ''
-              }${selected === s ? ' selected' : ''}${highlights.has(s) ? ' legal move' : ''}${
-                checkSquare === s ? ' in check' : ''
-              }`}
-              onKeyDown={(e) => {
-                if (e.key === 'Escape') onEscape?.();
-              }}
-              onClick={() => onSquareClick(s)}
-              data-square={squareName(s)}
-            >
-              {showCoordinates && shouldShowFileLabel(s, orientation) && (
-                <span className="coord coord-file" aria-hidden="true">{fileLabel(fileOf(s))}</span>
-              )}
-              {showCoordinates && shouldShowRankLabel(s, orientation) && (
-                <span className="coord coord-rank" aria-hidden="true">{rankLabel(rankOf(s))}</span>
-              )}
-              {renderPiece(s)}
-            </button>
-          );
-        }),
+      <div
+        className="chess-board"
+        role="grid"
+        aria-label="Chess board"
+        aria-roledescription="chess board"
+        data-orientation={orientation}
+        data-component="chess-board"
+      >
+        {ranks.flatMap((rank) =>
+          files.map((file) => {
+            const s = rank * 8 + file;
+            const isLight = (rank + file) % 2 === 0;
+            const classes = [
+              'square',
+              isLight ? 'light' : 'dark',
+              selected === s ? 'selected' : '',
+              highlights.has(s) ? 'hint' : '',
+              lastMove?.from === s || lastMove?.to === s ? 'last-move' : '',
+              checkSquare === s ? 'in-check' : '',
+            ]
+              .filter(Boolean)
+              .join(' ');
+
+            return (
+              <button
+                type="button"
+                key={s}
+                className={classes}
+                role="gridcell"
+                draggable={Boolean(position.board[s])}
+                onDragStart={(e) => e.dataTransfer.setData('text/plain', String(s))}
+                onDragOver={(e) => {
+                  if (highlights.has(s)) e.preventDefault();
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const from = Number(e.dataTransfer.getData('text/plain'));
+                  if (Number.isInteger(from)) onSquareDrag?.(from, s);
+                }}
+                aria-selected={selected === s}
+                aria-current={lastMove?.from === s || lastMove?.to === s ? 'true' : undefined}
+                aria-label={`${squareName(s)}${
+                  position.board[s]
+                    ? ` ${position.board[s]?.color === 'w' ? 'white' : 'black'} ${position.board[s]?.type}`
+                    : ''
+                }${selected === s ? ' selected' : ''}${highlights.has(s) ? ' legal move' : ''}${
+                  checkSquare === s ? ' in check' : ''
+                }`}
+                onKeyDown={(e) => {
+                  if (e.key === 'Escape') onEscape?.();
+                }}
+                onClick={() => onSquareClick(s)}
+                data-square={squareName(s)}
+              >
+                {renderPiece(s)}
+              </button>
+            );
+          }),
+        )}
+      </div>
+
+      {showCoordinates && (
+        <div className="file-coords" aria-hidden="true">
+          {files.map((file) => (
+            <span key={`file-${file}`} className="coord coord-file">
+              {fileLabel(file)}
+            </span>
+          ))}
+        </div>
       )}
     </div>
   );

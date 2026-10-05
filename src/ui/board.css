@@ -1,12 +1,38 @@
-/* Phase 4 — Professional Chess Board styles */
+/* Phase 4 — Professional Chess Board styles
+ * Coordinates live outside the 8×8 grid, aligned to the same geometry.
+ */
+
+.board-wrapper {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "ranks board"
+    ".     files";
+  width: 100%;
+  max-width: min(96vw, 720px);
+  margin-inline: auto;
+  column-gap: 0;
+  row-gap: 0;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.board-wrapper:not(.with-coords) {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  grid-template-areas: "board";
+}
 
 .chess-board {
+  grid-area: board;
   display: grid;
   grid-template-columns: repeat(8, minmax(0, 1fr));
   grid-template-rows: repeat(8, minmax(0, 1fr));
   aspect-ratio: 1;
   width: 100%;
-  max-width: min(96vw, 720px);
   height: auto;
   border-radius: 14px;
   overflow: hidden;
@@ -15,6 +41,55 @@
   user-select: none;
   -webkit-text-size-adjust: none;
   text-size-adjust: none;
+}
+
+.rank-coords {
+  grid-area: ranks;
+  display: grid;
+  grid-template-rows: repeat(8, minmax(0, 1fr));
+  align-self: stretch;
+  width: 1.15em;
+  padding-inline: 0.15em 0.25em;
+  pointer-events: none;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+}
+
+.file-coords {
+  grid-area: files;
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  height: 1.15em;
+  padding-block: 0.2em 0.1em;
+  pointer-events: none;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+}
+
+.coord {
+  display: grid;
+  place-items: center;
+  font-size: clamp(9px, 2.2vw, 12px);
+  font-weight: 700;
+  opacity: 0.78;
+  line-height: 1;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  text-transform: lowercase;
+  color: #94a3b8;
+  pointer-events: none;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+  max-width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.coord-rank {
+  justify-items: end;
+}
+
+.coord-file {
+  align-items: start;
 }
 
 .square {
@@ -27,36 +102,6 @@
   -webkit-text-size-adjust: none;
   text-size-adjust: none;
 }
-
-.square .coord {
-  position: absolute;
-  z-index: 1;
-  font-size: 11px;
-  font-weight: 700;
-  opacity: 0.72;
-  pointer-events: none;
-  line-height: 1;
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-  text-transform: lowercase;
-  -webkit-text-size-adjust: none;
-  text-size-adjust: none;
-  max-width: 1em;
-  max-height: 1em;
-  overflow: hidden;
-}
-
-.coord-file {
-  bottom: 2px;
-  right: 3px;
-}
-
-.coord-rank {
-  top: 2px;
-  left: 3px;
-}
-
-.light .coord { color: var(--board-dark, #b58863); }
-.dark .coord { color: var(--board-light, #f0d9b5); }
 
 .light { background: var(--board-light, #f0d9b5); }
 .dark { background: var(--board-dark, #b58863); }
@@ -118,8 +163,21 @@
 }
 
 @media (max-width: 850px) {
-  .chess-board {
+  .board-wrapper {
     width: min(96vw, 720px);
-    margin: auto;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 600px) and (orientation: portrait) {
+  .board-wrapper {
+    width: min(96vw, 520px);
+    max-width: 100%;
+  }
+  .rank-coords {
+    width: 1em;
+  }
+  .coord {
+    font-size: clamp(8px, 2.4vw, 11px);
   }
 }
