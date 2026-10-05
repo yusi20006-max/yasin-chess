@@ -1,8 +1,10 @@
 /* Phase 4 — Professional Chess Board styles
  * Coordinates live outside the 8×8 grid, aligned to the same geometry.
+ * Board geometry is always LTR so ranks stay on the left under page RTL.
  */
 
 .board-wrapper {
+  direction: ltr;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr) auto;
@@ -28,6 +30,7 @@
 
 .chess-board {
   grid-area: board;
+  direction: ltr;
   display: grid;
   grid-template-columns: repeat(8, minmax(0, 1fr));
   grid-template-rows: repeat(8, minmax(0, 1fr));
@@ -45,6 +48,7 @@
 
 .rank-coords {
   grid-area: ranks;
+  direction: ltr;
   display: grid;
   grid-template-rows: repeat(8, minmax(0, 1fr));
   align-self: stretch;
@@ -57,6 +61,7 @@
 
 .file-coords {
   grid-area: files;
+  direction: ltr;
   display: grid;
   grid-template-columns: repeat(8, minmax(0, 1fr));
   height: 1.15em;
