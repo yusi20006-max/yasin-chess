@@ -34,3 +34,38 @@
 .settings-drawer-content .drawer-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .settings-drawer-content .drawer-actions button{min-height:42px}
 @media(max-width:420px){.settings-drawer{width:100%;border-inline-start:0}.settings-drawer-content{padding:14px}}
+
+/* UI Phase 3 — compact game HUD and primary action bar */
+.game-panel{display:grid;gap:10px}
+.thinking{font-size:.8rem;color:var(--muted,#94a3b8);min-height:1.1em}
+.game-panel .status{margin:0}
+.game-panel .meta{margin:0;font-size:.82rem;line-height:1.45}
+.game-panel h2{margin:2px 0 0;font-size:1rem}
+.game-panel .last{margin:0;font-size:.82rem}
+.game-panel .pgn{margin:0;font-size:.72rem;max-height:90px;overflow:auto}
+.game-panel .controls{margin-top:2px}
+.game-panel .controls button{min-height:42px}
+.player-panels{margin-bottom:10px}
+.player-card{align-items:center}
+.player-card b{font-size:.88rem}
+.player-card span{font-size:.72rem}
+.player-clock{font-size:1.25rem}
+@media(max-width:850px){
+  .game-panel{background:transparent;border:0;padding:0;min-height:0}
+  .game-panel .thinking{order:0;padding-inline:2px}
+  .game-panel .status{order:1}
+  .game-panel .meta{order:2;padding-inline:2px}
+  .game-panel .controls{order:3;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+  .game-panel .controls button{min-width:0;padding:9px 5px}
+  .game-panel .last{order:4}
+  .game-panel h2{order:5}
+  .game-panel .move-list{order:6;margin:0;max-height:180px}
+  .game-panel .pgn{order:7}
+}
+@media(max-width:600px) and (orientation:portrait){
+  .player-panels{grid-template-columns:1fr 1fr;gap:6px}
+  .player-card{padding:8px 9px;min-width:0}
+  .player-card b{font-size:.78rem}
+  .player-card span{font-size:.68rem}
+  .player-clock{font-size:1.08rem}
+}
