@@ -7,10 +7,16 @@ import {setLocale,t} from '../src/i18n';
 describe('UI regression contracts',()=>{
   it('uses deterministic SVG pieces and keeps coordinates board-relative',()=>{
     const piece=fs.readFileSync(path.join(process.cwd(),'src/ui/Piece.tsx'),'utf8');
+    const pieceCss=fs.readFileSync(path.join(process.cwd(),'src/ui/piece-3d.css'),'utf8');
     const boardCss=fs.readFileSync(path.join(process.cwd(),'src/ui/board.css'),'utf8');
     const boardTsx=fs.readFileSync(path.join(process.cwd(),'src/ui/ChessBoard.tsx'),'utf8');
     expect(piece).toMatch(/<svg className="piece-svg"/);
     expect(piece).not.toMatch(/pieceGlyph\(/);
+    expect(piece).toMatch(/data-piece-style="modern-3d"/);
+    expect(piece).toMatch(/linearGradient/);
+    expect(piece).toMatch(/feDropShadow/);
+    expect(pieceCss).toMatch(/data-piece-style="modern-3d"/);
+    expect(pieceCss).toMatch(/drop-shadow\(/);
     expect(boardTsx).toMatch(/import\s+['\"]\.\/board\.css['\"]/);
     expect(boardTsx).toMatch(/board-wrapper/);
     expect(boardTsx).toMatch(/rank-coords/);
