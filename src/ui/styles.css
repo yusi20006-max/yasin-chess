@@ -130,3 +130,14 @@
   .player-identity{font-size:.58rem}
 }
 @media(prefers-reduced-motion:reduce){.player-card{transition:none}}
+
+/* Phase #388 — compact board theme selector. */
+.board-theme-field{display:grid;gap:7px}
+.theme-field-label{font-size:.82rem;color:var(--muted,#94a3b8)}
+.board-theme-selector{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.board-theme-selector button{display:grid;gap:5px;justify-items:center;min-width:0;padding:7px 4px;border:1px solid var(--border,#334155);border-radius:9px;background:var(--surface-2,#172033);color:var(--text,#e5e7eb);cursor:pointer;font-size:.62rem}
+.board-theme-selector button.active{outline:2px solid #38bdf8;border-color:#38bdf8}
+.theme-swatch{display:grid;grid-template-columns:1fr 1fr;width:100%;height:20px;border-radius:5px;overflow:hidden}
+.theme-swatch i{display:block}
+@media(max-width:420px){.board-theme-selector{gap:4px}.board-theme-selector button{font-size:.55rem;padding:6px 2px}}
+@media(prefers-reduced-motion:reduce){.board-theme-selector button{transition:none}}
