@@ -186,3 +186,14 @@
     font-size: clamp(8px, 2.4vw, 11px);
   }
 }
+
+/* Phase #387 — board surface polish without changing the 8×8 geometry. */
+.chess-board{isolation:isolate;border:1px solid rgba(255,255,255,.1);box-shadow:0 24px 56px #0009,0 0 0 1px rgba(15,23,42,.45);background:var(--board-dark)}
+.chess-board:focus-within{box-shadow:0 24px 56px #0009,0 0 0 2px rgba(56,189,248,.24)}
+.square{background-clip:padding-box}
+.light{background-image:linear-gradient(145deg,rgba(255,255,255,.08),rgba(255,255,255,0))}
+.dark{background-image:linear-gradient(145deg,rgba(0,0,0,.06),rgba(0,0,0,.18))}
+.square:hover{filter:brightness(1.045)}
+.board-wrapper.with-coords .coord{text-shadow:0 1px 4px #0008}
+@media(max-width:600px){.chess-board{border-radius:12px;box-shadow:0 16px 34px #0008,0 0 0 1px rgba(15,23,42,.35)}}
+@media(prefers-reduced-motion:reduce){.square{transition:none!important}}
