@@ -164,3 +164,17 @@
 .move-list li .move-current{background:rgba(56,189,248,.14);color:#7dd3fc}
 .move-list .current-move{outline:1px solid rgba(56,189,248,.18)}
 @media(max-width:600px){.move-list{max-height:180px}.move-list li{font-size:.7rem;padding:3px 4px}}
+
+/* Phase #391 — premium, mobile-first game-over result surface. */
+.game-over-result{inset:50% auto auto 50%;transform:translate(-50%,-50%);width:min(420px,calc(100vw - 28px));display:grid;justify-items:center;text-align:center;gap:10px;padding:22px 20px;z-index:60;max-width:min(92vw,420px);border:1px solid rgba(255,255,255,.12);border-radius:18px;background:linear-gradient(145deg,rgba(15,23,42,.96),rgba(30,41,59,.94));backdrop-filter:blur(18px);box-shadow:0 24px 70px #000b,0 0 0 1px rgba(56,189,248,.08)}
+.game-over-kicker{font-size:.62rem;font-weight:800;letter-spacing:.22em;color:#7dd3fc}
+.game-over-result h2{margin:0;font-size:clamp(1.35rem,5vw,1.65rem)}
+.game-over-score{font-size:1.25rem;letter-spacing:.08em;font-variant-numeric:tabular-nums}
+.game-over-result p{margin:0;color:#94a3b8;font-size:.82rem;line-height:1.55}
+.game-over-actions{display:flex;gap:8px;width:100%;justify-content:center}
+.game-over-actions button{flex:1;min-height:42px;border:1px solid #334155;border-radius:10px;background:#172033;color:#e5e7eb;cursor:pointer}
+.game-over-actions button:last-child{background:#2563eb;color:#fff;border-color:#3b82f6}
+.game-over-checkmate{border-color:rgba(244,63,94,.45)}
+.game-over-checkmate .game-over-score{color:#fb7185}
+@media(max-width:420px){.game-over-result{padding:18px 14px}.game-over-actions{flex-direction:column}}
+@media(prefers-reduced-motion:reduce){.game-over-result{backdrop-filter:none}}
