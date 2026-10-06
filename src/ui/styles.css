@@ -150,3 +150,7 @@
 .game-over strong{letter-spacing:.01em}
 @keyframes king-check-pulse{0%,100%{box-shadow:inset 0 0 0 5px #ef4444cc}50%{box-shadow:inset 0 0 0 6px #ef4444ee,0 0 18px rgba(239,68,68,.18)}}
 @media(prefers-reduced-motion:reduce){.in-check{animation:none}.in-check{box-shadow:inset 0 0 0 5px #ef4444cc}}
+
+/* Phase #392 — compact sound preference control. */
+.sound-toggle{display:flex;align-items:center;gap:7px;color:var(--muted,#94a3b8);font-size:.78rem}
+.sound-toggle input{accent-color:#38bdf8;width:16px;height:16px}
