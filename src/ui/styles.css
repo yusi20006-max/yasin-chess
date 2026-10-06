@@ -141,3 +141,12 @@
 .theme-swatch i{display:block}
 @media(max-width:420px){.board-theme-selector{gap:4px}.board-theme-selector button{font-size:.55rem;padding:6px 2px}}
 @media(prefers-reduced-motion:reduce){.board-theme-selector button{transition:none}}
+
+/* Phase #390 — accessible check/checkmate emphasis. */
+.in-check{animation:king-check-pulse 1.15s ease-in-out infinite}
+.status-check{border:1px solid rgba(248,113,113,.42);box-shadow:inset 3px 0 0 #ef4444}
+.status-checkmate{border:1px solid rgba(244,63,94,.55);box-shadow:inset 4px 0 0 #f43f5e,0 0 24px rgba(244,63,94,.1)}
+.status-stalemate,.status-draw-repetition,.status-draw-75-move,.status-draw-insufficient,.status-draw-agreement{border:1px solid rgba(148,163,184,.28);box-shadow:inset 3px 0 0 #64748b}
+.game-over strong{letter-spacing:.01em}
+@keyframes king-check-pulse{0%,100%{box-shadow:inset 0 0 0 5px #ef4444cc}50%{box-shadow:inset 0 0 0 6px #ef4444ee,0 0 18px rgba(239,68,68,.18)}}
+@media(prefers-reduced-motion:reduce){.in-check{animation:none}.in-check{box-shadow:inset 0 0 0 5px #ef4444cc}}
