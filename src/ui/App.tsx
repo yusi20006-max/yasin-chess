@@ -13,7 +13,7 @@ import './styles.css';
 import './theme.css';
 import {loadSettings,saveSettings,TIME_CONTROL_PRESETS,type ThemeMode,type TimeControl} from '../app/settings';
 import {applyLocale,translate,type Locale} from '../app/i18n';
-import {playSound} from './sound';
+import {playSound,loadSoundPreference,persistSoundPreference} from './sound';
 import {haptic} from './haptics';
 import './portrait.css';
 import './landscape.css';
@@ -55,6 +55,7 @@ export default function App(){
  const [last,setLast]=useState('');
  const [promotion,setPromotion]=useState<{moves:Move[]}|null>(null);
  const [theme,setTheme]=useState(()=>loadBoardTheme());
+ const [soundEnabled,setSoundEnabled]=useState(()=>loadSoundPreference());
  const [themeMode,setThemeMode]=useState<ThemeMode>(()=>loadSettings().theme);
  const [locale,setAppLocale]=useState<Locale>(()=>loadSettings().language);
  const t=(key:Parameters<typeof translate>[1])=>translate(locale,key);
@@ -121,7 +122,7 @@ export default function App(){
       <button type="button" onClick={()=>setSelected(null)}>{t('clear')}</button>
     </div>
   </div>
-</>} settings={<><div className="theme-controls">
+</>} settings={<><div className="theme-controls"><label className="sound-toggle"><input type="checkbox" checked={soundEnabled} onChange={e=>{const v=e.target.checked;setSoundEnabled(v);persistSoundPreference(v)}}/> Sound</label>
       <select value={themeMode} onChange={e=>{const v=e.target.value as ThemeMode;setThemeMode(v);saveSettings({theme:v})}} aria-label={t('theme')}><option value="system">{t('system')}</option><option value="light">{t('light')}</option><option value="dark">{t('dark')}</option></select>
       <select value={locale} onChange={e=>setAppLocale(e.target.value as Locale)} aria-label={t('language')}><option value="fa">{t('languageFa')}</option><option value="en">{t('languageEn')}</option></select>
       <div className="board-theme-field"><span className="theme-field-label">{t('boardTheme')}</span><BoardThemeSelector value={theme} onChange={next=>{setTheme(next);saveBoardTheme(next)}}/></div>
