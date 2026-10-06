@@ -131,7 +131,7 @@ export default function App(){
   <style>{`.chess-board{--board-light:${theme.light};--board-dark:${theme.dark}}.piece{color:${theme.piece}}`}</style>
   <div className="runtime-banner offline" role="status">{t('offline')}</div>
   <GameLayout board={<>{playerPanels}{board}</>} panel={panel}/>
-  {status!=='playing'&&status!=='check'&&<GameOverResult status={status} turn={game.position.turn} gameMode={gameMode} onNewGame={fresh} onReview={reviewMoves}/>} 
+  {status!=='playing'&&status!=='check'&&<><span className="sr-only">{t('gameOver')}</span><GameOverResult status={status} turn={game.position.turn} gameMode={gameMode} onNewGame={fresh} onReview={reviewMoves}/></>} 
   {showPositionEditor&&<PositionEditor initial={game.position} onApply={applyEditedPosition} onClose={()=>setShowPositionEditor(false)}/>}
   {showPGNImport&&<PGNImport onApply={applyImportedGame} onClose={()=>setShowPGNImport(false)}/>}
   {showFenLoader&&<div className="editor-backdrop" role="dialog" aria-modal="true" aria-label="Load FEN"><div className="position-editor fen-loader"><div className="editor-header"><h2>Load FEN</h2><button type="button" onClick={()=>setShowFenLoader(false)}>×</button></div><label>FEN<textarea value={fenInput} onChange={e=>{setFenInput(e.target.value);setFenError('')}} placeholder="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"/></label>{fenError&&<div className="editor-error" role="alert">{fenError}</div>}<div className="editor-actions"><button type="button" onClick={()=>setFenInput(toFEN(game.position))}>Current position</button><button type="button" onClick={loadFEN}>Load position</button></div></div></div>}
