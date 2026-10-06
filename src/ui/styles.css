@@ -113,3 +113,20 @@
   .captured-piece .piece{font-size:15px}
   .material-count,.material-advantage{font-size:.62rem}
 }
+
+/* Phase #386 — premium player HUD cards. */
+.player-panels{gap:10px}
+.player-card{position:relative;overflow:hidden;align-items:stretch;padding:11px 12px;background:linear-gradient(145deg,#111827,#172033);box-shadow:0 10px 24px #0004}
+.player-card:before{content:'';position:absolute;inset-inline-start:0;top:0;bottom:0;width:3px;background:#334155}
+.player-card.active:before{background:#38bdf8}
+.player-card.active{box-shadow:0 10px 28px #0005,0 0 0 1px #38bdf822}
+.player-card-main{grid-template-columns:minmax(0,1fr) auto}
+.player-card-main b{font-size:.9rem;letter-spacing:.01em}
+.player-identity{grid-column:1;color:#64748b;font-size:.65rem;font-weight:600}
+.player-card.active .player-identity{color:#7dd3fc}
+@media(max-width:600px) and (orientation:portrait){
+  .player-card{padding:9px 10px}
+  .player-card-main b{font-size:.8rem}
+  .player-identity{font-size:.58rem}
+}
+@media(prefers-reduced-motion:reduce){.player-card{transition:none}}
