@@ -68,6 +68,8 @@ function ChessBoard({
               selected === s ? 'selected' : '',
               highlights.has(s) ? 'hint' : '',
               lastMove?.from === s || lastMove?.to === s ? 'last-move' : '',
+              lastMove?.from === s ? 'move-origin' : '',
+              lastMove?.to === s ? 'move-destination' : '',
               checkSquare === s ? 'in-check' : '',
             ]
               .filter(Boolean)
