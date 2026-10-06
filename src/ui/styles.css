@@ -150,3 +150,17 @@
 .game-over strong{letter-spacing:.01em}
 @keyframes king-check-pulse{0%,100%{box-shadow:inset 0 0 0 5px #ef4444cc}50%{box-shadow:inset 0 0 0 6px #ef4444ee,0 0 18px rgba(239,68,68,.18)}}
 @media(prefers-reduced-motion:reduce){.in-check{animation:none}.in-check{box-shadow:inset 0 0 0 5px #ef4444cc}}
+
+/* Phase #393 — compact professional notation panel. */
+.moves-panel{display:grid;gap:7px;min-height:0}
+.moves-panel-header{display:flex;align-items:center;justify-content:space-between}
+.moves-panel-header h2{margin:0}
+.moves-panel-header span{font-size:.62rem;color:#64748b}
+.move-list{display:grid;gap:2px;max-height:220px;overflow:auto;padding:4px 3px;margin:0;list-style:none;scrollbar-width:thin}
+.move-list li{display:grid;grid-template-columns:28px 1fr 1fr;gap:4px;align-items:center;padding:4px 5px;border-radius:6px;font-size:.75rem}
+.move-list li:nth-child(odd){background:rgba(255,255,255,.025)}
+.move-list .move-number{color:#64748b;font-variant-numeric:tabular-nums}
+.move-list li b{padding:2px 5px;border-radius:5px;font-variant-numeric:tabular-nums}
+.move-list li .move-current{background:rgba(56,189,248,.14);color:#7dd3fc}
+.move-list .current-move{outline:1px solid rgba(56,189,248,.18)}
+@media(max-width:600px){.move-list{max-height:180px}.move-list li{font-size:.7rem;padding:3px 4px}}
