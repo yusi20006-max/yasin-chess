@@ -9,6 +9,14 @@ export const DEFAULT_BOARD_THEME: BoardTheme = {
   piece: '#111827',
 };
 
+export const BOARD_THEMES: Record<string, BoardTheme> = {
+  midnight: {light:'#dbeafe', dark:'#334155', piece:'#111827'},
+  ocean: {light:'#d8f3ff', dark:'#2b6f8a', piece:'#0f172a'},
+  violet: {light:'#ede9fe', dark:'#6d5aa8', piece:'#1e1b4b'},
+  classic: {light:'#f0d9b5', dark:'#b58863', piece:'#111827'},
+  emerald: {light:'#dcfce7', dark:'#4d7c62', piece:'#102a1d'},
+};
+
 export type BoardUiSettings = {
   showCoordinates: boolean;
   animations: boolean;
