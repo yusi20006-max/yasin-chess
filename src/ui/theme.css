@@ -85,3 +85,9 @@
   background:rgba(7,11,22,.84);
   border-bottom-color:rgba(139,92,246,.18);
 }
+
+/* Phase #389 — low-cost Midnight ambient background. */
+:root[data-theme="dark"] body{position:relative;isolation:isolate;overflow-x:hidden}
+:root[data-theme="dark"] body::before{content:'';position:fixed;inset:-20%;z-index:-1;pointer-events:none;background:radial-gradient(circle at 20% 15%,rgba(37,99,235,.14),transparent 28%),radial-gradient(circle at 78% 28%,rgba(124,58,237,.12),transparent 30%),radial-gradient(circle at 55% 85%,rgba(14,116,144,.08),transparent 32%);filter:blur(24px);animation:midnight-ambient-drift 18s ease-in-out infinite alternate}
+@keyframes midnight-ambient-drift{0%{transform:translate3d(-1%,0,0) scale(1)}50%{transform:translate3d(1%,1%,0) scale(1.025)}100%{transform:translate3d(-.5%,2%,0) scale(1.015)}}
+@media(prefers-reduced-motion:reduce){:root[data-theme="dark"] body::before{animation:none;transform:none}}
