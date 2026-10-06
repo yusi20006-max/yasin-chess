@@ -150,3 +150,16 @@
 .game-over strong{letter-spacing:.01em}
 @keyframes king-check-pulse{0%,100%{box-shadow:inset 0 0 0 5px #ef4444cc}50%{box-shadow:inset 0 0 0 6px #ef4444ee,0 0 18px rgba(239,68,68,.18)}}
 @media(prefers-reduced-motion:reduce){.in-check{animation:none}.in-check{box-shadow:inset 0 0 0 5px #ef4444cc}}
+
+/* Phase #391 — premium, mobile-first game-over result surface. */
+.game-over-result{inset:50% auto auto 50%;transform:translate(-50%,-50%);width:min(420px,calc(100vw - 28px));display:grid;justify-items:center;text-align:center;gap:8px;padding:24px;z-index:60;box-shadow:0 24px 80px #000b,0 0 0 1px rgba(56,189,248,.08)}
+.game-over-kicker{font-size:.65rem;font-weight:800;letter-spacing:.18em;color:#64748b}
+.game-over-result h2{margin:0;font-size:clamp(1.35rem,5vw,1.8rem)}
+.game-over-score{font-size:1.35rem;font-variant-numeric:tabular-nums}
+.game-over-result p{margin:0;color:var(--muted,#94a3b8);font-size:.85rem}
+.game-over-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;margin-top:7px}
+.game-over-actions button{min-height:44px;border:1px solid var(--border,#334155);border-radius:10px;background:var(--surface,#172033);color:var(--text,#e5e7eb);cursor:pointer}
+.game-over-actions button:last-child{background:#2563eb;border-color:#38bdf8}
+.game-over-checkmate{border-color:rgba(244,63,94,.45)}
+.game-over-checkmate .game-over-score{color:#fb7185}
+@media(max-width:480px){.game-over-result{padding:20px 16px}.game-over-actions{grid-template-columns:1fr}}
