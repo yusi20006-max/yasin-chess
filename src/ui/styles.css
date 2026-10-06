@@ -83,3 +83,14 @@
 @media(min-width:851px){.settings-sheet{inset-inline:auto 50%;transform:translateX(50%);width:min(480px,92vw);bottom:24px;border-bottom:1px solid var(--border,#263244);border-radius:18px;animation:sheet-fade-in .2s ease-out}.settings-sheet-backdrop{background:#0006}}
 @keyframes sheet-fade-in{from{transform:translate(50%,20px);opacity:0}to{transform:translate(50%,0);opacity:1}}
 @media(prefers-reduced-motion:reduce){.settings-sheet{animation:none}}
+
+/* Phase #384 — restrained move/capture motion. The board geometry is unchanged. */
+.move-origin{animation:move-source-settle .22s ease-out both}
+.move-destination{animation:move-destination-enter .24s ease-out both}
+.move-destination .piece-animated{animation:piece-arrival .24s cubic-bezier(.22,.8,.24,1) both}
+@keyframes move-source-settle{0%{filter:brightness(1.08)}100%{filter:brightness(1)}}
+@keyframes move-destination-enter{0%{box-shadow:inset 0 0 0 4px #f59e0b55, inset 0 0 0 0 transparent}100%{box-shadow:inset 0 0 0 4px #f59e0b55}}
+@keyframes piece-arrival{0%{transform:translateY(-7%) scale(.96);opacity:.7}65%{transform:translateY(1%) scale(1.015);opacity:1}100%{transform:translateY(0) scale(1);opacity:1}}
+@media(prefers-reduced-motion:reduce){
+  .move-origin,.move-destination,.move-destination .piece-animated{animation:none!important}
+}
