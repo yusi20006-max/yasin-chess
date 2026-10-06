@@ -38,6 +38,7 @@ import PositionEditor from './PositionEditor';
 import PGNImport from './PGNImport';
 import FenLoader from './FenLoader';
 import GameOverResult from './GameOverResult';
+import GameOverResult from './GameOverResult';
 
 export default function App(){
  recordStartup(runtimeKind());
