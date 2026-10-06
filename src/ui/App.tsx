@@ -37,6 +37,7 @@ import {parseValidatedFEN,validateFEN} from '../app/importExport';
 import PositionEditor from './PositionEditor';
 import PGNImport from './PGNImport';
 import FenLoader from './FenLoader';
+import GameOverResult from './GameOverResult';
 
 export default function App(){
  recordStartup(runtimeKind());
@@ -98,6 +99,7 @@ export default function App(){
  const checkSquare=status==='check'||status==='checkmate'?game.position.board.findIndex(p=>p?.type==='k'&&p.color===game.position.turn):null;
  const highlights=new Set(selected===null?[]:legalMovesFrom(game.position,selected).map(m=>m.to));
  const board=<ChessBoard position={game.position} selected={selected} highlights={highlights} onSquareClick={click} onSquareDrag={moveFromTo} onEscape={()=>{setSelected(null);setPromotion(null)}} orientation={orientation} lastMove={lastMove} checkSquare={checkSquare} renderPiece={s=>{const pc=game.position.board[s];return pc?<Piece piece={pc}/>:null}}/>;
+ const reviewMoves=()=>document.querySelector('.move-list')?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});
  const formatClock=(ms:number)=>`${Math.floor(ms/60000)}:${String(Math.floor(ms/1000)%60).padStart(2,'0')}`;
  const whiteIdentity=gameMode==='ai-vs-ai'?`AI · Elo ${d.elo}`:gameMode==='human-vs-human'?'Human':`Human · Elo ${d.elo}`;
  const blackIdentity=gameMode==='ai-vs-ai'?`AI · Elo ${d.elo}`:'AI · Elo '+d.elo;
@@ -129,7 +131,7 @@ export default function App(){
   <style>{`.chess-board{--board-light:${theme.light};--board-dark:${theme.dark}}.piece{color:${theme.piece}}`}</style>
   <div className="runtime-banner offline" role="status">{t('offline')}</div>
   <GameLayout board={<>{playerPanels}{board}</>} panel={panel}/>
-  {status!=='playing'&&status!=='check'&&<div className="game-over" role="dialog"><strong>{t('gameOver')}</strong><span>{status}</span><button type="button" onClick={fresh}>{t('rematch')}</button></div>}
+  {status!=='playing'&&status!=='check'&&<GameOverResult status={status} turn={game.position.turn} gameMode={gameMode} onNewGame={fresh} onReview={reviewMoves}/>} 
   {showPositionEditor&&<PositionEditor initial={game.position} onApply={applyEditedPosition} onClose={()=>setShowPositionEditor(false)}/>}
   {showPGNImport&&<PGNImport onApply={applyImportedGame} onClose={()=>setShowPGNImport(false)}/>}
   {showFenLoader&&<div className="editor-backdrop" role="dialog" aria-modal="true" aria-label="Load FEN"><div className="position-editor fen-loader"><div className="editor-header"><h2>Load FEN</h2><button type="button" onClick={()=>setShowFenLoader(false)}>×</button></div><label>FEN<textarea value={fenInput} onChange={e=>{setFenInput(e.target.value);setFenError('')}} placeholder="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"/></label>{fenError&&<div className="editor-error" role="alert">{fenError}</div>}<div className="editor-actions"><button type="button" onClick={()=>setFenInput(toFEN(game.position))}>Current position</button><button type="button" onClick={loadFEN}>Load position</button></div></div></div>}
