@@ -178,3 +178,7 @@
 .game-over-checkmate .game-over-score{color:#fb7185}
 @media(max-width:420px){.game-over-result{padding:18px 14px}.game-over-actions{flex-direction:column}}
 @media(prefers-reduced-motion:reduce){.game-over-result{backdrop-filter:none}}
+
+/* Phase #392 — compact sound preference control. */
+.sound-toggle{display:flex;align-items:center;gap:7px;color:var(--muted,#94a3b8);font-size:.78rem}
+.sound-toggle input{accent-color:#38bdf8;width:16px;height:16px}

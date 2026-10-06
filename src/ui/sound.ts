@@ -1,3 +1,6 @@
 export type SoundEvent='move'|'capture'|'check'|'game-over';let enabled=true;let context:AudioContext|undefined;
+const STORAGE_KEY='yasin-chess-sound-enabled';
+export function loadSoundPreference(){try{const value=localStorage.getItem(STORAGE_KEY);if(value!==null)enabled=value==='true'}catch{}return enabled}
+export function persistSoundPreference(value:boolean){enabled=value;try{localStorage.setItem(STORAGE_KEY,String(value))}catch{}}
 export function setSoundEnabled(value:boolean){enabled=value}export function isSoundEnabled(){return enabled}
 export function playSound(event:SoundEvent){if(!enabled||typeof window==='undefined')return;const AudioCtx=window.AudioContext||(window as typeof window & {webkitAudioContext?:typeof AudioContext}).webkitAudioContext;if(!AudioCtx)return;context??=new AudioCtx();const osc=context.createOscillator();const gain=context.createGain();const freq=event==='capture'?220:event==='check'?660:event==='game-over'?330:440;osc.frequency.value=freq;gain.gain.value=.035;osc.connect(gain);gain.connect(context.destination);osc.start();osc.stop(context.currentTime+.06)}
