@@ -1,16 +1,34 @@
 import {findOpening} from '../engine/openings';
+import {translate,type Locale} from '../app/i18n';
 
-type Props={sans:string[];locale:'fa'|'en'};
+type Props={sans:string[];locale:Locale};
+
+const NAME_KEYS:Record<string,Parameters<typeof translate>[1]>={
+ 'King Pawn Opening':'openingKingPawn','Open Game':'openingOpenGame','Sicilian Defense':'openingSicilian','French Defense':'openingFrench',
+ 'Caro-Kann Defense':'openingCaroKann','Scandinavian Defense':'openingScandinavian',"Alekhine's Defense":'openingAlekhine','Pirc Defense':'openingPirc',
+ 'Four Knights Game':'openingFourKnights','Italian Game':'openingItalian','Giuoco Piano':'openingGiuoco','Giuoco Piano: Main Line':'openingGiuoco',
+ 'Evans Gambit':'openingEvans','Italian Game: Two Knights Defense':'openingTwoKnights','Ruy López':'openingRuyLopez','Ruy López: Morphy Defense':'openingMorphy',
+ 'Scotch Game':'openingScotch','Vienna Game':'openingVienna',"King's Gambit":'openingKingsGambit','Petrov Defense':'openingPetrov',
+ 'Nimzowitsch Defense':'openingNimzowitsch','Sicilian Defense: Open':'openingSicilianOpen','Sicilian Defense: Najdorf':'openingNajdorf',
+ 'Sicilian Defense: Dragon':'openingDragon','Sicilian Defense: Alapin':'openingAlapin','Sicilian Defense: Closed':'openingClosed',
+ 'Queen Pawn Opening':'openingQueenPawn',"Queen's Pawn Game":'openingQueensPawnGame',"Queen's Gambit":'openingQueensGambit',
+ "Queen's Gambit Declined":'openingQGD','Slav Defense':'openingSlav','London System':'openingLondon','Indian Game':'openingIndian',
+ "King's Indian Defense":'openingKingsIndian',"King's Indian Defense: Fianchetto":'openingKingsIndianFianchetto','Grünfeld Defense':'openingGrunfeld',
+ 'Nimzo-Indian Defense':'openingNimzoIndian',"Queen's Indian Defense":'openingQueensIndian','Catalan Opening':'openingCatalan',
+ 'English Opening':'openingEnglish','Réti Opening':'openingReti',"King's Indian Attack":'openingKingsIndianAttack','Bird Opening':'openingBird',
+ 'Nimzowitsch-Larsen Attack':'openingNimzowitschLarsen',"King's Fianchetto Opening":'openingKingsFianchetto','Grob Opening':'openingGrob'
+};
 
 export default function OpeningExplorer({sans,locale}:Props){
  const match=findOpening(sans);
- const title=locale==='fa'?'گشایش':'Opening';
  const unknown=match.confidence==='unknown';
- return <section className="opening-explorer" aria-label={title}>
-  <div className="opening-header"><h2>{title}</h2><span>{match.matchedMoves?match.matchedMoves+' ply':'offline'}</span></div>
-  <strong className={unknown?'opening-unknown':''}>{match.name}</strong>
+ const key=NAME_KEYS[match.name];
+ const name=key?translate(locale,key):match.name;
+ return <section className="opening-explorer" aria-label={translate(locale,'opening')}>
+  <div className="opening-header"><h2>{translate(locale,'opening')}</h2><span>{match.matchedMoves?match.matchedMoves+' ply':'offline'}</span></div>
+  <strong className={unknown?'opening-unknown':''}>{name}</strong>
   {match.variation&&<small>{match.variation}</small>}
-  {!unknown&&match.nextMoves.length>0&&<div className="opening-next"><span>{locale==='fa'?'ادامه‌های شناخته‌شده:':'Known continuations:'}</span>{match.nextMoves.map(move=><b key={move}>{move}</b>)}</div>}
-  {unknown&&<small>{locale==='fa'?'این خط در مجموعه آفلاین فعلی ثبت نشده است.':'This line is not in the current offline dataset.'}</small>}
+  {!unknown&&match.nextMoves.length>0&&<div className="opening-next"><span>{translate(locale,'knownContinuations')}</span>{match.nextMoves.map(move=><b key={move}>{move}</b>)}</div>}
+  {unknown&&<small>{translate(locale,'unknownOpeningLine')}</small>}
  </section>;
 }
