@@ -84,3 +84,35 @@ export function disposeStockfish():void{
  ready=undefined;
  busy=false;
 }
+
+export type EngineEvaluation={scoreCp:number;mate?:number};
+
+function parseEvaluation(line:string,turn:'w'|'b'):EngineEvaluation|undefined{
+ const cp=line.match(/\\bscore cp (-?\\d+)/);const mate=line.match(/\\bscore mate (-?\\d+)/);if(!cp&&!mate)return undefined;
+ const sign=turn==='w'?1:-1;
+ return cp?{scoreCp:Number(cp[1])*sign}: {scoreCp:0,mate:Number(mate![1])*sign};
+}
+
+export async function requestStockfishEvaluation(position:Position,depth:number,signal?:AbortSignal):Promise<EngineEvaluation>{
+ if(signal?.aborted)return {scoreCp:0};
+ if(busy)throw new Error('Stockfish engine is busy');
+ busy=true;
+ try{
+  await ensureWorker();
+  const currentWorker=worker;if(!currentWorker)throw new Error('Stockfish worker unavailable');
+  return await new Promise<EngineEvaluation>((resolve,reject)=>{
+   let timer:ReturnType<typeof setTimeout>|undefined;let settled=false;let latest:EngineEvaluation={scoreCp:0};
+   const finish=(value:EngineEvaluation,error?:Error)=>{if(settled)return;settled=true;if(timer)clearTimeout(timer);signal?.removeEventListener('abort',abort);if(error)reject(error);else resolve(value)};
+   const abort=()=>{try{currentWorker.postMessage('stop')}catch{}finish(latest)};
+   signal?.addEventListener('abort',abort,{once:true});
+   if(signal?.aborted){abort();return}
+   currentWorker.onmessage=(event:MessageEvent)=>{const line=String(event.data??'');const score=parseEvaluation(line,position.turn);if(score)latest=score;if(line.startsWith('bestmove '))finish(latest)};
+   currentWorker.onerror=()=>finish(latest,new Error('Stockfish worker failed during evaluation'));
+   timer=setTimeout(()=>finish(latest,new Error('Stockfish evaluation timed out')),SEARCH_TIMEOUT_MS);
+   currentWorker.postMessage('setoption name Threads value 1');
+   currentWorker.postMessage('ucinewgame');
+   currentWorker.postMessage('position fen '+toFEN(position));
+   currentWorker.postMessage('go depth '+Math.min(14,Math.max(1,Math.round(depth))));
+  });
+ }finally{busy=false}
+}
