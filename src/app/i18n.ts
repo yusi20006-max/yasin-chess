@@ -4,7 +4,7 @@ export const messages = {
   fa: {
     playing:'در حال بازی', check:'کیش', checkmate:'کیش‌ومات', stalemate:'پات', draw:'تساوی', undo:'واگرد', redo:'بازانجام', newGame:'بازی جدید', flip:'چرخش صفحه',
     offline:'هوش مصنوعی محلی · بازی آفلاین · بدون نیاز به شبکه', thinking:'هوش مصنوعی در حال فکر کردن', idle:'هوش مصنوعی آماده است', moves:'حرکت‌ها', lastMove:'آخرین حرکت', clear:'پاک‌کردن انتخاب', force:'حرکت اجباری', rematch:'بازی دوباره', gameOver:'پایان بازی', choosePromotion:'انتخاب مهره برای ترفیع', white:'سفید', blackAi:'سیاه · هوش مصنوعی', yourTurn:'نوبت شما', waiting:'انتظار',
-    theme:'پوسته برنامه', language:'زبان', system:'سیستم', light:'روشن', dark:'تیره', boardTheme:'پوسته صفحه', difficulty:'سطح هوش مصنوعی', depth:'عمق', status:'وضعیت', languageFa:'فارسی', languageEn:'English',
+    theme:'پوسته برنامه', language:'زبان', system:'سیستم', light:'روشن', dark:'تیره', boardTheme:'پوسته صفحه', difficulty:'سطح هوش مصنوعی', depth:'عمق', status:'وضعیت', languageFa:'فارسی', languageEn:'انگلیسی',
     gameMode:'حالت بازی', humanVsAi:'انسان در برابر هوش مصنوعی', humanVsHuman:'انسان در برابر انسان', aiVsAi:'هوش مصنوعی در برابر هوش مصنوعی', chessEngine:'موتور شطرنج', localMinimax:'مینیمکس محلی', stockfishWasm:'استاک‌فیش WASM',
     timeControl:'زمان بازی', boardAndFiles:'صفحه و فایل', positionEditor:'ویرایشگر موقعیت', loadFen:'بارگذاری FEN', importPgn:'درون‌ریزی PGN', exportPgn:'برون‌بری PGN', sound:'صدا',
     close:'بستن', menu:'منو', options:'گزینه‌ها', gameAndBoardSettings:'تنظیمات بازی و صفحه', appearanceLanguage:'ظاهر و زبان', clearSelection:'پاک‌کردن انتخاب',
@@ -26,7 +26,7 @@ export const messages = {
   en: {
     playing:'Playing', check:'Check', checkmate:'Checkmate', stalemate:'Stalemate', draw:'Draw', undo:'Undo', redo:'Redo', newGame:'New Game', flip:'Flip board',
     offline:'Local AI · Offline game · No network required', thinking:'AI is thinking', idle:'AI ready', moves:'Moves', lastMove:'Last move', clear:'Clear selection', force:'Force Move', rematch:'Rematch', gameOver:'Game Over', choosePromotion:'Choose promotion', white:'White', blackAi:'Black · AI', yourTurn:'Your turn', waiting:'Waiting',
-    theme:'Application theme', language:'Language', system:'System', light:'Light', dark:'Dark', boardTheme:'Board Theme', difficulty:'AI difficulty', depth:'Depth', status:'Status', languageFa:'فارسی', languageEn:'English',
+    theme:'Application theme', language:'Language', system:'System', light:'Light', dark:'Dark', boardTheme:'Board Theme', difficulty:'AI difficulty', depth:'Depth', status:'Status', languageFa:'Persian', languageEn:'English',
     gameMode:'Game mode', humanVsAi:'Human vs AI', humanVsHuman:'Human vs Human', aiVsAi:'AI vs AI', chessEngine:'Chess engine', localMinimax:'Local Minimax', stockfishWasm:'Stockfish WASM',
     timeControl:'Time control', boardAndFiles:'Board & files', positionEditor:'Position editor', loadFen:'Load FEN', importPgn:'Import PGN', exportPgn:'Export PGN', sound:'Sound',
     close:'Close', menu:'Menu', options:'Options', gameAndBoardSettings:'Game and board settings', appearanceLanguage:'Appearance & language', clearSelection:'Clear selection',
