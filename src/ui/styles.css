@@ -190,3 +190,5 @@
 .player-card[data-ai-thinking="true"] .player-identity{color:#7dd3fc}
 @keyframes ai-thinking-pulse{0%,100%{opacity:.35;transform:scale(.85)}50%{opacity:1;transform:scale(1)}}
 @media(prefers-reduced-motion:reduce){.thinking-active:before{animation:none;opacity:1}}
+
+.engine-badge{margin:0 0 .65rem;padding:.45rem .65rem;border:1px solid rgba(120,130,255,.22);border-radius:12px;background:rgba(18,22,48,.42);font-size:.78rem;opacity:.92}.engine-badge b{font-weight:700}
