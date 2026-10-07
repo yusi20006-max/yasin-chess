@@ -4,7 +4,7 @@ import {fileURLToPath} from 'node:url';
 
 const root=join(dirname(fileURLToPath(import.meta.url)),'..');
 const pkgRoot=join(root,'node_modules','stockfish');
-const sourceDir=join(pkgRoot,'src');
+const sourceDir=join(pkgRoot,'bin');
 const names=['stockfish-19-lite-single.js','stockfish-19-lite-single.wasm'];
 const outDir=join(root,'public','engine');
 if(!existsSync(sourceDir))throw new Error('Stockfish dependency is not installed; run npm install first.');
