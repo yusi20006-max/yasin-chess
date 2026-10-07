@@ -91,7 +91,9 @@ export function parsePGN(input:string):ParsedPGN{
     if(/^\d+\.(?:\.\.)?$/.test(token)||/^\d+\.\.\.$/.test(token))continue;
     if(['1-0','0-1','1/2-1/2','*'].includes(token)){result=token;continue}
     const normalized=token.replace(/^0-0-0/,'O-O-O').replace(/^0-0/,'O-O');
-    const move=legalMoves(game.position).find(candidate=>toSAN(game.position,candidate)===normalized);
+    const legal=legalMoves(game.position);
+    const castleTo=normalized==='O-O'?(game.position.turn==='w'?6:62):normalized==='O-O-O'?(game.position.turn==='w'?2:58):null;
+    const move=castleTo!==null?legal.find(candidate=>candidate.to===castleTo&&(candidate.from===(game.position.turn==='w'?4:60)||candidate.isCastle)):legal.find(candidate=>toSAN(game.position,candidate)===normalized);
     if(!move)throw new Error('Illegal or unsupported PGN move: '+raw);
     game.play(move);
   }
