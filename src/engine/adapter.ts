@@ -3,7 +3,7 @@ import {requestStockfishMove} from './stockfish';
 import {requestAiMove} from './aiWorker';
 
 export type EngineId='minimax'|'stockfish';
-export type EngineRequest={position:Position;depth:number;skill:number;signal?:AbortSignal};
+export type EngineRequest={position:Position;depth:number;skill:number;engine?:EngineId;signal?:AbortSignal};
 
 export interface ChessEngineAdapter{
  readonly id:EngineId;
