@@ -87,7 +87,7 @@ export function disposeStockfish():void{
 
 export type EngineEvaluation={scoreCp:number;mate?:number};
 
-function parseEvaluation(line:string,turn:'w'|'b'):EngineEvaluation|undefined{
+export function parseStockfishEvaluation(line:string,turn:'w'|'b'):EngineEvaluation|undefined{
  const cp=line.match(/\\bscore cp (-?\\d+)/);const mate=line.match(/\\bscore mate (-?\\d+)/);if(!cp&&!mate)return undefined;
  const sign=turn==='w'?1:-1;
  return cp?{scoreCp:Number(cp[1])*sign}: {scoreCp:0,mate:Number(mate![1])*sign};
@@ -106,7 +106,7 @@ export async function requestStockfishEvaluation(position:Position,depth:number,
    const abort=()=>{try{currentWorker.postMessage('stop')}catch{}finish(latest)};
    signal?.addEventListener('abort',abort,{once:true});
    if(signal?.aborted){abort();return}
-   currentWorker.onmessage=(event:MessageEvent)=>{const line=String(event.data??'');const score=parseEvaluation(line,position.turn);if(score)latest=score;if(line.startsWith('bestmove '))finish(latest)};
+   currentWorker.onmessage=(event:MessageEvent)=>{const line=String(event.data??'');const score=parseStockfishEvaluation(line,position.turn);if(score)latest=score;if(line.startsWith('bestmove '))finish(latest)};
    currentWorker.onerror=()=>finish(latest,new Error('Stockfish worker failed during evaluation'));
    timer=setTimeout(()=>finish(latest,new Error('Stockfish evaluation timed out')),SEARCH_TIMEOUT_MS);
    currentWorker.postMessage('setoption name Threads value 1');
