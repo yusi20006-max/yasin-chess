@@ -28,7 +28,9 @@
     "audit:android-identity": "node scripts/android-identity-contract.mjs",
     "audit:android-signing": "node scripts/android-signing-contract.mjs",
     "audit:android-final": "node scripts/android-final-audit.mjs",
-    "audit:phase10-final": "node scripts/phase10-final-audit.mjs"
+    "audit:phase10-final": "node scripts/phase10-final-audit.mjs",
+    "prebuild": "node scripts/prepare-stockfish.mjs",
+    "pretest": "node scripts/prepare-stockfish.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
@@ -43,7 +45,8 @@
     "@capacitor/status-bar": "^8.0.0",
     "@capacitor/screen-orientation": "^8.0.0",
     "@capacitor/haptics": "^8.0.0",
-    "@capacitor/share": "^8.0.0"
+    "@capacitor/share": "^8.0.0",
+    "stockfish": "19.0.0"
   },
   "devDependencies": {
     "@types/react": "latest",
