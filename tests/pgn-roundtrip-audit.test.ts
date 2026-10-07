@@ -12,8 +12,10 @@ describe('PGN offline round-trip audit',()=>{
   expect(parsed.result).toBe('*');
  });
  it('accepts standard castling and promotion SAN offline',()=>{
-  const castle=parsePGN('[Result "*"]\n\n1. O-O O-O-O *');
-  expect(castle.game.history.map(x=>x.san)).toEqual(['O-O','O-O-O']);
+  const whiteCastle=parsePGN('[SetUp "1"]\n[FEN "4k2r/8/8/8/8/8/8/4K2R w Kk - 0 1"]\n[Result "*"]\n\n1. O-O *');
+  expect(whiteCastle.game.history.map(x=>x.san)).toEqual(['O-O']);
+  const blackCastle=parsePGN('[SetUp "1"]\n[FEN "4k2r/8/8/8/8/8/8/4K2R b Kk - 0 1"]\n[Result "*"]\n\n1... O-O *');
+  expect(blackCastle.game.history.map(x=>x.san)).toEqual(['O-O']);
   const promotion=parsePGN('[SetUp "1"]\n[FEN "7k/P7/8/8/8/8/8/6K1 w - - 0 1"]\n[Result "*"]\n\n1. a8=Q+ *');
   expect(promotion.game.history[0].san).toBe('a8=Q+');
  });
