@@ -57,7 +57,7 @@ function ChessBoard({
         className="chess-board"
         role="grid"
         aria-label={locale==='fa'?'صفحه شطرنج':'Chess board'}
-        aria-roledescription="chess board"
+        aria-roledescription={locale==='fa'?'صفحه شطرنج':'chess board'}
         data-orientation={orientation}
         data-component="chess-board"
       >
