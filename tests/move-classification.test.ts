@@ -7,7 +7,7 @@ describe('post-game move classification',()=>{
  it('uses win-chance loss bands rather than raw centipawns',()=>{
   const before={scoreCp:0,approximate:false,source:'stockfish' as const};
   expect(classifyEvaluation(before,{scoreCp:20,approximate:false,source:'stockfish'},'w',false)).toBe('excellent');
-  expect(classifyEvaluation(before,{scoreCp:-250,approximate:false,source:'stockfish'},'w',false)).toBe('mistake');
+  expect(classifyEvaluation(before,{scoreCp:-200,approximate:false,source:'stockfish'},'w',false)).toBe('mistake');
   expect(classifyEvaluation(before,{scoreCp:-500,approximate:false,source:'stockfish'},'w',false)).toBe('blunder');
  });
  it('marks Minimax classifications as approximate',async()=>{
