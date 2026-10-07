@@ -30,7 +30,8 @@
     "audit:android-final": "node scripts/android-final-audit.mjs",
     "audit:phase10-final": "node scripts/phase10-final-audit.mjs",
     "prebuild": "node scripts/prepare-stockfish.mjs",
-    "pretest": "node scripts/prepare-stockfish.mjs"
+    "pretest": "node scripts/prepare-stockfish.mjs",
+    "predev": "node scripts/prepare-stockfish.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
