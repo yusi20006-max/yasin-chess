@@ -92,4 +92,11 @@ describe('UI regression contracts',()=>{
     expect(t('newGame')).toBe('New Game');
     expect(document.documentElement.dir).toBe('ltr');
   });
+  it('does not show standalone Last move status; move list is sole history feedback (#409)',()=>{
+    const app=fs.readFileSync(path.join(process.cwd(),'src/ui/App.tsx'),'utf8');
+    expect(app).not.toMatch(/className=["']last["']/);
+    expect(app).not.toMatch(/t\(['"]lastMove['"]\)/);
+    expect(app).toMatch(/className=["']move-list["']/);
+    expect(app).toMatch(/move-current/);
+  });
 });

@@ -12,7 +12,7 @@ describe('UX state regression contract',()=>{
  it('clears selection and promotion on state-reset actions',()=>{
   expect(app).toMatch(/if\(undoTurnPair\(next,gameMode\)\)setGame\(next\);setSelected\(null\)/);
   expect(app).toMatch(/if\(redoTurnPair\(next,gameMode\)\)setGame\(next\);setSelected\(null\)/);
-  expect(app).toContain('setGame(new ChessGame());setSelected(null);setLast(\'\')');
+  expect(app).toContain('setGame(new ChessGame());setSelected(null)');
  });
  it('guards AI responses against stale game/request identity',()=>{
   expect(app).toContain('current!==snapshot||request!==requestRef.current');
