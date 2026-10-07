@@ -10,6 +10,10 @@ describe('post-game move classification',()=>{
   expect(classifyEvaluation(before,{scoreCp:-200,approximate:false,source:'stockfish'},'w',false)).toBe('mistake');
   expect(classifyEvaluation(before,{scoreCp:-500,approximate:false,source:'stockfish'},'w',false)).toBe('blunder');
  });
+ it('classifies a move that allows immediate mate as a blunder',()=>{
+  const before={scoreCp:0,approximate:false,source:'stockfish' as const};
+  expect(classifyEvaluation(before,{scoreCp:0,mate:-1,approximate:false,source:'stockfish'},'w',false)).toBe('blunder');
+ });
  it('marks Minimax classifications as approximate',async()=>{
   const position=initialPosition();const move=legalMoves(position)[0];const after={...position,board:[...position.board]};
   const result=await analyzeGame([{move,before:position,after}], 'minimax', 1);
