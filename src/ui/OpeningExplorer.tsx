@@ -24,11 +24,22 @@ export default function OpeningExplorer({sans,locale}:Props){
  const unknown=match.confidence==='unknown';
  const key=NAME_KEYS[match.name];
  const name=key?translate(locale,key):match.name;
+ const variation=match.variation?translateVariation(match.variation,locale):undefined;
  return <section className="opening-explorer" aria-label={translate(locale,'opening')}>
-  <div className="opening-header"><h2>{translate(locale,'opening')}</h2><span>{match.matchedMoves?match.matchedMoves+' ply':'offline'}</span></div>
+  <div className="opening-header"><h2>{translate(locale,'opening')}</h2><span>{match.matchedMoves?match.matchedMoves+' ply':(locale==='fa'?'آفلاین':'offline')}</span></div>
   <strong className={unknown?'opening-unknown':''}>{name}</strong>
-  {match.variation&&<small>{match.variation}</small>}
+  {variation&&<small>{variation}</small>}
   {!unknown&&match.nextMoves.length>0&&<div className="opening-next"><span>{translate(locale,'knownContinuations')}</span>{match.nextMoves.map(move=><b key={move}>{move}</b>)}</div>}
   {unknown&&<small>{translate(locale,'unknownOpeningLine')}</small>}
  </section>;
+}
+
+function translateVariation(value:string,locale:Locale){
+ if(locale==='en')return value;
+ const map:Record<string,string>={
+  'Giuoco Piano':'جیوکو پیانو','Giuoco Piano Main Line':'جیوکو پیانو، خط اصلی','Evans Gambit':'گامبی اوانز','Two Knights Defense':'دفاع دو اسب',
+  'Morphy Defense':'دفاع مورفی','Open Sicilian':'دفاع سیسیلی، شاخه باز','Najdorf':'شاخه نایدورف','Dragon':'شاخه دراگون',
+  'Alapin':'شاخه آلاپین','Closed':'شاخه بسته','Declined':'دفاع انصرافی','Fianchetto':'فینکتو'
+ };
+ return map[value]??value;
 }
