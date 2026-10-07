@@ -43,7 +43,8 @@ export async function requestStockfishMove(position:Position,depth:number,skill:
  busy=true;
  try{
   await ensureWorker();
-  if(!worker)throw new Error('Stockfish worker unavailable');
+  const currentWorker=worker;
+  if(!currentWorker)throw new Error('Stockfish worker unavailable');
   return await new Promise<Move|undefined>((resolve,reject)=>{
    let timer:ReturnType<typeof setTimeout>|undefined;
    let settled=false;
@@ -55,24 +56,24 @@ export async function requestStockfishMove(position:Position,depth:number,skill:
     if(error)reject(error);else resolve(move);
    };
    const abort=()=>{
-    try{worker?.postMessage('stop')}catch{}
+    try{currentWorker.postMessage('stop')}catch{}
     finish(undefined);
    };
    signal?.addEventListener('abort',abort,{once:true});
    if(signal?.aborted){abort();return}
-   worker.onmessage=(event:MessageEvent)=>{
+   currentWorker.onmessage=(event:MessageEvent)=>{
     const line=String(event.data??'');
     if(line.startsWith('bestmove ')){
      finish(parseMove(line.slice(9).split(/\s+/)[0],position));
     }
    };
-   worker.onerror=()=>finish(undefined,new Error('Stockfish worker failed during search'));
+   currentWorker.onerror=()=>finish(undefined,new Error('Stockfish worker failed during search'));
    timer=setTimeout(()=>finish(undefined,new Error('Stockfish search timed out')),SEARCH_TIMEOUT_MS);
-   worker.postMessage('setoption name Skill Level value '+Math.min(20,Math.max(0,Math.round(skill))));
-   worker.postMessage('setoption name Threads value 1');
-   worker.postMessage('ucinewgame');
-   worker.postMessage('position fen '+toFEN(position));
-   worker.postMessage('go depth '+Math.min(18,Math.max(1,Math.round(depth))));
+   currentWorker.postMessage('setoption name Skill Level value '+Math.min(20,Math.max(0,Math.round(skill))));
+   currentWorker.postMessage('setoption name Threads value 1');
+   currentWorker.postMessage('ucinewgame');
+   currentWorker.postMessage('position fen '+toFEN(position));
+   currentWorker.postMessage('go depth '+Math.min(18,Math.max(1,Math.round(depth))));
   });
  }finally{busy=false}
 }
