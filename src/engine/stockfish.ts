@@ -88,7 +88,7 @@ export function disposeStockfish():void{
 export type EngineEvaluation={scoreCp:number;mate?:number};
 
 export function parseStockfishEvaluation(line:string,turn:'w'|'b'):EngineEvaluation|undefined{
- const cp=line.match(/\bscore cp (-?\\d+)/);const mate=line.match(/\bscore mate (-?\\d+)/);if(!cp&&!mate)return undefined;
+ const cp=line.match(/\bscore cp (-?\d+)/);const mate=line.match(/\bscore mate (-?\d+)/);if(!cp&&!mate)return undefined;
  const sign=turn==='w'?1:-1;
  return cp?{scoreCp:Number(cp[1])*sign}: {scoreCp:0,mate:Number(mate![1])*sign};
 }
