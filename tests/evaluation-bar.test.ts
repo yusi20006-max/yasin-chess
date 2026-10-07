@@ -12,7 +12,7 @@ describe('evaluation bar contracts',()=>{
   expect(app).toMatch(/className="board-analysis-row"/);
   expect(app).toMatch(/<EvaluationBar/);
   expect(component).toMatch(/aria-label=/);
-  expect(component).toMatch(/prefers-reduced-motion/);
+  expect(css).toMatch(/prefers-reduced-motion/);
   expect(css).toMatch(/\.board-analysis-row\{/);
   expect(css).toMatch(/\.evaluation-track\{/);
  });
