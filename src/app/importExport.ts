@@ -47,7 +47,7 @@ export function validatePGN(input:string):ValidationResult{
     if(!/^(?:O-O|O-O-O|0-0|0-0-0|[KQRBN]?[a-h]?[1-8]?x?[a-h][1-8](?:=[QRBN])?[+#]?|[a-h](?:x[a-h][1-8])?(?:=[QRBN])?[+#]?)$/.test(token))return {valid:false,error:'PGN token is malformed: '+token};
     hasMove=true;
   }
-  if(!hasMove){const setup=tags.find(x=>x[1]==='SetUp')?.[2];const fenHeader=tags.find(x=>x[1]==='FEN')?.[2];if(!(setup==='1'&&Boolean(fenHeader)&&hasResult))return {valid:false,error:'PGN contains no moves'};}
+  if(!hasMove){const setup=tags.find(x=>x[1]==='SetUp')?.[2];const fenHeader=tags.find(x=>x[1]==='FEN')?.[2];if(!(hasResult&&tokens.includes('*'))&&!(setup==='1'&&Boolean(fenHeader)&&hasResult))return {valid:false,error:'PGN contains no moves'};}
   if(!hasResult)return {valid:false,error:'PGN is missing a result token'};
   const resultTag=tags.find(x=>x[1]==='Result')?.[2];
   if(resultTag&&resultTag!==tokens[tokens.length-1]&&resultTag!=='*')return {valid:false,error:'PGN Result tag does not match movetext result'};
