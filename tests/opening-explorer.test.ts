@@ -2,6 +2,11 @@ import {describe,expect,it} from 'vitest';
 import {findOpening,OPENING_DATASET_VERSION} from '../src/engine/openings';
 
 describe('offline opening explorer',()=>{
+ it('keeps generic e4 opening until the reply identifies a concrete defense',()=>{
+  expect(findOpening(['e4']).name).toBe('King Pawn Opening');
+  expect(findOpening(['e4','Nc6']).name).toBe('Nimzowitsch Defense');
+  expect(findOpening(['e4','Nc6']).confidence).toBe('low');
+ });
  it('detects common openings deterministically',()=>{
   expect(findOpening(['e4','e5','Nf3','Nc6','Bb5']).name).toBe('Ruy López');
   expect(findOpening(['d4','Nf6','c4','g6','Nc3']).family).toBe("King's Indian Defense");

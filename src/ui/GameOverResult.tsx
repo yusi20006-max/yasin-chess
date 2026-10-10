@@ -1,18 +1,26 @@
 import type {GameStatus} from '../core/types';
+import {translate,type Locale} from '../app/i18n';
 
-type Props={status:GameStatus;turn:'w'|'b';gameMode:'human-vs-ai'|'human-vs-human'|'ai-vs-ai';onNewGame:()=>void;onReview:()=>void;onAnalyze:()=>void;analysisRunning:boolean};
+type Props={status:GameStatus;turn:'w'|'b';gameMode:'human-vs-ai'|'human-vs-human'|'ai-vs-ai';locale:Locale;onNewGame:()=>void;onReview:()=>void;onAnalyze:()=>void;analysisRunning:boolean};
 
-function title(status:GameStatus){if(status==='checkmate')return 'Checkmate';if(status==='stalemate')return 'Draw · Stalemate';if(status==='draw-repetition')return 'Draw · Repetition';if(status==='draw-insufficient')return 'Draw · Insufficient material';if(status==='draw-75-move')return 'Draw · 75-move rule';if(status==='claim-50-move')return 'Draw · 50-move claim';if(status==='draw-agreement')return 'Draw · Agreement';return 'Game over'}
-function result(status:GameStatus,turn:'w'|'b'){if(status==='checkmate')return turn==='w'?'Black wins':'White wins';return '½ – ½'}
+function title(status:GameStatus,locale:Locale){
+ const key=status==='checkmate'?'checkmate':status==='stalemate'?'stalemate':status==='draw-repetition'||status==='draw-insufficient'||status==='draw-75-move'||status==='claim-50-move'||status==='draw-agreement'?'draw':'gameOver';
+ return translate(locale,key);
+}
+function result(status:GameStatus,turn:'w'|'b',locale:Locale){
+ if(status==='checkmate')return turn==='w'?translate(locale,'blackWins'):translate(locale,'whiteWins');
+ return '½ – ½';
+}
 
-export default function GameOverResult({status,turn,gameMode,onNewGame,onReview,onAnalyze,analysisRunning}:Props){
-  const winner=status==='checkmate'?(turn==='w'?'Black':'White'):null;
-  return <div className={'game-over game-over-result game-over-'+status} role="dialog" aria-modal="true" aria-labelledby="game-over-title">
-    <div className="game-over-kicker">YASIN CHESS</div>
-    <h2 id="game-over-title">{title(status)}</h2>
-    <strong className="game-over-score">{result(status,turn)}</strong>
-    <p>{winner?winner+' wins by checkmate.':'The game has ended. Review the moves or start a new game.'}</p>
-    <div className="game-over-actions"><button type="button" onClick={onReview}>Review moves</button><button type="button" onClick={onAnalyze} disabled={analysisRunning}>{analysisRunning?'Analyzing…':'Analyze moves'}</button><button type="button" onClick={onNewGame}>New game</button></div>
-    <span className="sr-only">Mode: {gameMode}</span>
-  </div>;
+export default function GameOverResult({status,turn,gameMode,locale,onNewGame,onReview,onAnalyze,analysisRunning}:Props){
+ const winner=status==='checkmate'?(turn==='w'?translate(locale,'blackWins'):translate(locale,'whiteWins')):null;
+ const message=winner?winner+' '+translate(locale,'winsByCheckmate')+'.':translate(locale,'gameEndedReview');
+ return <div className={'game-over game-over-result game-over-'+status} role="dialog" aria-modal="true" aria-labelledby="game-over-title">
+  <div className="game-over-kicker">YASIN CHESS</div>
+  <h2 id="game-over-title">{title(status,locale)}</h2>
+  <strong className="game-over-score">{result(status,turn,locale)}</strong>
+  <p>{message}</p>
+  <div className="game-over-actions"><button type="button" onClick={onReview}>{translate(locale,'reviewMoves')}</button><button type="button" onClick={onAnalyze} disabled={analysisRunning}>{analysisRunning?translate(locale,'analyzing')+'…':translate(locale,'analyzeMoves')}</button><button type="button" onClick={onNewGame}>{translate(locale,'newGame')}</button></div>
+  <span className="sr-only">{translate(locale,'gameMode')}: {translate(locale,gameMode==='ai-vs-ai'?'aiVsAi':gameMode==='human-vs-ai'?'humanVsAi':'humanVsHuman')}</span>
+ </div>;
 }

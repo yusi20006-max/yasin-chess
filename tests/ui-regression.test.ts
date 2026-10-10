@@ -92,6 +92,14 @@ describe('UI regression contracts',()=>{
     expect(t('newGame')).toBe('New Game');
     expect(document.documentElement.dir).toBe('ltr');
   });
+  it('dismisses the game-over result before reviewing or analyzing the board',()=>{
+    const app=fs.readFileSync(path.join(process.cwd(),'src/ui/App.tsx'),'utf8');
+    const result=fs.readFileSync(path.join(process.cwd(),'src/ui/GameOverResult.tsx'),'utf8');
+    expect(app).toContain('setShowGameOverResult(false)');
+    expect(app).toContain('showGameOverResult&&status');
+    expect(result).toContain("translate(locale,'reviewMoves')");
+    expect(result).toContain("translate(locale,'analyzeMoves')");
+  });
   it('does not show standalone Last move status; move list is sole history feedback (#409)',()=>{
     const app=fs.readFileSync(path.join(process.cwd(),'src/ui/App.tsx'),'utf8');
     expect(app).not.toMatch(/className=["']last["']/);

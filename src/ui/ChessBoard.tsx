@@ -2,6 +2,7 @@ import {memo, type ReactNode} from 'react';
 import type {Position, Square} from '../core/types';
 import {squareName} from '../core/board';
 import {boardRanks, boardFiles, fileLabel, rankLabel} from './boardCoordinates';
+import type {Locale} from '../app/i18n';
 import './board.css';
 
 type Props = {
@@ -16,6 +17,7 @@ type Props = {
   lastMove?: {from: Square; to: Square};
   checkSquare?: Square | null;
   showCoordinates?: boolean;
+  locale?: Locale;
 };
 
 function ChessBoard({
@@ -30,6 +32,7 @@ function ChessBoard({
   lastMove,
   checkSquare,
   showCoordinates = true,
+  locale = 'fa',
 }: Props) {
   const ranks = boardRanks(orientation);
   const files = boardFiles(orientation);
@@ -53,8 +56,8 @@ function ChessBoard({
       <div
         className="chess-board"
         role="grid"
-        aria-label="Chess board"
-        aria-roledescription="chess board"
+        aria-label={locale==='fa'?'صفحه شطرنج':'Chess board'}
+        aria-roledescription={locale==='fa'?'صفحه شطرنج':'chess board'}
         data-orientation={orientation}
         data-component="chess-board"
       >
@@ -93,13 +96,7 @@ function ChessBoard({
                 }}
                 aria-selected={selected === s}
                 aria-current={lastMove?.from === s || lastMove?.to === s ? 'true' : undefined}
-                aria-label={`${squareName(s)}${
-                  position.board[s]
-                    ? ` ${position.board[s]?.color === 'w' ? 'white' : 'black'} ${position.board[s]?.type}`
-                    : ''
-                }${selected === s ? ' selected' : ''}${highlights.has(s) ? ' legal move' : ''}${
-                  checkSquare === s ? ' in check' : ''
-                }`}
+                aria-label={`${squareName(s)}${position.board[s]?` ${locale==='fa'?(position.board[s]?.color==='w'?'سفید':'سیاه')+' '+pieceTypeLabel(position.board[s]?.type,locale):(position.board[s]?.color==='w'?'white':'black')+' '+position.board[s]?.type}`:''}${selected===s?(locale==='fa'?' انتخاب‌شده':' selected'):''}${highlights.has(s)?(locale==='fa'?' حرکت قانونی':' legal move'):''}${checkSquare===s?(locale==='fa'?' در کیش':' in check'):''}`}
                 onKeyDown={(e) => {
                   if (e.key === 'Escape') onEscape?.();
                 }}
@@ -126,6 +123,11 @@ function ChessBoard({
   );
 }
 
+function pieceTypeLabel(type:string|undefined,locale:Locale){
+ if(locale==='en')return type??'';
+ return type==='p'?'پیاده':type==='n'?'اسب':type==='b'?'فیل':type==='r'?'رخ':type==='q'?'وزیر':type==='k'?'شاه':'';
+}
+
 export default memo(
   ChessBoard,
   (a, b) =>
@@ -136,5 +138,6 @@ export default memo(
     a.lastMove === b.lastMove &&
     a.checkSquare === b.checkSquare &&
     a.renderPiece === b.renderPiece &&
-    a.showCoordinates === b.showCoordinates,
+    a.showCoordinates === b.showCoordinates &&
+    a.locale === b.locale,
 );
