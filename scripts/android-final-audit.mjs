@@ -18,7 +18,7 @@ const checks=[
  [Array.isArray(manifest.icons)&&manifest.icons.length>0,'manifest icon'],
  [sw.includes("self.addEventListener('install'"),'service worker install'],
  [sw.includes("self.addEventListener('activate'"),'service worker activate'],
- [sw.includes("request.mode==='navigate'"),'offline navigation fallback'],
+ [/request\.mode\s*===\s*['"]navigate['"]/.test(sw),'offline navigation fallback'],
  [existsSync('docs/ANDROID-SIGNING.md'),'Android signing documentation']
 ];
 const failed=checks.filter(([ok])=>!ok).map(([,name])=>name);
