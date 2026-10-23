@@ -1,0 +1,51 @@
+name: Phase 2 Full Test Matrix
+
+on:
+  push:
+    branches:
+      - audit/phase-2-full-test-matrix
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  full-test-matrix:
+    name: Full tests and retained audits
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm install
+      - name: Typecheck
+        run: npm run lint
+      - name: Unit and regression tests
+        run: npm test
+      - name: Production build
+        run: npm run build
+      - name: Offline smoke
+        run: node scripts/offline-smoke.mjs
+      - name: Security audit
+        run: npm run audit:security
+      - name: Offline asset audit
+        run: node scripts/offline-asset-audit.mjs
+      - name: Network isolation audit
+        run: npm run audit:network
+      - name: Mobile bundle size audit
+        run: node scripts/mobile-size-audit.mjs
+      - name: Android offline contract
+        run: npm run audit:android-offline
+      - name: Android identity contract
+        run: npm run audit:android-identity
+      - name: Android signing contract
+        run: npm run audit:android-signing
+      - name: Android final audit
+        run: npm run audit:android-final
+      - name: Phase 10 final audit
+        run: npm run audit:phase10-final
