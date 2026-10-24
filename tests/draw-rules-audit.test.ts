@@ -39,6 +39,7 @@ describe('draw rules audit',()=>{
     expect(g.status()).toBe('timeout');
     expect(g.resultToken()).toBe('0-1');
     expect(g.clone().resultToken()).toBe('0-1');
+    expect(()=>g.play(g.moves()[0])).toThrow('Game already terminated');
     expect(g.flagFall('b')).toBe(false);
   });
 
