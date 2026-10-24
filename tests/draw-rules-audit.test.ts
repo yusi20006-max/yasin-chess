@@ -25,7 +25,7 @@ describe('draw rules audit',()=>{
     expect(claim.resultToken()).toBe('*');
     expect(claim.pgn()).toBe('*');
     const accepted=claim.clone();
-    expect(accepted.acceptDrawAgreement()).toBe(true);
+    expect(accepted.claimFiftyMoveDraw()).toBe(true);
     expect(accepted.status()).toBe('draw-agreement');
     expect(accepted.resultToken()).toBe('1/2-1/2');
 
@@ -43,6 +43,9 @@ describe('draw rules audit',()=>{
     expect(g.flagFall('b')).toBe(false);
   });
 
+  it('rejects a fifty-move claim before one hundred half-moves',()=>{const g=new ChessGame('8/8/8/8/8/8/R6k/K7 w - - 99 50');expect(g.canClaimFiftyMove()).toBe(false);expect(g.status()).toBe('playing');expect(()=>g.claimFiftyMoveDraw()).toThrow('Fifty-move draw is not claimable');expect(g.resultToken()).toBe('*')});
+  it('handles flag fall for either side and draws when mate is impossible',()=>{for(const loser of ['w','b'] as const){const g=new ChessGame();expect(g.flagFall(loser)).toBe(true);expect(g.resultToken()).toBe(loser==='w'?'0-1':'1-0');expect(g.clone().resultToken()).toBe(loser==='w'?'0-1':'1-0');expect(g.pgn({Event:'timeout'})).toContain(loser==='w'?'0-1':'1-0')}const impossibleMate=new ChessGame('7k/8/8/8/8/8/2B5/2K5 w - - 0 1');expect(impossibleMate.flagFall('w')).toBe(false);expect(impossibleMate.status()).toBe('draw-insufficient');expect(impossibleMate.resultToken()).toBe('1/2-1/2')});
+  it('does not let timeout overwrite an already completed result',()=>{const mate=new ChessGame('7k/6Q1/6K1/8/8/8/8/8 b - - 0 1');expect(mate.status()).toBe('checkmate');expect(mate.flagFall('b')).toBe(false);expect(mate.resultToken()).toBe('1-0');const stale=new ChessGame('8/8/8/8/8/8/2k5/2K5 w - - 150 76');expect(stale.status()).toBe('draw-75-move');expect(stale.flagFall('w')).toBe(false);expect(stale.resultToken()).toBe('1/2-1/2')});
   it('keeps insufficient-material detection independent of move counters',()=>{
     const g=new ChessGame('7k/8/8/8/8/8/2B5/2K5 w - - 0 1');
     expect(g.status()).toBe('draw-insufficient');

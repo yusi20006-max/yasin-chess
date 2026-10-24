@@ -15,6 +15,9 @@ export class ChessGame{
  acceptDrawAgreement(){if(this.status()==='checkmate'||this.status()==='stalemate'||this.status()==='timeout'||this.status().startsWith('draw-')||this.status()==='draw-agreement')throw new Error('Game already terminated');this.drawAgreement=true;return true}
  flagFall(loser:Color){if(this.status()==='checkmate'||this.status()==='stalemate'||this.status()==='timeout'||this.status().startsWith('draw-')||this.status()==='draw-agreement')return false;this.timeoutLoser=loser;return true}
  canClaimFiftyMove(){return this.position.halfmove>=100}
+ claimFiftyMoveDraw(){if(this.status()!=='claim-50-move'||!this.canClaimFiftyMove())throw new Error('Fifty-move draw is not claimable');this.drawAgreement=true;return true}
+ terminalState(){return {drawAgreement:this.drawAgreement,timeoutLoser:this.timeoutLoser}}
+ restoreTerminalState(state:{drawAgreement?:boolean;timeoutLoser?:Color|null}){this.drawAgreement=state.drawAgreement===true;this.timeoutLoser=state.timeoutLoser==='w'||state.timeoutLoser==='b'?state.timeoutLoser:null}
  resultToken(){const s=this.status();if(s==='timeout'&&this.timeoutLoser)return this.timeoutLoser==='w'?'0-1':'1-0';if(s==='claim-50-move')return '*';if(s==='checkmate')return this.position.turn==='w'?'0-1':'1-0';if(s==='stalemate'||s.startsWith('draw-'))return '1/2-1/2';return '*'}
  pgn(headers:Record<string,string>={}){const tags:{[key:string]:string}={...headers};if(this.startFEN!==START_FEN&&Object.keys(headers).length){tags.SetUp='1';tags.FEN=this.startFEN;}if(Object.keys(headers).length)tags.Result=this.resultToken();const tagText=Object.entries(tags).map(([k,v])=>'['+k+' "'+String(v).replace(/"/g,'')+'"]').join('\n');let out='';for(let i=0;i<this.history.length;i++){if(i%2===0)out+=(Math.floor(i/2)+1)+'. ';out+=this.history[i].san+' ';}out+=this.resultToken();return tagText?tagText+'\n\n'+out.trim():out.trim()}
 }

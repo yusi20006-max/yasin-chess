@@ -15,32 +15,25 @@ export type PersistedGameSnapshot={
   history:ChessGame['history'];
   future:ChessGame['future'];
   keys:string[];
+  terminalState?:{drawAgreement?:boolean;timeoutLoser?:'w'|'b'|null};
+  clockMs?:{w:number;b:number};
+  timeControlId?:string;
 };
 
-function snapshot(game:ChessGame,id=ACTIVE_ID):PersistedGameSnapshot{
-  return {id,schemaVersion:CURRENT_SCHEMA_VERSION,updatedAt:Date.now(),startFEN:game.startFEN,position:game.position,history:game.history,future:game.future,keys:game.keys};
+export function serializeActiveGame(game:ChessGame,clockMs?:{w:number;b:number},timeControlId?:string,id=ACTIVE_ID):PersistedGameSnapshot{
+ return {id,schemaVersion:CURRENT_SCHEMA_VERSION,updatedAt:Date.now(),startFEN:game.startFEN,position:game.position,history:game.history,future:game.future,keys:game.keys,terminalState:game.terminalState(),...(clockMs?{clockMs}:{}),...(timeControlId?{timeControlId}:{})};
+}
+export function deserializeActiveGame(raw:PersistedGameSnapshot){
+ const value=migrate(raw,raw.schemaVersion);const g=new ChessGame(value.startFEN);g.position=value.position;g.history=value.history;g.future=value.future??[];g.keys=value.keys??[];g.restoreTerminalState(value.terminalState??{});return {game:g,clockMs:value.clockMs,timeControlId:value.timeControlId};
 }
 
-export async function resumeActiveGame(){
-  try{
-    const primary=await getGame<PersistedGameSnapshot>(ACTIVE_ID);
-    const backup=await getGame<PersistedGameSnapshot>(ACTIVE_BACKUP_ID);
-    const raw=selectRecoverySnapshot(primary,backup);
-    if(!raw)return undefined;
-    const value=migrate(raw,raw.schemaVersion);
-    const g=new ChessGame(value.startFEN);
-    g.position=value.position;
-    g.history=value.history;
-    g.future=value.future??[];
-    g.keys=value.keys??[];
-    return g;
-  }catch{return undefined}
-}
+export async function resumeActiveGameState(){try{const primary=await getGame<PersistedGameSnapshot>(ACTIVE_ID);const backup=await getGame<PersistedGameSnapshot>(ACTIVE_BACKUP_ID);const raw=selectRecoverySnapshot(primary,backup);return raw?deserializeActiveGame(raw):undefined}catch{return undefined}}
+export async function resumeActiveGame(){return (await resumeActiveGameState())?.game}
 
-export async function saveActiveGame(game:ChessGame){
+export async function saveActiveGame(game:ChessGame,clockMs?:{w:number;b:number},timeControlId?:string){
   const previous=await getGame<PersistedGameSnapshot>(ACTIVE_ID);
   if(previous&&selectRecoverySnapshot(previous,undefined))await putGame({...previous,id:ACTIVE_BACKUP_ID});
-  await putGame(snapshot(game));
+  await putGame(serializeActiveGame(game,clockMs,timeControlId));
 }
 
 export async function clearActiveGame(){
