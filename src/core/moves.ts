@@ -40,5 +40,5 @@ export function canPossiblyMate(p:Position,side:Color):boolean{
   const squares=p.board.map((x,i)=>x?.color===side&&x.type==='b'?((i&7)+(i>>3))%2:null).filter((x):x is number=>x!==null);
   return new Set(squares).size>1;
  }
- return knights.length>=3;
+ return knights.length>=2;
 }
