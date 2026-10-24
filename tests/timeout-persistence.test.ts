@@ -1,6 +1,7 @@
 import {describe,expect,it} from 'vitest';
 import {ChessGame} from '../src/core/game';
 import {serializeActiveGame,deserializeActiveGame} from '../src/storage/activeGame';
+import {requestAiTurn} from '../src/app/aiController';
 describe('active game terminal and clock persistence',()=>{
  it('does not return an AI move when the request has been aborted by timeout',async()=>{const game=new ChessGame();const controller=new AbortController();controller.abort();await expect(requestAiTurn({position:game.position,depth:1,signal:controller.signal})).resolves.toBeUndefined()});
  it('restores clock, time control, and timeout result after serialization',()=>{const game=new ChessGame();game.flagFall('w');const restored=deserializeActiveGame(serializeActiveGame(game,{w:0,b:42000},'blitz-3'));expect(restored.game.status()).toBe('timeout');expect(restored.game.resultToken()).toBe('0-1');expect(restored.clockMs).toEqual({w:0,b:42000});expect(restored.timeControlId).toBe('blitz-3')});
