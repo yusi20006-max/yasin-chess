@@ -22,9 +22,24 @@ describe('draw rules audit',()=>{
     const claim=new ChessGame('8/8/8/8/8/8/R6k/K7 w - - 100 51');
     expect(claim.canClaimFiftyMove()).toBe(true);
     expect(claim.status()).toBe('claim-50-move');
+    expect(claim.resultToken()).toBe('*');
+    expect(claim.pgn()).toBe('*');
+    const accepted=claim.clone();
+    expect(accepted.acceptDrawAgreement()).toBe(true);
+    expect(accepted.status()).toBe('draw-agreement');
+    expect(accepted.resultToken()).toBe('1/2-1/2');
 
     const automatic=new ChessGame('8/8/8/8/8/8/R6k/K7 w - - 150 76');
     expect(automatic.status()).toBe('draw-75-move');
+  });
+
+  it('records flag fall as a decisive result and preserves it when cloned',()=>{
+    const g=new ChessGame();
+    expect(g.flagFall('w')).toBe(true);
+    expect(g.status()).toBe('timeout');
+    expect(g.resultToken()).toBe('0-1');
+    expect(g.clone().resultToken()).toBe('0-1');
+    expect(g.flagFall('b')).toBe(false);
   });
 
   it('keeps insufficient-material detection independent of move counters',()=>{
