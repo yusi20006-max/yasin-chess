@@ -91,6 +91,7 @@ export default function App(){
  const clockTurn=useRef(game.position.turn);
  const clockHistoryLength=useRef(game.history.length);
  const status=game.status();
+ useEffect(()=>{setIntendedDrawMove(null)},[game]);
  useEffect(()=>{if(status!=='playing'&&status!=='check'&&status!=='claim-50-move')setShowGameOverResult(true)},[status]);
  useEffect(()=>{applyLocale(locale);saveSettings({language:locale})},[locale]);
  const requestRef=useRef(0);
