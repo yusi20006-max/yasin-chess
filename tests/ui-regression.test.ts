@@ -100,6 +100,26 @@ describe('UI regression contracts',()=>{
     expect(result).toContain("translate(locale,'reviewMoves')");
     expect(result).toContain("translate(locale,'analyzeMoves')");
   });
+  it('keeps a fifty-move claim actionable and ends play when the clock expires',()=>{
+    const app=fs.readFileSync(path.join(process.cwd(),'src/ui/App.tsx'),'utf8');
+    const game=fs.readFileSync(path.join(process.cwd(),'src/core/game.ts'),'utf8');
+    const result=fs.readFileSync(path.join(process.cwd(),'src/ui/GameOverResult.tsx'),'utf8');
+    expect(app).toContain("status==='claim-50-move'&&<button");
+    expect(app).toContain('next.flagFall(current.position.turn)');
+    expect(app).toContain("status!=='claim-50-move'");
+    expect(game).toContain("if(s==='claim-50-move')return '*'");
+    expect(result).toContain("status==='timeout'");
+  });
+  it('offers an intended-move claim before a quiet 50th move and preserves play/cancel choices',()=>{
+    const app=fs.readFileSync(path.join(process.cwd(),'src/ui/App.tsx'),'utf8');
+    const game=fs.readFileSync(path.join(process.cwd(),'src/core/game.ts'),'utf8');
+    expect(app).toContain('game.canClaimFiftyMoveWith(m)');
+    expect(app).toContain("t('claimIntendedDraw')");
+    expect(app).toContain("t('playIntendedMove')");
+    expect(app).toContain("t('cancelIntendedMove')");
+    expect(game).toContain('canClaimFiftyMoveWith(move:Move)');
+    expect(game).toContain('claimFiftyMoveDraw(intendedMove?:Move)');
+  });
   it('does not show standalone Last move status; move list is sole history feedback (#409)',()=>{
     const app=fs.readFileSync(path.join(process.cwd(),'src/ui/App.tsx'),'utf8');
     expect(app).not.toMatch(/className=["']last["']/);

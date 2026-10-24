@@ -1,4 +1,4 @@
-export const CURRENT_SCHEMA_VERSION=3;
+export const CURRENT_SCHEMA_VERSION=4;
 export type Migration<T=any>=(value:T)=>T;
 
 export function migrate<T extends Record<string,any>>(value:T,version=(value.schemaVersion??1)):T{
@@ -11,5 +11,6 @@ export function migrate<T extends Record<string,any>>(value:T,version=(value.sch
   if(v.schemaVersion<3){
     v={...v,schemaVersion:3,updatedAt:typeof v.updatedAt==='number'?v.updatedAt:Date.now(),future:Array.isArray(v.future)?v.future:[],keys:Array.isArray(v.keys)?v.keys:[]};
   }
+  if(v.schemaVersion<4){v={...v,schemaVersion:4,terminalState:v.terminalState&&typeof v.terminalState==='object'?v.terminalState:{drawAgreement:false,timeoutLoser:null}};}
   return v as T;
 }

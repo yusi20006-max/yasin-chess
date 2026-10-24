@@ -2,7 +2,7 @@ import {describe,expect,it} from 'vitest';
 import {CURRENT_SCHEMA_VERSION,migrate} from '../src/storage/migrations';
 
 describe('storage schema migrations',()=>{
-  it('tracks the current schema version',()=>expect(CURRENT_SCHEMA_VERSION).toBe(3));
+  it('tracks the current schema version',()=>expect(CURRENT_SCHEMA_VERSION).toBe(4));
   it('migrates legacy snapshots forward without losing data',()=>{
     const migrated=migrate({id:'legacy',schemaVersion:1,updatedAt:123});
     expect(migrated.schemaVersion).toBe(CURRENT_SCHEMA_VERSION);

@@ -10,8 +10,8 @@ describe('UX state regression contract',()=>{
   expect(app).toContain('const fresh=()=>{requestRef.current++;setThinking(false)');
  });
  it('clears selection and promotion on state-reset actions',()=>{
-  expect(app).toMatch(/if\(undoTurnPair\(next,gameMode\)\)setGame\(next\);setSelected\(null\)/);
-  expect(app).toMatch(/if\(redoTurnPair\(next,gameMode\)\)setGame\(next\);setSelected\(null\)/);
+  expect(app).toMatch(/if\(undoTurnPair\(next,gameMode\)\)\{[\s\S]*?setGame\(next\)\}setSelected\(null\)/);
+  expect(app).toMatch(/if\(redoTurnPair\(next,gameMode\)\)\{[\s\S]*?setGame\(next\)\}setSelected\(null\)/);
   expect(app).toContain('setGame(new ChessGame());setSelected(null)');
  });
  it('guards AI responses against stale game/request identity',()=>{
