@@ -24,3 +24,21 @@ export function applyMove(p:Position,m:Move):Position{const n=clonePosition(p),p
 export function legalMoves(p:Position):Move[]{return pseudo(p).filter(m=>!inCheck(applyMove(p,m),p.turn));}
 export function legalMovesFrom(p:Position,s:Square){return legalMoves(p).filter(m=>m.from===s)}
 export function isInsufficientMaterial(p:Position){const pieces=p.board.filter(Boolean) as Piece[];const nonKings=pieces.filter(x=>x.type!=='k');if(nonKings.length===0)return true;if(nonKings.some(x=>['p','q','r'].includes(x.type)))return false;if(nonKings.length===1)return ['b','n'].includes(nonKings[0].type);if(nonKings.every(x=>x.type==='b')){const bishops=p.board.map((x,i)=>x?.type==='b'?((i&7)+(i>>3))%2:null).filter(x=>x!==null);return bishops.every(x=>x===bishops[0])}return false}
+
+/** Whether the specified side can checkmate by some legal sequence, including help from opposing pieces. */
+export function canPossiblyMate(p:Position,side:Color):boolean{
+ const own=p.board.filter((x):x is Piece=>Boolean(x)&&x!.color===side);
+ const material=own.filter(x=>x.type!=='k');
+ if(material.some(x=>['p','r','q'].includes(x.type)))return true;
+ if(material.length===0)return false;
+ const opposing=p.board.some(x=>Boolean(x)&&x!.color!==side&&x!.type!=='k');
+ if(opposing)return true;
+ const bishops=material.filter(x=>x.type==='b');
+ const knights=material.filter(x=>x.type==='n');
+ if(bishops.length&&knights.length)return true;
+ if(bishops.length){
+  const squares=p.board.map((x,i)=>x?.color===side&&x.type==='b'?((i&7)+(i>>3))%2:null).filter((x):x is number=>x!==null);
+  return new Set(squares).size>1;
+ }
+ return knights.length>=3;
+}
