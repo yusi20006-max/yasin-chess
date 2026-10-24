@@ -15,7 +15,7 @@ export type PersistedGameSnapshot={
   history:ChessGame['history'];
   future:ChessGame['future'];
   keys:string[];
-  terminalState?:{drawAgreement?:boolean;timeoutLoser?:'w'|'b'|null};
+  terminalState?:{drawAgreement?:boolean;timeoutLoser?:'w'|'b'|null;timeoutDraw?:boolean};
   clockMs?:{w:number;b:number};
   timeControlId?:string;
 };
