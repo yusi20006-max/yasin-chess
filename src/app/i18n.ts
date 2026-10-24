@@ -2,7 +2,7 @@ export type Locale='fa'|'en';
 
 export const messages = {
   fa: {
-    playing:'در حال بازی', check:'کیش', checkmate:'کیش‌ومات', stalemate:'پات', draw:'تساوی', claimDraw:'ادعای تساوی با قانون ۵۰ حرکت', timeExpired:'اتمام زمان', winsOnTime:'با اتمام زمان حریف پیروز شد', undo:'واگرد', redo:'بازانجام', newGame:'بازی جدید', flip:'چرخش صفحه',
+    playing:'در حال بازی', check:'کیش', checkmate:'کیش‌ومات', stalemate:'پات', draw:'تساوی', claimDraw:'ادعای تساوی با قانون ۵۰ حرکت', timeExpired:'اتمام زمان', timeoutDraw:'تساوی؛ حریف امکان کیش‌ومات ندارد', winsOnTime:'با اتمام زمان حریف پیروز شد', undo:'واگرد', redo:'بازانجام', newGame:'بازی جدید', flip:'چرخش صفحه',
     offline:'هوش مصنوعی محلی · بازی آفلاین · بدون نیاز به شبکه', thinking:'هوش مصنوعی در حال فکر کردن', idle:'هوش مصنوعی آماده است', moves:'حرکت‌ها', lastMove:'آخرین حرکت', clear:'پاک‌کردن انتخاب', force:'حرکت اجباری', rematch:'بازی دوباره', gameOver:'پایان بازی', choosePromotion:'انتخاب مهره برای ترفیع', white:'سفید', blackAi:'سیاه · هوش مصنوعی', yourTurn:'نوبت شما', waiting:'انتظار',
     theme:'پوسته برنامه', language:'زبان', system:'سیستم', light:'روشن', dark:'تیره', boardTheme:'پوسته صفحه', difficulty:'سطح هوش مصنوعی', depth:'عمق', status:'وضعیت', languageFa:'فارسی', languageEn:'انگلیسی',
     gameMode:'حالت بازی', humanVsAi:'انسان در برابر هوش مصنوعی', humanVsHuman:'انسان در برابر انسان', aiVsAi:'هوش مصنوعی در برابر هوش مصنوعی', chessEngine:'موتور شطرنج', localMinimax:'مینیمکس محلی', stockfishWasm:'استاک‌فیش WASM',
@@ -24,7 +24,7 @@ export const messages = {
     openingKingsFianchetto:'گشایش فینکتوی شاه', openingGrob:'گشایش گروب', expert:'استاد'
   },
   en: {
-    playing:'Playing', check:'Check', checkmate:'Checkmate', stalemate:'Stalemate', draw:'Draw', claimDraw:'Claim draw (50-move rule)', timeExpired:'Time expired', winsOnTime:'wins on time', undo:'Undo', redo:'Redo', newGame:'New Game', flip:'Flip board',
+    playing:'Playing', check:'Check', checkmate:'Checkmate', stalemate:'Stalemate', draw:'Draw', claimDraw:'Claim draw (50-move rule)', timeExpired:'Time expired', timeoutDraw:'Draw — opponent cannot checkmate', winsOnTime:'wins on time', undo:'Undo', redo:'Redo', newGame:'New Game', flip:'Flip board',
     offline:'Local AI · Offline game · No network required', thinking:'AI is thinking', idle:'AI ready', moves:'Moves', lastMove:'Last move', clear:'Clear selection', force:'Force Move', rematch:'Rematch', gameOver:'Game Over', choosePromotion:'Choose promotion', white:'White', blackAi:'Black · AI', yourTurn:'Your turn', waiting:'Waiting',
     theme:'Application theme', language:'Language', system:'System', light:'Light', dark:'Dark', boardTheme:'Board Theme', difficulty:'AI difficulty', depth:'Depth', status:'Status', languageFa:'Persian', languageEn:'English',
     gameMode:'Game mode', humanVsAi:'Human vs AI', humanVsHuman:'Human vs Human', aiVsAi:'AI vs AI', chessEngine:'Chess engine', localMinimax:'Local Minimax', stockfishWasm:'Stockfish WASM',
