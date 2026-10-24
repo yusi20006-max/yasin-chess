@@ -15,7 +15,7 @@ function result(status:GameStatus,turn:'w'|'b',locale:Locale,timeoutLoser?:'w'|'
 
 export default function GameOverResult({status,turn,timeoutLoser,gameMode,locale,onNewGame,onReview,onAnalyze,analysisRunning}:Props){
  const winner=status==='timeout'&&timeoutLoser?(timeoutLoser==='w'?translate(locale,'blackWins'):translate(locale,'whiteWins')):status==='checkmate'?(turn==='w'?translate(locale,'blackWins'):translate(locale,'whiteWins')):null;
- const message=status==='timeout'&&winner?winner+' '+translate(locale,'winsOnTime')+'.':winner?winner+' '+translate(locale,'winsByCheckmate')+'.':translate(locale,'gameEndedReview');
+ const message=status==='timeout'&&!timeoutLoser?translate(locale,'timeoutDraw'):status==='timeout'&&winner?winner+' '+translate(locale,'winsOnTime')+'.':winner?winner+' '+translate(locale,'winsByCheckmate')+'.':translate(locale,'gameEndedReview');
  return <div className={'game-over game-over-result game-over-'+status} role="dialog" aria-modal="true" aria-labelledby="game-over-title">
   <div className="game-over-kicker">YASIN CHESS</div>
   <h2 id="game-over-title">{title(status,locale)}</h2>
