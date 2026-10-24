@@ -12,7 +12,7 @@ describe('persistence migrations',()=>{
 
   it('migrates v2 snapshots without losing existing data',()=>{
     const migrated=migrate({id:'active',schemaVersion:2,updatedAt:10,history:[1],position:{},keys:['a']},2);
-    expect(migrated.schemaVersion).toBe(3);
+    expect(migrated.schemaVersion).toBe(CURRENT_SCHEMA_VERSION);
     expect(migrated.history).toEqual([1]);
     expect(migrated.keys).toEqual(['a']);
     expect(migrated.future).toEqual([]);
