@@ -52,7 +52,6 @@ export default function App(){
  useEffect(()=>{let dispose=()=>{};bindLifecycle().then(fn=>{dispose=fn}).catch(()=>{});bindBackNavigation(()=>window.dispatchEvent(new Event('yasin:back'))).then(fn=>{const old=dispose;dispose=()=>{fn();old()}}).catch(()=>{});return()=>dispose()},[]);
  const [game,setGame]=useState(()=>new ChessGame());
  const [hydrated,setHydrated]=useState(false);
- useEffect(()=>{let alive=true;resumeActiveGameState().then(saved=>{if(!alive)return;if(saved){setGame(saved.game);if(saved.clockMs&&Number.isFinite(saved.clockMs.w)&&Number.isFinite(saved.clockMs.b))setClockMs({w:Math.max(0,saved.clockMs.w),b:Math.max(0,saved.clockMs.b)});if(saved.timeControlId){const restored=TIME_CONTROL_PRESETS.find(x=>x.id===saved.timeControlId);if(restored)setTimeControl(restored)}}setHydrated(true)}).catch(()=>{if(alive)setHydrated(true)});return()=>{alive=false}},[]);
  const [selected,setSelected]=useState<Square|null>(null);
  const [level,setLevel]=useState<DifficultyId>('beginner');
  const [engineId,setEngineId]=useState<EngineId>(()=>loadSettings().engine.id);
@@ -83,6 +82,8 @@ export default function App(){
  const [timeControl,setTimeControl]=useState<TimeControl>(()=>loadSettings().timeControl);
  const [clockMs,setClockMs]=useState({w:loadSettings().timeControl.minutes*60000,b:loadSettings().timeControl.minutes*60000});
  const clockLast=useRef(Date.now());
+ useEffect(()=>{let alive=true;resumeActiveGameState().then(saved=>{if(!alive)return;if(saved){setGame(saved.game);if(saved.clockMs&&Number.isFinite(saved.clockMs.w)&&Number.isFinite(saved.clockMs.b))setClockMs({w:Math.max(0,saved.clockMs.w),b:Math.max(0,saved.clockMs.b)});if(saved.timeControlId){const restored=TIME_CONTROL_PRESETS.find(x=>x.id===saved.timeControlId);if(restored)setTimeControl(restored)}}setHydrated(true)}).catch(()=>{if(alive)setHydrated(true)});return()=>{alive=false}},[]);
+
  useEffect(()=>{if(!hydrated)return;const id=window.setTimeout(()=>{saveActiveGame(game,clockMs,timeControl.id).catch(()=>{})},0);return()=>window.clearTimeout(id)},[game,hydrated]);
  const persistenceRef=useRef({game,clockMs,timeControlId:timeControl.id});persistenceRef.current={game,clockMs,timeControlId:timeControl.id};
  useEffect(()=>{if(!hydrated)return;const id=window.setInterval(()=>{const current=persistenceRef.current;saveActiveGame(current.game,current.clockMs,current.timeControlId).catch(()=>{})},5000);return()=>window.clearInterval(id)},[hydrated]);
