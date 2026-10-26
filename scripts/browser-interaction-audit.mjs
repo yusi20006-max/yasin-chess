@@ -29,13 +29,13 @@ try {
     await modeSelect(page).selectOption('human-vs-human');
     await page.locator('.settings-drawer .menu-close').click();
     await page.locator('[data-square="e2"]').click();
+    assert.equal(await page.locator('[data-square="e2"]').getAttribute('aria-selected'), 'true', 'e2 should become selected');
+    await page.locator('[data-square="e2"]').press('Escape');
+    assert.equal(await page.locator('[data-square="e2"]').getAttribute('aria-selected'), 'false', 'Escape should clear selection');
+    await page.locator('[data-square="e2"]').click();
     await page.locator('[data-square="e4"]').click();
     assert.equal(await page.locator('[data-square="e4"] .piece-svg').count(), 1, 'white pawn should render on e4 after e2-e4');
     assert.equal(await page.locator('[data-square="e2"] .piece-svg').count(), 0, 'e2 should be empty after e2-e4');
-    await page.locator('[data-square="e7"]').click();
-    assert.equal(await page.locator('[data-square="e7"]').getAttribute('aria-selected'), 'true', 'e7 should become selected');
-    await page.locator('[data-square="e7"]').press('Escape');
-    assert.equal(await page.locator('[data-square="e7"]').getAttribute('aria-selected'), 'false', 'Escape should clear selection');
     await context.close();
     console.log('PASS browser move interaction + keyboard cancellation');
   }
