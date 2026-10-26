@@ -4,8 +4,8 @@ import { chromium } from 'playwright';
 const baseURL = process.env.BASE_URL ?? 'http://127.0.0.1:4173';
 const browser = await chromium.launch({ headless: true, args: ['--no-sandbox'] });
 const failures = [];
-const modeSelect = (page) => page.locator('select').filter({ has: page.locator('option[value="human-vs-human"]') }).first();
-const timeControlSelect = (page) => page.locator('select').filter({ has: page.locator('option[value="bullet-1"]') }).first();
+const modeSelect = (page) => page.locator('[data-section="game-settings"] select').nth(0);
+const timeControlSelect = (page) => page.locator('[data-section="game-settings"] select').nth(3);
 const newGameButton = (page) => page.locator('.controls button').last();
 
 async function openFreshPage({ fakeClock = false } = {}) {
