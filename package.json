@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:browser": "node scripts/browser-interaction-audit.mjs",
     "lint": "tsc --noEmit",
     "test:offline": "npm run build && node scripts/offline-smoke.mjs",
     "benchmark:mobile": "npm run build && node scripts/mobile-benchmark.mjs",
@@ -54,6 +55,7 @@
     "@types/react-dom": "latest",
     "@capacitor/cli": "^8.0.0",
     "@capacitor/android": "^8.0.0",
-    "fake-indexeddb": "latest"
+    "fake-indexeddb": "latest",
+    "playwright": "latest"
   }
 }
