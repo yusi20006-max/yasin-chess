@@ -27,7 +27,7 @@ try {
     const { context, page } = await openFreshPage();
     await openMenu(page);
     await modeSelect(page).selectOption('human-vs-human');
-    await page.locator('.menu-trigger').click();
+    await page.locator('.settings-drawer .menu-close').click();
     await page.locator('[data-square="e2"]').click();
     await page.locator('[data-square="e4"]').click();
     assert.equal(await page.locator('[data-square="e4"] .piece-svg').count(), 1, 'white pawn should render on e4 after e2-e4');
@@ -60,7 +60,7 @@ try {
     await openMenu(page);
     await modeSelect(page).selectOption('human-vs-human');
     await timeControlSelect(page).selectOption('bullet-1');
-    await page.locator('.menu-trigger').click();
+    await page.locator('.settings-drawer .menu-close').click();
     await page.clock.fastForward(61_000);
     await page.locator('.game-over-timeout').waitFor({ timeout: 5000 });
     await page.locator('[data-square="e2"]').click({ force: true });
