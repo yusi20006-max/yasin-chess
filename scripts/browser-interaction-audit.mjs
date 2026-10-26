@@ -4,6 +4,7 @@ import { chromium } from 'playwright';
 const baseURL = process.env.BASE_URL ?? 'http://127.0.0.1:4173';
 const browser = await chromium.launch({ headless: true, args: ['--no-sandbox'] });
 const failures = [];
+const openMenu = async (page) => { await page.locator('.menu-trigger').click(); await page.locator('[data-section="game-settings"]').waitFor(); };
 const modeSelect = (page) => page.locator('[data-section="game-settings"] select').nth(0);
 const timeControlSelect = (page) => page.locator('[data-section="game-settings"] select').nth(3);
 const newGameButton = (page) => page.locator('.controls button').last();
@@ -24,7 +25,9 @@ try {
   // Browser interaction: legal move, selection, keyboard cancellation, and move rendering.
   {
     const { context, page } = await openFreshPage();
+    await openMenu(page);
     await modeSelect(page).selectOption('human-vs-human');
+    await page.locator('.menu-trigger').click();
     await page.locator('[data-square="e2"]').click();
     await page.locator('[data-square="e4"]').click();
     assert.equal(await page.locator('[data-square="e4"] .piece-svg').count(), 1, 'white pawn should render on e4 after e2-e4');
@@ -54,8 +57,10 @@ try {
   // Race regression: after flag fall, queued/late board clicks must not change the terminal game.
   {
     const { context, page } = await openFreshPage({ fakeClock: true });
+    await openMenu(page);
     await modeSelect(page).selectOption('human-vs-human');
     await timeControlSelect(page).selectOption('bullet-1');
+    await page.locator('.menu-trigger').click();
     await page.clock.fastForward(61_000);
     await page.locator('.game-over-timeout').waitFor({ timeout: 5000 });
     await page.locator('[data-square="e2"]').click({ force: true });
